@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.mapper.CategoryMapper">
+    <select id="qryList" resultType="com.udaiitem.pojo.Category">
+
+        select `id`,name,parent_id,is_parent,sort from tb_category
+        <where>
+
+            <if test="id !=null and id != '' ">
+                and id = #{id}
+            </if>
+            <if test="name!=null and name!=''">
+                and name = #{name}
+            </if>
+            <if test="parentId != null and parentId !='' ">
+                and parent_Id = #{parentId}
+            </if>
+            <if test="isParent != null and isParent !='' ">
+                and is_parent = #{isParent}
+            </if>
+            <if test="sort != null and sort !='' ">
+                and sort = #{sort}
+            </if>
+        </where>
+        order by sort asc;
+    </select>
+</mapper>
