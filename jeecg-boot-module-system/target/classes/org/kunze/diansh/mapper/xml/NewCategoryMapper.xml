@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.NewCategoryMapper">
+    <select id="qryList" resultType="org.kunze.diansh.entity.Category">
+
+        select `id`,name,parent_id,is_parent,sort,is_flag from kz_category
+        <where>
+            is_flag = "0"
+            <if test="id !=null and id != '' ">
+                and id = #{id}
+            </if>
+            <if test="name!=null and name!=''">
+                and name = #{name}
+            </if>
+            <if test="parentId != null and parentId !='' ">
+                and parent_Id = #{parentId}
+            </if>
+            <if test="isParent != null and isParent !='' ">
+                and is_parent = #{isParent}
+            </if>
+            <if test="sort != null and sort !='' ">
+                and sort = #{sort}
+            </if>
+        </where>
+        order by sort asc;
+    </select>
+
+
+    <insert id="saveCategory">
+
+        insert into kz_category(`id`,name,parent_id,is_parent,sort)
+        values (#{id},#{name},#{parentId},#{isParent},#{sort})
+
+    </insert>
+
+    <update id="updateCategory">
+
+        update kz_category
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null and name != '' ">
+                name = #{name},
+            </if>
+            <if test="parentId !=null and parentId !='' ">
+                parent_Id = #{parentId},
+            </if>
+            <if test="isParent != null and isParent !='' ">
+                 is_parent = #{isParent},
+            </if>
+            <if test="sort != null and sort !='' ">
+                 sort = #{sort},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteCategorys">
+
+        update kz_category set is_flag = "1"
+        where id in
+        <foreach collection="delList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+
+
+    </update>
+
+
+    <update id="deleteCategory">
+
+        update kz_category set is_flag = "1"
+        where id = #{id}
+
+
+    </update>
+</mapper>

@@ -56,6 +56,7 @@ public class JeecgBootExceptionHandler {
 	public Result<?> handleException(Exception e){
 		log.error(e.getMessage(), e);
 		return Result.error("操作失败，"+e.getMessage());
+		//return Result.error("操作失败,参数被篡改！");
 	}
 	
 	/**

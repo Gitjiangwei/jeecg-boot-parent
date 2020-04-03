@@ -113,7 +113,7 @@ public class ${entityName}Controller {
 	 * @param id
 	 * @return
 	 */
-	@DeleteMapping(value = "/delete")
+	@PostMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
 	    ${entityName?uncap_first}Service.delMain(id);
 		return Result.ok("删除成功!");
@@ -125,7 +125,7 @@ public class ${entityName}Controller {
 	 * @param ids
 	 * @return
 	 */
-	@DeleteMapping(value = "/deleteBatch")
+	@PostMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
 		this.${entityName?uncap_first}Service.delBatchMain(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功！");

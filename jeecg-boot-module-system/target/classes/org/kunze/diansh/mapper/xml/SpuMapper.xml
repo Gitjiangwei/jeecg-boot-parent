@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.SpuMapper">
+    <select id="qrySpuList" resultType="org.kunze.diansh.entity.modelData.SpuModel">
+
+        select spu.id,spu.title,sub_title,spu.saleable,CONCAT(cate1.`name`,'/',cate2.`name`,'/',cate3.`name`) as 'cName',br.`name` AS 'bName',
+        spu.create_time,spu.last_update_time,spu.update_name
+         from kz_spu spu
+        LEFT JOIN kz_category cate1 ON spu.cid1 = cate1.id  and cate1.is_flag='0'
+        LEFT JOIN kz_category cate2 ON spu.cid2 = cate2.id   and cate2.is_flag='0'
+        LEFT JOIN kz_category cate3 ON spu.cid3 = cate3.id   and cate3.is_flag='0'
+        LEFT JOIN kz_brand br ON spu.brand_id = br.id and br.is_flag = '0'
+        <trim prefix="where" prefixOverrides="and">
+            spu.is_flag = '0'
+            <if test="title != null and title != '' ">
+               and title like CONCAT('%',#{title},'%')
+            </if>
+            <if test="saleable != null and saleable != '' ">
+               and saleable = #{saleable}
+            </if>
+            <if test="cid3 != null and cid3 != '' ">
+                and cid3 = #{cid3}
+            </if>
+            <if test="brandId != null and brandId != '' ">
+                and brand_id = #{brandId}
+            </if>
+        </trim>
+        ORDER BY spu.last_update_time DESC,spu.create_time DESC
+    </select>
+
+
+    <select id="qrySpuBrand" resultType="org.kunze.diansh.controller.vo.SpuBrandVo">
+            select id as 'key',name as 'brandName' from kz_brand
+    </select>
+
+    <select id="qrySpuBrands" resultType="org.kunze.diansh.controller.vo.SpuBrandVo">
+        select brand_id as 'key',`name` as 'brandName' from kz_brand br
+        LEFT JOIN kz_category_brand cb on br.id = cb.brand_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="categoryId != null and categoryId != '' ">
+                cb.category_id = #{categoryId}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="saveSpu">
+        insert into kz_spu(id,title,sub_title,cid1,cid2,cid3,brand_id,create_time,last_update_time,update_name)
+        values (#{id},#{title},#{subTitle},#{cid1},#{cid2},#{cid3},#{brandId},NOW(),NOW(),#{updateName})
+    </insert>
+</mapper>

@@ -107,7 +107,7 @@ public class ${entityName}Controller extends JeecgController<${entityName}, I${e
 	 */
 	@AutoLog(value = "${tableVo.ftlDescription}-通过id删除")
 	@ApiOperation(value="${tableVo.ftlDescription}-通过id删除", notes="${tableVo.ftlDescription}-通过id删除")
-	@DeleteMapping(value = "/delete")
+	@PostMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
 		${entityName?uncap_first}Service.removeById(id);
 		return Result.ok("删除成功!");
@@ -121,7 +121,7 @@ public class ${entityName}Controller extends JeecgController<${entityName}, I${e
 	 */
 	@AutoLog(value = "${tableVo.ftlDescription}-批量删除")
 	@ApiOperation(value="${tableVo.ftlDescription}-批量删除", notes="${tableVo.ftlDescription}-批量删除")
-	@DeleteMapping(value = "/deleteBatch")
+	@PostMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
 		this.${entityName?uncap_first}Service.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功！");

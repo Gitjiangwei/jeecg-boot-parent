@@ -123,7 +123,7 @@ public class ${entityName}Controller extends JeecgController<${entityName}, I${e
 	 * @param id
 	 * @return
 	 */
-	@DeleteMapping(value = "/delete")
+	@PostMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
 		${entityName?uncap_first}Service.delete${entityName}(id);
 		return Result.ok("删除成功!");
@@ -135,7 +135,7 @@ public class ${entityName}Controller extends JeecgController<${entityName}, I${e
 	 * @param ids
 	 * @return
 	 */
-	@DeleteMapping(value = "/deleteBatch")
+	@PostMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
 		this.${entityName?uncap_first}Service.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功！");
