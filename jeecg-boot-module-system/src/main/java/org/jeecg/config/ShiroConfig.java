@@ -70,6 +70,7 @@ public class ShiroConfig {
 		//cas验证登录
 		filterChainDefinitionMap.put("/cas/client/validateLogin", "anon");
 		// 配置不会被拦截的链接 顺序判断
+		filterChainDefinitionMap.put("/kunze/**", "anon"); //登录验证码接口排除
 		filterChainDefinitionMap.put("/sys/getCheckCode", "anon"); //登录验证码接口排除
 		filterChainDefinitionMap.put("/sys/randomImage/**", "anon"); //登录验证码接口排除
 		filterChainDefinitionMap.put("/sys/login", "anon"); //登录接口排除

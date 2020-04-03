@@ -1,0 +1,25 @@
+package org.kunze.diansh.controller.vo;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.Date;
+
+@Data
+public class SpuVo  implements Serializable {
+
+    private String id; //spu Id
+
+    private String title;// 标题
+
+    private String subTitle;// 子标题
+
+    private String saleable;// 是否上架
+
+    private String cid3; //商品分类名称
+
+    private String brandId; //商品品牌名称
+
+}

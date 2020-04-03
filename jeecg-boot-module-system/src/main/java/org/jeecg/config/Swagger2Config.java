@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+
 import org.jeecg.modules.shiro.vo.DefContants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +30,7 @@ import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.RequestHandler;
 
 /**
  * @Author scott
@@ -36,6 +41,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwaggerBootstrapUI
 public class Swagger2Config implements WebMvcConfigurer {
 
+	// 定义分隔符,配置Swagger多包
+	private static final String splitor = ";";
 	/**
 	 *
 	 * 显示swagger-ui.html文档展示页，还必须注入swagger资源：
@@ -60,13 +67,41 @@ public class Swagger2Config implements WebMvcConfigurer {
 				.apiInfo(apiInfo())
 				.select()
 				//此包路径下的类，才生成接口文档
-				.apis(RequestHandlerSelectors.basePackage("org.jeecg.modules"))
+				//.apis(RequestHandlerSelectors.basePackage("org.jeecg.modules"))
+				.apis(basePackage("org.jeecg.modules"+splitor+"org.kunze.diansh"))
 				//加了ApiOperation注解的类，才生成接口文档
 	            .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
 				.paths(PathSelectors.any())
 				.build()
 				.securitySchemes(Collections.singletonList(securityScheme()));
 				//.globalOperationParameters(setHeaderToken());
+	}
+
+	/**
+	 * 重写basePackage方法，使能够实现多包访问
+	 * @author  teavamc
+	 * @date 2019/1/26
+	 * @param [basePackage]
+	 * @return com.google.common.base.Predicate<springfox.documentation.RequestHandler>
+	 */
+	public static Predicate<RequestHandler> basePackage(final String basePackage) {
+		return input -> declaringClass(input).transform(handlerPackage(basePackage)).or(true);
+	}
+
+	private static Function<Class<?>, Boolean> handlerPackage(final String basePackage)     {
+		return input -> {
+			// 循环判断匹配
+			for (String strPackage : basePackage.split(splitor)) {
+				boolean isMatch = input.getPackage().getName().startsWith(strPackage);
+				if (isMatch) {
+					return true;
+				}
+			}
+			return false;
+		};
+	}
+	private static Optional<? extends Class<?>> declaringClass(RequestHandler input) {
+		return Optional.fromNullable(input.declaringClass());
 	}
 
 	/***
