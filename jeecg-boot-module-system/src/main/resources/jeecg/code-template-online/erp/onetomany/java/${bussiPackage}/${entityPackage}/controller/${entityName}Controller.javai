@@ -92,7 +92,7 @@ public class ${entityName}Controller extends JeecgController<${entityName}, I${e
      * @param id
      * @return
      */
-    @DeleteMapping(value = "/delete")
+    @PostMapping(value = "/delete")
     public Result<?> delete(@RequestParam(name="id",required=true) String id) {
         ${entityName?uncap_first}Service.delMain(id);
         return Result.ok("删除成功!");
@@ -103,7 +103,7 @@ public class ${entityName}Controller extends JeecgController<${entityName}, I${e
      * @param ids
      * @return
      */
-    @DeleteMapping(value = "/deleteBatch")
+    @PostMapping(value = "/deleteBatch")
     public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
         this.${entityName?uncap_first}Service.delBatchMain(Arrays.asList(ids.split(",")));
         return Result.ok("批量删除成功!");
@@ -173,7 +173,7 @@ public class ${entityName}Controller extends JeecgController<${entityName}, I${e
 	 * @param id
 	 * @return
 	 */
-	@DeleteMapping(value = "/delete${sub.entityName}")
+	@PostMapping(value = "/delete${sub.entityName}")
 	public Result<?> delete${sub.entityName}(@RequestParam(name="id",required=true) String id) {
 		${sub.entityName?uncap_first}Service.removeById(id);
 		return Result.ok("删除成功!");
@@ -184,7 +184,7 @@ public class ${entityName}Controller extends JeecgController<${entityName}, I${e
 	 * @param ids
 	 * @return
 	 */
-	@DeleteMapping(value = "/deleteBatch${sub.entityName}")
+	@PostMapping(value = "/deleteBatch${sub.entityName}")
 	public Result<?> deleteBatch${sub.entityName}(@RequestParam(name="ids",required=true) String ids) {
 		this.${sub.entityName?uncap_first}Service.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功!");

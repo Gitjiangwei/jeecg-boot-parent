@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.SkuMapper">
+
+    <insert id="saveSku">
+        insert into kz_sku(id,spu_id,title,images,price,indexes,own_spec,enable,create_time,last_update_time,update_name)
+        values
+        <foreach collection="skuList" item="item" separator=",">
+            (#{item.id},#{item.spuId},#{item.title},#{item.images},#{item.price},#{item.indexes},#{item.ownSpec},
+            #{item.enable},NOW(),NOW(),#{item.updateName}),
+        </foreach>
+    </insert>
+</mapper>
