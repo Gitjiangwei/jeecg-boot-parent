@@ -16,5 +16,11 @@
             <groupId>org.jeecgframework.boot</groupId>
             <artifactId>jeecg-boot-base-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jeecgframework.boot</groupId>
+            <artifactId>jeecg-boot-module-system</artifactId>
+            <version>2.1.4</version>
+        </dependency>
+
     </dependencies>
 </project>
