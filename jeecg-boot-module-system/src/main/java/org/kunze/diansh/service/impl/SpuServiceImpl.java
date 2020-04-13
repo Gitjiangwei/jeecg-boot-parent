@@ -1,5 +1,6 @@
 package org.kunze.diansh.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -97,7 +99,6 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         //1、将SpuBo中的数据放进Spu实体中，添加Spu表
         Spu spu = new Spu();
         BeanUtils.copyProperties(spuBo,spu);
-        spu.setId(UUID.randomUUID().toString().replace("-",""));
         spu.setUpdateName(userName);
         int resultSpu = spuMapper.saveSpu(spu);
         if(resultSpu>0){
@@ -110,6 +111,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             for(SkuVo item : spuBo.getSkuVos()){
                 Sku sku = new Sku();
                 Stock stock = new Stock();
+
                 sku.setId(UUID.randomUUID().toString().replace("-",""));
                 stock.setSkuId(sku.getId());
                 stock.setStock(item.getStock());
@@ -128,12 +130,91 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
                 stockList.add(stock);
 
             }
-            int resultSku = skuMapper.saveSku(skuList);
-            int resultStock = stockMapper.saveStock(stockList);
+            int resultSku = skuMapper.updateSku(skuList);
+            int resultStock = stockMapper.updateStock(stockList);
             if(resultSpuDetail > 0 && resultSku > 0 && resultStock > 0){
                 flag = true;
             }
         }
         return flag;
     }
+
+    /**
+     * 更新商品信息
+     * @param spuBo
+     * @return
+     */
+    @Override
+    public Boolean updateSpu(SpuBo spuBo) {
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        boolean isFlag = false;
+        String userName = "";//操作人
+        if(sysUser!=null){
+            userName = sysUser.getRealname();
+        }
+
+        Spu spu = new Spu(); //商品
+        BeanUtils.copyProperties(spuBo,spu);
+        spu.setUpdateName(userName);
+        int updateSupResult = spuMapper.updateSpu(spu);
+        updateSupResult = 1;
+        if(updateSupResult > 0){
+            int resultSpuDetail = -1;
+            if(null != spuBo.getSpuDetail()){
+                SpuDetail spuDetail = spuBo.getSpuDetail();
+                spuDetail.setSpuId(spu.getId());
+                resultSpuDetail = spuDetailMapper.updateSpuDetail(spuDetail); //更新商品详情
+            }
+            if(null != spuBo.getSkuVos()){
+                List<Sku> skuList = new ArrayList<Sku>();
+                List<Stock> stockList = new ArrayList<Stock>();
+                for(SkuVo skuVo : spuBo.getSkuVos()){
+                    Sku sku = new Sku();
+                    Stock stock = new Stock(); //库存
+
+                    sku.setId(skuVo.getId());
+                    stock.setSkuId(sku.getId());
+                    stock.setStock(skuVo.getStock());
+                    sku.setSpuId(spu.getId());
+                    sku.setTitle(spu.getTitle());
+                    sku.setEnable(skuVo.getEnable());
+                    sku.setImages(skuVo.getImages());
+                    BigDecimal ordPrice = new BigDecimal(skuVo.getPrice());
+                    BigDecimal newPrice = ordPrice.multiply(new BigDecimal(100));
+                    sku.setPrice(newPrice.toString());
+                    sku.setIndexes(skuVo.getIndexes());
+                    sku.setOwnSpec(skuVo.getOwnSpec());
+                    sku.setEnable(skuVo.getEnable());
+                    sku.setUpdateName(userName);
+                    skuList.add(sku);
+                    stockList.add(stock);
+                }
+                int resultSku = skuMapper.updateSku(skuList);
+                int resultStock = stockMapper.updateStock(stockList);
+                if(resultSpuDetail > 0 && resultSku > 0 && resultStock > 0){
+                    isFlag = true;
+                }
+            }
+        }
+        return isFlag;
+    }
+
+    /**
+     * 删除商品
+     * @param spuBo
+     * @return
+     */
+    @Override
+    public Boolean deleteSpu(SpuBo spuBo) {
+        boolean resultFlag = false;
+        Spu spu = new Spu();
+        BeanUtils.copyProperties(spuBo,spu);
+        int deleteSpuFlag = spuMapper.deleteSpu(spu);
+        if(deleteSpuFlag > 0){
+            resultFlag = true;
+        }
+        return resultFlag;
+    }
+
+
 }

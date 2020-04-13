@@ -10,4 +10,26 @@
             #{item.enable},NOW(),NOW(),#{item.updateName}),
         </foreach>
     </insert>
+
+    <update id="updateSku">
+        update kz_sku
+        <trim prefix="set" suffixOverrides=",">
+            <foreach collection="skuList" item="sku" separator=",">
+                <if test="sku.spuId !=null and sku.spuId != ''">spu_id=#{sku.spuId},</if>
+                <if test="sku.title !=null and sku.title != ''">title=#{sku.title},</if>
+                <if test="sku.images !=null and sku.images != ''">images=#{sku.images},</if>
+                <if test="sku.price !=null and sku.price != ''">price=#{sku.price},</if>
+                <if test="sku.indexes !=null and sku.indexes != ''">indexes=#{sku.indexes},</if>
+                <if test="sku.ownSpec !=null and sku.ownSpec != ''">own_spec=#{sku.ownSpec},</if>
+                <if test="sku.enable !=null and sku.enable != ''">enable=#{sku.enable},</if>
+                <if test="sku.lastUpdateTime !=null and sku.lastUpdateTime != ''">last_update_time=NOW(),</if>
+                <if test="sku.shopId !=null and sku.shopId != ''">shop_id=#{sku.shopId},</if>
+                <if test="sku.updateName !=null and sku.updateName != ''">update_name=#{sku.updateName}</if>
+            </foreach>
+        </trim>
+        where id in
+        <foreach collection="skuList" index="index" item="sku" separator="," open="(" close=")">
+            #{sku.id}
+        </foreach>
+    </update>
 </mapper>

@@ -10,4 +10,6 @@ public interface StockMapper extends BaseMapper<Stock> {
 
 
     int saveStock(@Param("stocks") List<Stock> stocks);
+
+    int updateStock(@Param("StockList")List<Stock> stockList);
 }

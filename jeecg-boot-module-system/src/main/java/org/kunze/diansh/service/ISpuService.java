@@ -39,4 +39,18 @@ public interface ISpuService extends IService<Spu> {
      * @return
      */
     Boolean saveSpu(SpuBo spuBo);
+
+    /**
+     * 更新商品信息
+     * @param spuBo
+     * @return
+     */
+    Boolean updateSpu(SpuBo spuBo);
+
+    /**
+     * 根据商品id删除商品信息
+    * @param spuBo
+     * @return
+     */
+    Boolean deleteSpu(SpuBo spuBo);
 }

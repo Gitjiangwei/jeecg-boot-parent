@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 商品类目表
@@ -25,5 +26,5 @@ public class Category implements Serializable {
     private Integer sort; //排序指数，越小越靠前
     private String index;
     private String isflag; //是否删除 0：未删除 1：已删除
-
+    private List<Category> childrenList; //二级菜单集合
 }

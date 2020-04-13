@@ -76,4 +76,28 @@ public class SpuController {
         }
         return result;
     }
+
+    @ApiOperation("修改商品信息")
+    @AutoLog("更新商品信息")
+    @PostMapping(value = "/updateSpu")
+    public Result<SpuBo> updateSpu(@RequestBody SpuBo spuBo){
+        Result<SpuBo> result = new Result<SpuBo>();
+        Boolean resultFlag = spuService.updateSpu(spuBo);
+        if(resultFlag){
+            result.success("修改成功");
+        }else{
+            result.success("修改失败！");
+        }
+        return result;
+    }
+
+    @ApiOperation("删除商品信息")
+    @AutoLog("删除商品信息")
+    @PostMapping(value = "/deleteSpu")
+    public Result<SpuBo> deleteSpu(@RequestBody SpuBo spuBo){
+        Result<SpuBo> result = new Result<SpuBo>();
+        Boolean resultFlag = spuService.deleteSpu(spuBo);
+
+        return result;
+    }
 }

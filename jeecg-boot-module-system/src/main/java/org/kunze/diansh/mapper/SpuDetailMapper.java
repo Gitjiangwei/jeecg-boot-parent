@@ -6,4 +6,6 @@ import org.kunze.diansh.entity.SpuDetail;
 public interface SpuDetailMapper extends BaseMapper<SpuDetail> {
 
     int saveSpuDetail(SpuDetail spuDetail);
+
+    int updateSpuDetail(SpuDetail spuDetail);
 }
