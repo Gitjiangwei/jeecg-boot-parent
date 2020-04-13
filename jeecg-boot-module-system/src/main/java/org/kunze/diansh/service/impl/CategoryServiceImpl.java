@@ -32,7 +32,7 @@ public class CategoryServiceImpl extends ServiceImpl<NewCategoryMapper,Category>
         if(id!=null&&!id.equals("")){
             category.setId(id);
         }else{
-            category.setId("0");
+            category.setId(null);
         }
 
         List<Category> list = new ArrayList<Category>();
@@ -120,21 +120,4 @@ public class CategoryServiceImpl extends ServiceImpl<NewCategoryMapper,Category>
         return isflag;
     }
 
-    public List<Category> selectRootTree(Category category) {
-        // 从数据库获取全部数据
-        LambdaQueryWrapper<Category> query = new LambdaQueryWrapper();
-        query.eq(Category::getParentId,category.getParentId());
-
-        List<Category> menus = newCategoryMapper.selectList(query);
-        //OaRoot对象复制给rootMemuVO方便进行转换
-        List<Category> rootMemuVOS = new ArrayList<>();
-        for (Category oaRoot : menus) {
-            Category rootMemuVO = new Category();
-            BeanUtils.copyProperties(oaRoot, rootMemuVO);
-            rootMemuVOS.add(rootMemuVO);
-        }
-        // 调用转换方法
-//        List<RootMemuVO> ros = TreeUtil.toTree(rootMemuVOS);
-        return null;
-    }
 }

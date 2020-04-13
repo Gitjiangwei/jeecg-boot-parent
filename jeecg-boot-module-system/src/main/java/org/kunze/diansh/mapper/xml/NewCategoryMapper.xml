@@ -15,7 +15,13 @@
 
     <select id="qryCategory" resultMap="categoryMap" parameterType="org.kunze.diansh.entity.Category">
         select `id`,name,parent_id,is_parent,sort,is_flag from kz_category
-        where is_flag = "0" and id = #{id} order by sort asc;
+        <where>
+            is_flag = "0"
+            <if test="id !=null and id != ''">
+                and id = #{id}
+            </if>
+        </where>
+        order by sort asc;
     </select>
     <select id="qryCategoryChildren" resultMap="categoryMap">
         select `id`,name,parent_id,is_parent,sort,is_flag from kz_category
@@ -65,10 +71,10 @@
                 parent_Id = #{parentId},
             </if>
             <if test="isParent != null and isParent !='' ">
-                 is_parent = #{isParent},
+                is_parent = #{isParent},
             </if>
             <if test="sort != null and sort !='' ">
-                 sort = #{sort},
+                sort = #{sort},
             </if>
         </trim>
         where id = #{id}
