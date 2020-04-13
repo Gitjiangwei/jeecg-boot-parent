@@ -1,9 +1,12 @@
 package org.kunze.diansh.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.kunze.diansh.entity.Category;
 import org.kunze.diansh.mapper.NewCategoryMapper;
 import org.kunze.diansh.service.ICategoryService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,9 +32,10 @@ public class CategoryServiceImpl extends ServiceImpl<NewCategoryMapper,Category>
         if(id!=null&&!id.equals("")){
             category.setId(id);
         }
+
         List<Category> list = new ArrayList<Category>();
         try {
-            list = newCategoryMapper.qryList(category);
+            list = newCategoryMapper.qryCategory(category);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -112,5 +116,23 @@ public class CategoryServiceImpl extends ServiceImpl<NewCategoryMapper,Category>
             }
         }
         return isflag;
+    }
+
+    public List<Category> selectRootTree(Category category) {
+        // 从数据库获取全部数据
+        LambdaQueryWrapper<Category> query = new LambdaQueryWrapper();
+        query.eq(Category::getParentId,category.getParentId());
+
+        List<Category> menus = newCategoryMapper.selectList(query);
+        //OaRoot对象复制给rootMemuVO方便进行转换
+        List<Category> rootMemuVOS = new ArrayList<>();
+        for (Category oaRoot : menus) {
+            Category rootMemuVO = new Category();
+            BeanUtils.copyProperties(oaRoot, rootMemuVO);
+            rootMemuVOS.add(rootMemuVO);
+        }
+        // 调用转换方法
+//        List<RootMemuVO> ros = TreeUtil.toTree(rootMemuVOS);
+        return null;
     }
 }

@@ -17,4 +17,8 @@ public interface SpuMapper extends BaseMapper<Spu> {
     int saveSpu(Spu spu);
 
     List<SpuBrandVo> qrySpuBrands(@Param("categoryId") String categoryId);
+
+    int updateSpu(Spu spu);
+
+    int deleteSpu(@Param("spu") Spu spu);
 }

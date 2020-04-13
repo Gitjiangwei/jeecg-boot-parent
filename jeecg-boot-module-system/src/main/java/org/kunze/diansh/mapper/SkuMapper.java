@@ -9,4 +9,6 @@ import java.util.List;
 public interface SkuMapper extends BaseMapper<Sku> {
 
     int saveSku(@Param("skuList")List<Sku> skus);
+
+    int updateSku(@Param("skuList")List<Sku> skuList);
 }

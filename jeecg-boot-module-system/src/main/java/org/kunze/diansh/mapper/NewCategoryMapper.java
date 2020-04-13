@@ -10,6 +10,8 @@ public interface NewCategoryMapper extends BaseMapper<Category> {
 
     List<Category> qryList(Category category);
 
+    List<Category> qryCategory(Category category);
+
 
     int saveCategory(Category category);
 
