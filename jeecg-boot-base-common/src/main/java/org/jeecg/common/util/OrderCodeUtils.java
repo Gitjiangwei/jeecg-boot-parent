@@ -1,9 +1,6 @@
 package org.jeecg.common.util;
 
 
-import redis.clients.jedis.Jedis;
-import sun.misc.BASE64Encoder;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,7 +10,6 @@ import java.util.Date;
 public class OrderCodeUtils {
 
     private static final int todayNum = 6;
-
 
     /**
      * 订单编号规范
@@ -51,8 +47,20 @@ public class OrderCodeUtils {
      */
     private static String change(String pinyinName){
         String py  = "";
-        for(int i = 0; i< pinyinName.length(); i++){
-            char c = pinyinName.charAt(i);
+        int pyLength = pinyinName.length();
+        //从超市名称首字母中随机取出2位字母进行转换
+        char[] array = pinyinName.toCharArray();
+        String newPyName = "";
+        if(array.length>2) {
+            for (int i = 0; i < 2; i++) {
+                int ranNum = (int) (Math.random() * pyLength);
+                newPyName += String.valueOf(array[ranNum]);
+            }
+        }else {
+            newPyName = pinyinName;
+        }
+        for(int i = 0; i< newPyName.length(); i++){
+            char c = newPyName.charAt(i);
             if( c >= 'A' && c <= 'Z'){
                 c += 32;
                 byte byteAscii = (byte)c;
@@ -63,7 +71,7 @@ public class OrderCodeUtils {
     }
 
     public static void main(String[] args){
-        System.out.println(orderCode("哈哈哈","9"));
+        System.out.println(orderCode("领导","9"));
     }
 
 
