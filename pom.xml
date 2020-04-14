@@ -83,6 +83,18 @@
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
 			<version>1.2.12</version>
 		</dependency>
+		<!--Fast-DFS 图片上传-->
+		<dependency>
+			<groupId>com.github.tobato</groupId>
+			<artifactId>fastdfs-client</artifactId>
+		</dependency>
+		<!--拼音-->
+		<!-- https://mvnrepository.com/artifact/com.github.open-android/pinyin4j -->
+		<dependency>
+			<groupId>org.clojars.cbilson</groupId>
+			<artifactId>pinyin4j</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 		<dependency>
 	        <groupId>org.springframework.boot</groupId>
 	        <artifactId>spring-boot-starter-test</artifactId>
