@@ -62,6 +62,16 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
     }
 
     /**
+     * 通过商品分类Id查询相关商品的详细信息
+     * @param cateId 商品分类Id
+     * @return
+     */
+    @Override
+    public List<Spu> querySpuById(String cateId) {
+        return spuMapper.querySpuById(cateId);
+    }
+
+    /**
      * 查询品牌以作下拉框使用
      *
      * @return

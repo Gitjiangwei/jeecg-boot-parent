@@ -9,6 +9,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
 import org.kunze.diansh.controller.vo.SpuVo;
+import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.modelData.SpuModel;
 import org.kunze.diansh.service.ISpuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,5 +100,14 @@ public class SpuController {
         Boolean resultFlag = spuService.deleteSpu(spuBo);
 
         return result;
+    }
+
+    @ApiOperation("通过商品分类Id查询相关商品的详细信息")
+    @AutoLog("通过商品分类Id查询相关商品的详细信息")
+    @PostMapping(value = "/querySpuByCateID")
+    public List<Spu> querySpuByCateID(String cateId){
+        Result<List<Spu>> result = new Result<List<Spu>>();
+        List<Spu> spuList = spuService.querySpuById(cateId);
+        return spuList;
     }
 }

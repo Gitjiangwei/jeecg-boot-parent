@@ -21,6 +21,13 @@ public interface ISpuService extends IService<Spu> {
 
 
     /**
+     * 通过商品分类Id查询相关商品的详细信息
+     * @param cateId 商品分类Id
+     * @return
+     */
+    List<Spu> querySpuById(String cateId);
+
+    /**
      * 查询品牌以作下拉框使用
      * @return
      */

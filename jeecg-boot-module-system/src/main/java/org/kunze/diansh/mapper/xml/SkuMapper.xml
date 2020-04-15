@@ -32,4 +32,9 @@
             #{sku.id}
         </foreach>
     </update>
+
+    <select id="querySkuById" resultType="org.kunze.diansh.entity.Sku">
+        select id,spu_id,title,images,price,indexes,own_spec,`enable`,create_time,last_update_time,shop_id,update_name
+        from kz_sku where `enable`=1 and id = #{id}
+    </select>
 </mapper>
