@@ -36,5 +36,4 @@ public class SpuModel implements Serializable {
     private String bName; //商品品牌名称
 
 
-
 }

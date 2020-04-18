@@ -7,7 +7,7 @@ import org.kunze.diansh.entity.modelData.BrandModel;
 
 import java.util.List;
 
-public interface BrandMapper  extends BaseMapper<Brand> {
+public interface BrandMapper extends BaseMapper<Brand> {
 
     List<BrandModel> qryBrand(BrandModel brandModel);
 

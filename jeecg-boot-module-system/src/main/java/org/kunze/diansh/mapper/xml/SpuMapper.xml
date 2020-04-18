@@ -28,6 +28,32 @@
         ORDER BY spu.last_update_time DESC,spu.create_time DESC
     </select>
 
+    <select id="qrySpuLists" resultType="org.kunze.diansh.entity.Spu">
+
+        select spu.id,spu.title,sub_title,spu.saleable,cid1,cid2,cid3,spu.brand_id,
+        spu.create_time,spu.last_update_time,spu.update_name
+        from kz_spu spu
+        LEFT JOIN kz_category cate1 ON spu.cid1 = cate1.id  and cate1.is_flag='0'
+        LEFT JOIN kz_category cate2 ON spu.cid2 = cate2.id   and cate2.is_flag='0'
+        LEFT JOIN kz_category cate3 ON spu.cid3 = cate3.id   and cate3.is_flag='0'
+        LEFT JOIN kz_brand br ON spu.brand_id = br.id and br.is_flag = '0'
+        <trim prefix="where" prefixOverrides="and">
+            spu.is_flag = '0'
+            <if test="title != null and title != '' ">
+                and title like CONCAT('%',#{title},'%')
+            </if>
+            <if test="saleable != null and saleable != '' ">
+                and saleable = #{saleable}
+            </if>
+            <if test="cid3 != null and cid3 != '' ">
+                and cid3 = #{cid3}
+            </if>
+            <if test="brandId != null and brandId != '' ">
+                and brand_id = #{brandId}
+            </if>
+        </trim>
+        ORDER BY spu.last_update_time DESC,spu.create_time DESC
+    </select>
 
     <select id="qrySpuBrand" resultType="org.kunze.diansh.controller.vo.SpuBrandVo">
             select id as 'key',name as 'brandName' from kz_brand

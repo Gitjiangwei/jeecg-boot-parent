@@ -3,10 +3,10 @@
 <mapper namespace="org.kunze.diansh.mapper.SkuMapper">
 
     <insert id="saveSku">
-        insert into kz_sku(id,spu_id,title,images,price,indexes,own_spec,enable,create_time,last_update_time,update_name)
+        insert into kz_sku(id,spu_id,title,images,new_price,price,indexes,own_spec,enable,create_time,last_update_time,update_name)
         values
         <foreach collection="skuList" item="item" separator=",">
-            (#{item.id},#{item.spuId},#{item.title},#{item.images},#{item.price},#{item.indexes},#{item.ownSpec},
+            (#{item.id},#{item.spuId},#{item.title},#{item.images},#{item.newPrice},#{item.price},#{item.indexes},#{item.ownSpec},
             #{item.enable},NOW(),NOW(),#{item.updateName}),
         </foreach>
     </insert>
@@ -18,6 +18,7 @@
                 <if test="sku.spuId !=null and sku.spuId != ''">spu_id=#{sku.spuId},</if>
                 <if test="sku.title !=null and sku.title != ''">title=#{sku.title},</if>
                 <if test="sku.images !=null and sku.images != ''">images=#{sku.images},</if>
+                <if test="sku.newPrice !=null and sku.images != ''">images=#{sku.newPrice},</if>
                 <if test="sku.price !=null and sku.price != ''">price=#{sku.price},</if>
                 <if test="sku.indexes !=null and sku.indexes != ''">indexes=#{sku.indexes},</if>
                 <if test="sku.ownSpec !=null and sku.ownSpec != ''">own_spec=#{sku.ownSpec},</if>
@@ -34,7 +35,13 @@
     </update>
 
     <select id="querySkuById" resultType="org.kunze.diansh.entity.Sku">
-        select id,spu_id,title,images,price,indexes,own_spec,`enable`,create_time,last_update_time,shop_id,update_name
+        select id,spu_id,title,images,new_price,price,indexes,own_spec,`enable`,create_time,last_update_time,shop_id,update_name
         from kz_sku where `enable`=1 and id = #{id}
+    </select>
+
+    <select id="querySkuBySpuId" resultType="org.kunze.diansh.entity.Sku">
+      select id,spu_id,title,images,new_price,price,indexes,own_spec,`enable`,create_time,last_update_time,shop_id,update_name
+        from kz_sku
+        where `enable`=1 and spu_id = #{spuId}
     </select>
 </mapper>

@@ -19,6 +19,12 @@ public interface ISpuService extends IService<Spu> {
      */
     PageInfo<SpuModel> qrySpuList(SpuVo spuVo,Integer pageNo,Integer pageSize);
 
+    /**
+     * 商品查询
+     * @param spuVo
+     * @return
+     */
+    PageInfo<SpuBo> qrySpuLists(SpuVo spuVo,Integer pageNo,Integer pageSize);
 
     /**
      * 通过商品分类Id查询相关商品的详细信息

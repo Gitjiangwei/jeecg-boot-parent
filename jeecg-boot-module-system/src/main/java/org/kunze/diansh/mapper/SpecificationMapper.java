@@ -17,6 +17,6 @@ public interface SpecificationMapper extends BaseMapper<Specification> {
 
     int updateSpecification(Specification specification);
 
-    int delSpecifications(@Param("updateName")String updateName,@Param("list")List<String> specIds);
+    int delSpecifications(@Param("updateName") String updateName, @Param("list") List<String> specIds);
 
 }

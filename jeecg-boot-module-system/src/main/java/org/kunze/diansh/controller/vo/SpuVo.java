@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class SpuVo  implements Serializable {
+public class SpuVo implements Serializable {
 
     private String id; //spu Id
 

@@ -33,6 +33,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
 
     /**
      * 查询商品品牌
+     *
      * @param brandModel
      * @param pageNo
      * @param pageSize
@@ -40,7 +41,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
      */
     @Override
     public PageInfo<BrandModel> qryBrand(BrandModel brandModel, Integer pageNo, Integer pageSize) {
-        PageHelper.startPage(pageNo,pageSize);
+        PageHelper.startPage(pageNo, pageSize);
         List<BrandModel> brandModelList = brandMapper.qryBrand(brandModel);
         return new PageInfo<BrandModel>(brandModelList);
     }
@@ -53,20 +54,20 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Override
     public Boolean saveBrand(BrandVo brandVo) {
         Boolean flag = false;
-        if(brandVo != null){
+        if (brandVo != null) {
             Brand brand = new Brand();
-            BeanUtils.copyProperties(brandVo,brand);
+            BeanUtils.copyProperties(brandVo, brand);
             LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-            if(sysUser!=null){
+            if (sysUser != null) {
                 brand.setUpdateName(sysUser.getRealname());
-            }else {
+            } else {
                 brand.setUpdateName("");
             }
-            brand.setId(UUID.randomUUID().toString().replace("-",""));
+            brand.setId(UUID.randomUUID().toString().replace("-", ""));
             int resultBrand = brandMapper.saveBrand(brand);
-            if(resultBrand > 0){
-                if(brandVo.getKId()!=null && !brandVo.getKId().equals("")) {
-                   flag = saveCategoryBrand(brandVo.getKId(),brand.getId());
+            if (resultBrand > 0) {
+                if (brandVo.getKId() != null && !brandVo.getKId().equals("")) {
+                    flag = saveCategoryBrand(brandVo.getKId(), brand.getId());
                 }
 
             }
@@ -83,24 +84,24 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Override
     public Boolean updateBrand(BrandVo brandVo) {
         Boolean flag = false;
-        if(brandVo == null){
+        if (brandVo == null) {
             return false;
         }
-        if(brandVo.getId()!=null && !brandVo.getId().equals("")){
+        if (brandVo.getId() != null && !brandVo.getId().equals("")) {
             Brand brand = new Brand();
-            BeanUtils.copyProperties(brandVo,brand);
+            BeanUtils.copyProperties(brandVo, brand);
             LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-            if(sysUser!=null){
+            if (sysUser != null) {
                 brand.setUpdateName(sysUser.getRealname());
-            }else {
+            } else {
                 brand.setUpdateName("");
             }
             int delResult = categoryBrandMapper.updateCategoryBrand(brand.getId());
-            if(delResult > 0){
+            if (delResult > 0) {
                 int updateResult = brandMapper.updateBrand(brand);
-                if(updateResult>0){
-                    if(brandVo.getKId()!=null && !brandVo.getKId().equals("")) {
-                        flag = saveCategoryBrand(brandVo.getKId(),brand.getId());
+                if (updateResult > 0) {
+                    if (brandVo.getKId() != null && !brandVo.getKId().equals("")) {
+                        flag = saveCategoryBrand(brandVo.getKId(), brand.getId());
                     }
                 }
             }
@@ -117,17 +118,17 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Override
     public Boolean delBrands(String bids) {
         Boolean flag = false;
-        if(bids!=null && !"".equals(bids)){
+        if (bids != null && !"".equals(bids)) {
             List<String> delList = new ArrayList<String>();
-            if(bids.contains(",")) {
-                 delList = new ArrayList<String>(Arrays.asList(bids.split(",")));
-            }else{
+            if (bids.contains(",")) {
+                delList = new ArrayList<String>(Arrays.asList(bids.split(",")));
+            } else {
                 delList.add(bids);
             }
             int result = brandMapper.delBrands(delList);
-            if(result>0){
+            if (result > 0) {
                 int delCategoryBrand = categoryBrandMapper.delCategoryBrand(delList);
-                if(delCategoryBrand>0){
+                if (delCategoryBrand > 0) {
                     flag = true;
                 }
             }
@@ -145,15 +146,15 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Override
     public Boolean qryIsFlag(String brandId) {
         Boolean isflag = false;
-        if(brandId!=null || !brandId.equals("")){
+        if (brandId != null || !brandId.equals("")) {
             List<String> stringList = new ArrayList<String>();
-            if(brandId.contains(",")){
+            if (brandId.contains(",")) {
                 stringList = new ArrayList<String>(Arrays.asList(brandId.split(",")));
-            }else{
+            } else {
                 stringList.add(brandId);
             }
             int result = brandMapper.qryIsFlag(stringList);
-            if(result < 1){
+            if (result < 1) {
                 isflag = true;
             }
         }
@@ -162,27 +163,28 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
 
     /**
      * 添加商品分类和品牌的中间表
+     *
      * @param kid 商品分类id
      * @param bid 商品品牌Id
      * @return
      */
-    private Boolean saveCategoryBrand(String kid,String bid){
+    private Boolean saveCategoryBrand(String kid, String bid) {
         Boolean flag = false;
         List<String> strList = new ArrayList<String>();
-        if(kid.contains(",")) {
-             strList = new ArrayList<String>(Arrays.asList(kid.split(",")));
-        }else{
+        if (kid.contains(",")) {
+            strList = new ArrayList<String>(Arrays.asList(kid.split(",")));
+        } else {
             strList.add(kid);
         }
         List<CategoryBrand> categoryBrandList = new ArrayList<CategoryBrand>();
-        for(String item:strList){
+        for (String item : strList) {
             CategoryBrand categoryBrand = new CategoryBrand();
             categoryBrand.setBrandId(bid);
             categoryBrand.setCategoryId(item);
             categoryBrandList.add(categoryBrand);
         }
         int resultCateBrand = categoryBrandMapper.saveCategoryBrand(categoryBrandList);
-        if(resultCateBrand>0){
+        if (resultCateBrand > 0) {
             flag = true;
         }
         return flag;

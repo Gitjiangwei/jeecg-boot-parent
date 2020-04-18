@@ -13,15 +13,17 @@ public interface IBrandService extends IService<Brand> {
 
     /**
      * 查询商品品牌
+     *
      * @param brandModel
      * @param pageNo
      * @param pageSize
      * @return
      */
-    PageInfo<BrandModel> qryBrand(BrandModel brandModel,Integer pageNo,Integer pageSize);
+    PageInfo<BrandModel> qryBrand(BrandModel brandModel, Integer pageNo, Integer pageSize);
 
     /**
      * 添加商品品牌
+     *
      * @param brand
      * @return
      */
@@ -29,6 +31,7 @@ public interface IBrandService extends IService<Brand> {
 
     /**
      * 修改商品品牌
+     *
      * @param brandVo
      * @return
      */
@@ -36,6 +39,7 @@ public interface IBrandService extends IService<Brand> {
 
     /**
      * 删除商品品牌
+     *
      * @param bids
      * @return
      */
@@ -43,6 +47,7 @@ public interface IBrandService extends IService<Brand> {
 
     /**
      * 查询品牌是否被引用，引用的品牌不能被删除
+     *
      * @param brandId 品牌Id
      * @return true：可以删除，false：不可以删除
      */
