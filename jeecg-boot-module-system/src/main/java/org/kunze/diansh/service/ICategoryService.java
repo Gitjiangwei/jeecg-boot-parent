@@ -1,6 +1,7 @@
 package org.kunze.diansh.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.system.entity.SysCategory;
 import org.kunze.diansh.entity.Category;
 
@@ -10,13 +11,15 @@ public interface ICategoryService extends IService<Category> {
 
     /**
      * 查询分类接口
+     *
      * @param pid
      * @return
      */
-    List<Category> qryList(String pid,String id);
+    List<Category> qryList(String pid, String id);
 
     /**
      * 添加商品分类接口
+     *
      * @param category
      * @return
      */
@@ -24,6 +27,7 @@ public interface ICategoryService extends IService<Category> {
 
     /**
      * 商品分类修改接口
+     *
      * @param category
      * @return
      */
@@ -31,6 +35,7 @@ public interface ICategoryService extends IService<Category> {
 
     /**
      * 商品分类批量删除
+     *
      * @param ids
      * @return
      */
@@ -38,8 +43,11 @@ public interface ICategoryService extends IService<Category> {
 
     /**
      * 商品分类单个删除
+     *
      * @param id
      * @return
      */
     Boolean deleteCategory(String id);
+
+
 }

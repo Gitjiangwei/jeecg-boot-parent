@@ -13,6 +13,8 @@ public interface SpuMapper extends BaseMapper<Spu> {
 
     List<SpuModel> qrySpuList(Spu spu);
 
+    List<Spu> qrySpuLists(Spu spu);
+
     List<SpuBrandVo> qrySpuBrand();
 
     int saveSpu(Spu spu);

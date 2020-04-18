@@ -13,4 +13,11 @@ public interface SkuMapper extends BaseMapper<Sku> {
     int updateSku(@Param("skuList")List<Sku> skuList);
 
     Sku querySkuById(@Param("id") String skuId);
+
+    /**
+     * 根据SpuId查询SKU
+     * @param spuId
+     * @return
+     */
+    List<Sku> querySkuBySpuId(@Param("spuId") String spuId);
 }

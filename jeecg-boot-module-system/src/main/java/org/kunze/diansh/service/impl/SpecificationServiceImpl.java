@@ -13,11 +13,10 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper,Specification> implements ISpecificationService {
+public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper, Specification> implements ISpecificationService {
 
     @Autowired
     private SpecificationMapper specificationMapper;
-
 
 
     /**
@@ -29,10 +28,10 @@ public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper,Sp
     @Override
     public Specification qrySpecification(String categoryId) {
         Specification specification = new Specification();
-        if(categoryId==null||categoryId.equals("")){
+        if (categoryId == null || categoryId.equals("")) {
             return specification;
-        }else{
-            specification =  specificationMapper.qrySpecification(categoryId);
+        } else {
+            specification = specificationMapper.qrySpecification(categoryId);
         }
         return specification;
     }
@@ -44,14 +43,14 @@ public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper,Sp
      * @return ok:添加成功；error：添加失败；NOT：参数为空
      */
     @Override
-    public String saveSpecification(String categoryId,String specifications) {
+    public String saveSpecification(String categoryId, String specifications) {
         String success = "NOT";
-        if((specifications!=null && !specifications.equals(""))&&(categoryId!=null && !categoryId.equals(""))) {
-            Specification specification = specification(categoryId,specifications);
+        if ((specifications != null && !specifications.equals("")) && (categoryId != null && !categoryId.equals(""))) {
+            Specification specification = specification(categoryId, specifications);
             int result = specificationMapper.saveSpecification(specification);
             if (result > 0) {
                 success = "ok";
-            }else{
+            } else {
                 success = "error";
             }
         }
@@ -68,12 +67,12 @@ public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper,Sp
     @Override
     public String updateSpecification(String categoryId, String specifications) {
         String success = "NOT";
-        if((specifications!=null && !specifications.equals(""))&&(categoryId!=null && !categoryId.equals(""))) {
-            Specification specification = specification(categoryId,specifications);
+        if ((specifications != null && !specifications.equals("")) && (categoryId != null && !categoryId.equals(""))) {
+            Specification specification = specification(categoryId, specifications);
             int result = specificationMapper.updateSpecification(specification);
             if (result > 0) {
                 success = "ok";
-            }else{
+            } else {
                 success = "error";
             }
         }
@@ -90,18 +89,18 @@ public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper,Sp
     public Boolean delSpecification(String categoryIds) {
         Boolean flag = false;
         List<String> categoryList = new ArrayList<String>();
-        if(categoryIds.contains(",")){
+        if (categoryIds.contains(",")) {
             categoryList = new ArrayList<String>(Arrays.asList(categoryIds.split(",")));
-        }else {
+        } else {
             categoryList.add(categoryIds);
         }
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         String userName = "";
-        if(sysUser!=null){
+        if (sysUser != null) {
             userName = sysUser.getRealname();
         }
-        int result = specificationMapper.delSpecifications(userName,categoryList);
-        if(result>0){
+        int result = specificationMapper.delSpecifications(userName, categoryList);
+        if (result > 0) {
             flag = true;
         }
         return flag;
@@ -110,18 +109,19 @@ public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper,Sp
 
     /**
      * 将内容放在模板对象中
+     *
      * @param categoryId
      * @param specifications
      * @return
      */
-    private Specification specification(String categoryId, String specifications){
+    private Specification specification(String categoryId, String specifications) {
         Specification specification = new Specification();
         specification.setCategoryId(categoryId);
         specification.setSpecifications(specifications);
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        if(sysUser!=null){
+        if (sysUser != null) {
             specification.setUpdateName(sysUser.getRealname());
-        }else {
+        } else {
             specification.setUpdateName("");
         }
         return specification;

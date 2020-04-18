@@ -22,4 +22,11 @@ public interface NewCategoryMapper extends BaseMapper<Category> {
 
     int deleteCategory(@Param("id") String id);
 
+    /**
+     * 根据商品分类ID，查询商品类型名称
+     * @param categoryIds
+     * @return
+     */
+    List<Category> qryByIds(@Param("cateLists") List<String> categoryIds);
+
 }

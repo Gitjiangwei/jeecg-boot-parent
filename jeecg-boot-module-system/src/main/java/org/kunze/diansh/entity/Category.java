@@ -17,7 +17,9 @@ public class Category implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    /**ID*/
+    /**
+     * ID
+     */
     @TableId(type = IdType.UUID)
     private String id; //类目id
     private String name; //类目名称

@@ -62,6 +62,29 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
     }
 
     /**
+     * 商品查询
+     *
+     * @param spuVo
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public PageInfo<SpuBo> qrySpuLists(SpuVo spuVo, Integer pageNo, Integer pageSize) {
+        PageHelper.startPage(pageNo,pageSize);
+        Spu spu = new Spu();
+        BeanUtils.copyProperties(spuVo,spu);
+        List<Spu> spuModelList  = spuMapper.qrySpuLists(spu);
+        List<SpuBo> spuBos = new ArrayList<SpuBo>();
+        for(Spu item : spuModelList){
+            SpuBo spuBo = new SpuBo();
+            BeanUtils.copyProperties(item,spuBo);
+            spuBos.add(spuBo);
+        }
+        return new PageInfo<SpuBo>(spuBos);
+    }
+
+    /**
      * 通过商品分类Id查询相关商品的详细信息
      * @param cateId 商品分类Id
      * @return

@@ -8,7 +8,6 @@ import java.io.Serializable;
 public class SpecificationVo implements Serializable {
 
 
-
     //规格模板所属商品分类id
     private String categoryId;
 
