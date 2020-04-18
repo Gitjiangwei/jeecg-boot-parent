@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.WheelMapper">
+    <insert id="saveWheel">
+        insert INTO kz_wheel(wheel_id,wheel_images,create_time,update_time,update_name,wheel_no,wheel_port,wheel_url,wheel_name,is_flag)
+        values (#{wheelId},#{wheelImages},NOW(),NOW(),#{updateName},#{wheelNo},#{wheelPort},#{wheelUrl},#{wheelName},#{isFlag})
+    </insert>
+
+    <select id="qeryWheel" resultType="org.kunze.diansh.entity.Wheel">
+        select wheel_id,wheel_images,wheel_no,wheel_url,wheel_name from kz_wheel
+        <trim prefix="where" prefixOverrides="and">
+            <if test="isFlag != null and isFlag != ''">
+                and is_flag = #{isFlag}
+            </if>
+            <if test="wheelPort != null and wheelPort != ''">
+                and wheel_port = #{wheelPort}
+            </if>
+            <if test="wheelName != null and wheelName != ''">
+                and wheel_name like CONCAT('%',#{wheelName},'%')
+            </if>
+        </trim>
+        order by wheel_no,update_time desc,create_time desc
+    </select>
+
+    <update id="updateWheel">
+        update kz_wheel
+        <trim prefix="SET" suffixOverrides=",">
+            update_time = NOW(),
+            <if test="wheelImages != null and wheelImages != ''">
+                wheel_images = #{wheelImages},
+            </if>
+            <if test="isFlag != null and isFlag != ''">
+                is_flag = #{isFlag},
+            </if>
+            <if test="wheelName != null and wheelName != ''">
+                wheel_name = #{wheelName},
+            </if>
+            <if test="updateName != null and updateName != '' ">
+                update_name = #{updateName},
+            </if>
+            <if test="wheelNo != null and wheelNo != '' ">
+                wheel_no = #{wheelNo},
+            </if>
+            <if test="wheelUrl != null and wheelUrl != '' ">
+                wheel_url = #{wheelUrl}
+            </if>
+        </trim>
+        where wheel_id = #{wheelId}
+    </update>
+
+    <delete id="delWheels">
+        delete from kz_wheel where wheel_id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateIsFlag">
+        update kz_wheel
+        <trim prefix="set" suffixOverrides=",">
+            <if test="isFlag != null and isFlag != ''">
+                is_flag = #{isFlag},
+            </if>
+            <if test="updateName != null and updateName != '' ">
+                update_name = #{updateName},
+            </if>
+            update_time = NOW()
+        </trim>
+        where wheel_id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+</mapper>
