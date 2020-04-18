@@ -9,6 +9,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
 import org.kunze.diansh.controller.vo.SpuVo;
+import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.modelData.SpuModel;
 import org.kunze.diansh.service.ISpuService;
@@ -105,9 +106,11 @@ public class SpuController {
     @ApiOperation("通过商品分类Id查询相关商品的详细信息")
     @AutoLog("通过商品分类Id查询相关商品的详细信息")
     @PostMapping(value = "/querySpuByCateID")
-    public List<Spu> querySpuByCateID(String cateId){
-        Result<List<Spu>> result = new Result<List<Spu>>();
-        List<Spu> spuList = spuService.querySpuById(cateId);
-        return spuList;
+    public Result<PageInfo<Sku>> querySpuByCateID(@RequestParam(name = "cateId") String cateId,@RequestParam(name = "pageNo",defaultValue = "1") Integer pageNo,
+                                      @RequestParam(name = "pageSize") Integer pageSize){
+        Result<PageInfo<Sku>> result = new Result<PageInfo<Sku>>();
+        PageInfo<Sku> spuList = spuService.querySpuById(cateId,pageNo,pageSize);
+        result.setResult(spuList);
+        return result;
     }
 }

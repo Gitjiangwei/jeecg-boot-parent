@@ -2,8 +2,8 @@ package org.kunze.diansh.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.micrometer.core.instrument.util.JsonUtils;
 import io.micrometer.core.instrument.util.StringUtils;
+import org.apache.logging.log4j.core.util.JsonUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.util.CollectionUtils;
 import org.jeecg.common.system.vo.LoginUser;
@@ -77,7 +77,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
         BoundHashOperations<String,Object,Object> hashOps = this.redisTemplate.boundHashOps(userKey);
 
         String skuId = cart.getSkuid(); //商品id
-        Integer num = cart.getCartNum(); //购买数量
+        Integer num = cart.getCartNum()==0?1:cart.getCartNum(); //购买数量
         boolean isExist = hashOps.hasKey(skuId);
         if(isExist){
             //redis中存在
@@ -103,23 +103,25 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
 
     /**
      * 修改购物车商品数量
-     * @param skuId 商品id
-     * @param cartNum 商品数量
+     * @param cartList
      */
     @Override
-    public void updateCart(String skuId, Integer cartNum) {
+    public void updateCart(List<Cart> cartList) {
         //登录用户对象
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         String key = KEY_PREFIX+"456789";
         BoundHashOperations<String,Object,Object> hashOps = this.redisTemplate.boundHashOps(key);
 
-        //获取商品对象
-        String cartJson = hashOps.get(skuId).toString();
-        Cart cart = JSONObject.parseObject(cartJson,Cart.class);
-        cart.setCartNum(cartNum);
+        for (Cart c:cartList) {
+            //获取商品对象
+            String cartJson = hashOps.get(c.getSkuid()).toString();
 
-        //写入Redis
-        hashOps.put(skuId,JSONObject.toJSONString(cart));
+            Cart cart = JSONObject.parseObject(cartJson,Cart.class);
+            cart.setCartNum(c.getCartNum());
+
+            //写入Redis
+            hashOps.put(c.getSkuid(),JSONObject.toJSONString(cart));
+        }
     }
 
     /**

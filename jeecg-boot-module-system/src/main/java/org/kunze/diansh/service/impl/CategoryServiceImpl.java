@@ -34,6 +34,11 @@ public class CategoryServiceImpl extends ServiceImpl<NewCategoryMapper,Category>
         }else{
             category.setId(null);
         }
+        if(pid!=null&&!pid.equals("")){
+            category.setParentId(pid);
+        }else{
+            category.setParentId("0");
+        }
 
         List<Category> list = new ArrayList<Category>();
         try {

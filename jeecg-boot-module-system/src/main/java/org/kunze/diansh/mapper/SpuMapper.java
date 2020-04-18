@@ -3,6 +3,7 @@ package org.kunze.diansh.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
+import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.modelData.SpuModel;
 
@@ -22,5 +23,5 @@ public interface SpuMapper extends BaseMapper<Spu> {
 
     int deleteSpu(@Param("spu") Spu spu);
 
-    List<Spu> querySpuById(@Param("id") String cateId);
+    List<Sku> querySpuById(@Param("id") String cateId);
 }

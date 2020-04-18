@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
 import org.kunze.diansh.controller.vo.SpuVo;
+import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.modelData.SpuModel;
 
@@ -25,7 +26,7 @@ public interface ISpuService extends IService<Spu> {
      * @param cateId 商品分类Id
      * @return
      */
-    List<Spu> querySpuById(String cateId);
+    PageInfo<Sku> querySpuById(String cateId,Integer pageNo,Integer pageSize);
 
     /**
      * 查询品牌以作下拉框使用

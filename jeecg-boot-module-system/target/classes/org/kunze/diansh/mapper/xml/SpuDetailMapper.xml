@@ -6,4 +6,16 @@
         inert into kz_spu_detail(spu_id,description,specifications,spec_template,packing_list,after_service)
         values (#{spuId},#{description},#{specifications},#{specTemplate},#{packingList},#{afterService})
     </insert>
+
+    <update id="updateSpuDetail" parameterType="org.kunze.diansh.entity.SpuDetail">
+        update kz_spu_detail
+        <trim prefix="set" suffixOverrides=",">
+            <if test="description != null and description != ''">description=#{description},</if>
+            <if test="specifications != null and specifications != ''">specifications=#{specifications},</if>
+            <if test="specTemplate != null and specTemplate != ''">spec_template=#{specTemplate},</if>
+            <if test="packingList != null and packingList != ''">packing_list=#{packingList},</if>
+            <if test="afterService != null and afterService != ''">after_service=#{afterService}</if>
+        </trim>
+        where spu_id=#{spuId}
+    </update>
 </mapper>

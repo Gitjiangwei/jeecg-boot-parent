@@ -47,4 +47,33 @@
         insert into kz_spu(id,title,sub_title,cid1,cid2,cid3,brand_id,create_time,last_update_time,update_name)
         values (#{id},#{title},#{subTitle},#{cid1},#{cid2},#{cid3},#{brandId},NOW(),NOW(),#{updateName})
     </insert>
+
+    <update id="updateSpu" parameterType="org.kunze.diansh.entity.Spu">
+        update kz_spu
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title != null and title != ''">title=#{title},</if>
+            <if test="subTitle != null and subTitle != ''">sub_title=#{subTitle},</if>
+            <if test="cid1 != null and cid1 != ''">cid1=#{cid1},</if>
+            <if test="cid2 != null and cid2 != ''">cid2=#{cid2},</if>
+            <if test="cid3 != null and cid3 != ''">cid3=#{cid3},</if>
+            <if test="brandId != null and brandId != ''">brand_id=#{brandId},</if>
+            <if test="isFlag != null and isFlag != ''">is_flag=#{isFlag},</if>
+            <if test="lastUpdateTime != null and lastUpdateTime != ''">last_update_time=NOW(),</if>
+            <if test="updateName != null and updateName != ''">update_name=#{updateName}</if>
+        </trim>
+        where id=#{id}
+    </update>
+
+    <delete id="deleteSpu" parameterType="org.kunze.diansh.entity.Spu">
+        update kz_spu set is_flag = 1,last_update_time=NOW(),update_name = #{spu.updateName} where id = #{spu.id}
+    </delete>
+
+    <select id="querySpuById" resultType="org.kunze.diansh.entity.Sku">
+        select sku.id,sku.spu_id,sku.title,images,new_price,price,indexes,own_spec,`enable`,sku.create_time,sku.last_update_time,shop_id,sku.update_name
+        from kz_category cate left join kz_spu spu on cate.id = spu.cid3
+        left join kz_sku sku on spu.id = sku.spu_id
+        where spu.is_flag = '0' and cate.id = #{id}
+    </select>
 </mapper>
+
+
