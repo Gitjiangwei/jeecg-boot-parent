@@ -60,8 +60,8 @@ public class WheelController {
     @ApiOperation("首页查询轮播图")
     @AutoLog("首页查询轮播图")
     @GetMapping(value = "/homeWheelList")
-    public Result<PageInfo<Wheel>> queryWheelHome(WheelVo wheelVo,
-                                              @RequestParam(name = "pageSize") Integer pageSize){
+    public  Result<PageInfo<Wheel>> queryWheelHome(WheelVo wheelVo,
+                                              @RequestParam(name = "pageSize",defaultValue = "5") Integer pageSize){
         Result<PageInfo<Wheel>> result = new Result<PageInfo<Wheel>>();
         if(wheelVo.getWheelPort()== null || wheelVo.getWheelPort().equals("")){
             result.error500("参数丢失！");
