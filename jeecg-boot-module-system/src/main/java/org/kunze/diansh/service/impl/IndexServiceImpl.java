@@ -3,12 +3,17 @@ package org.kunze.diansh.service.impl;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.poi.ss.formula.functions.T;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.entity.*;
+import org.kunze.diansh.esRepository.GoodsRepository;
 import org.kunze.diansh.mapper.NewCategoryMapper;
 import org.kunze.diansh.mapper.SkuMapper;
 import org.kunze.diansh.mapper.SpuDetailMapper;
@@ -18,6 +23,10 @@ import org.kunze.diansh.service.IndexService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,6 +35,8 @@ import java.util.*;
 @Service
 public class IndexServiceImpl implements IndexService {
 
+    @Autowired
+    private GoodsRepository repository;
 
     @Autowired
     private ISpuService spuService;
@@ -127,6 +138,36 @@ public class IndexServiceImpl implements IndexService {
         return goods;
     }
 
+    /**
+     * 全文检索
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public PageInfo<Goods> search(SearchRequest request) {
+        String key = request.getKey();
+        if (StringUtils.isBlank(key)) {
+            return null;
+        }
+        PageHelper.startPage(request.getPage() - 1, request.getSize());
+        //1、创建查询构造器
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        //2、查询
+        // 2.1对结果进行筛选
+        queryBuilder.withSourceFilter(new FetchSourceFilter(new String[]{"id", "skus", "subTitle"}, null));
+        // 2.2基本查询
+        queryBuilder.withQuery(QueryBuilders.matchQuery("all", key));
+        // 2.3分页
+        queryBuilder.withPageable(PageRequest.of(request.getPage() - 1, request.getSize()));
+        //3、返回结果
+        Page<Goods> result = this.repository.search(queryBuilder.build());
+        PageInfo<Goods> pageInfo = new PageInfo<Goods>();
+        pageInfo.setTotal(result.getTotalElements());
+        pageInfo.setList(result.getContent());
+        pageInfo.setPages((int) (pageInfo.getTotal()+request.getSize()/request.getSize()));
+        return pageInfo;
+    }
     private String chooseSegment(String value,SpuParams spuParams){
         double val = NumberUtils.toDouble(value);
         String reult = "其它";

@@ -139,6 +139,7 @@ public class SpuController {
             List<SpuBo> spus = spuModelPageInfo.getList();
             List<Goods> goods = spus.stream().map(spu -> this.indexService.buildGoods(spu)).collect(Collectors.toList());
             //把goods放入索引库
+            System.out.println(goods);
             this.goodsRepository.saveAll(goods);
             size = spus.size();
             pageNo ++;
