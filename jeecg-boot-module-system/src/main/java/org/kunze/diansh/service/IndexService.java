@@ -1,9 +1,9 @@
 package org.kunze.diansh.service;
 
-import com.github.pagehelper.PageInfo;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.entity.Goods;
 import org.kunze.diansh.entity.SearchRequest;
+import org.kunze.diansh.entity.SearchResult;
 
 public interface IndexService {
 
@@ -14,5 +14,5 @@ public interface IndexService {
      * @param request
      * @return
      */
-    PageInfo<Goods> search(SearchRequest request);
+    SearchResult search(SearchRequest request);
 }

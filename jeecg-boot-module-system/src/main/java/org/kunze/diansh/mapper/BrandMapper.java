@@ -19,5 +19,5 @@ public interface BrandMapper extends BaseMapper<Brand> {
 
     int qryIsFlag(@Param("brandIds") List<String> brandIds);
 
-
+    List<Brand> qryByKeys(@Param("brandIds") List<String> brandIds);
 }

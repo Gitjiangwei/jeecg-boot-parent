@@ -103,9 +103,10 @@
 
     <select id="qryByIds" resultType="org.kunze.diansh.entity.Category">
         select id,name,parent_id,is_parent from kz_category
-        where id in
+        where is_flag = '0' and id in
         <foreach collection="cateLists" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>
+
     </select>
 </mapper>

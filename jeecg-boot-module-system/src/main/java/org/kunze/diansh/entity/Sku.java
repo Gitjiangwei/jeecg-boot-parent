@@ -55,4 +55,6 @@ public class Sku implements Serializable {
     //操作人
     private String updateName;
 
+
+
 }
