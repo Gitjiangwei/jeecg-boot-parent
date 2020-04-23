@@ -18,4 +18,15 @@
         </trim>
         where spu_id=#{spuId}
     </update>
+
+
+    <select id="qreySpuDetail" resultType="org.kunze.diansh.entity.SpuDetail">
+        select spu_id,description,specifications,spec_template,packing_list,after_service
+        from kz_spu_detail
+        <trim prefix="where" prefixOverrides="and">
+            <if test="spuId !=null and spuId != '' ">
+                spu_id = #{spuId}
+            </if>
+        </trim>
+    </select>
 </mapper>

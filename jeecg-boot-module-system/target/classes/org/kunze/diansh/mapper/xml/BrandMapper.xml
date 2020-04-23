@@ -3,7 +3,8 @@
 <mapper namespace="org.kunze.diansh.mapper.BrandMapper">
 
     <select id="qryBrand" resultType="org.kunze.diansh.entity.modelData.BrandModel">
-        select br.id as 'bId',br.name as 'bName',image ,letter,kca.`name` as 'kName',create_time,update_time,update_name from kz_brand br
+        select br.id as 'bId',br.name as 'bName',image ,letter,kca.`name` as 'kName',create_time,update_time,update_name
+        from kz_brand br
         LEFT JOIN kz_category_brand ca on br.id=ca.brand_id
         LEFT JOIN kz_category kca on ca.category_id = kca.id
         <where>
@@ -34,7 +35,7 @@
     <update id="updateBrand">
 
         update kz_brand
-        <trim  prefix="set" suffixOverrides="," >
+        <trim prefix="set" suffixOverrides=",">
             <if test="name!=null and name != '' ">
                 name = #{name},
             </if>
@@ -66,7 +67,7 @@
 
 
     <select id="qryIsFlag" resultType="int">
-        select count(1) from kz_spu where  is_flag ='0' and brand_id in
+        select count(1) from kz_spu where is_flag ='0' and brand_id in
         <foreach collection="brandIds" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>

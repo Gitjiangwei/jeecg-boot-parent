@@ -1,5 +1,6 @@
 package org.kunze.diansh.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.micrometer.core.instrument.util.StringUtils;
@@ -136,6 +137,20 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
         BoundHashOperations<String,Object,Object> hashOps = this.redisTemplate.boundHashOps(key);
         //从Redis中删除
         hashOps.delete(skuId);
+    }
+
+    /**
+     * 查询选中的商品集合
+     */
+    public List<Cart> selectCartByCids(String cids[], String userID){
+        String key = KEY_PREFIX+userID;
+        BoundHashOperations<String,Object,Object> hashOps = this.redisTemplate.boundHashOps(key);
+        List<Cart> cartList = new ArrayList<Cart>();
+        for (String id:cids) {
+            Cart cart = JSONObject.parseObject(hashOps.get(id).toString(),Cart.class);
+            cartList.add(cart);
+        }
+        return cartList;
     }
 
 }
