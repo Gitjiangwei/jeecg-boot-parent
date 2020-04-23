@@ -100,6 +100,11 @@
         left join kz_sku sku on spu.id = sku.spu_id
         where spu.is_flag = '0' and cate.id = #{id}
     </select>
+
+
+    <select id="querySpuByIds" resultType="org.kunze.diansh.entity.Spu">
+        select id,create_time from kz_spu where id=#{spuId}
+    </select>
 </mapper>
 
 

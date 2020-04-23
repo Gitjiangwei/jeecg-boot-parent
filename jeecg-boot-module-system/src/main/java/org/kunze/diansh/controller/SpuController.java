@@ -4,19 +4,24 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
 import org.kunze.diansh.controller.vo.SpuVo;
-import org.kunze.diansh.entity.Sku;
+import org.kunze.diansh.entity.Goods;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.modelData.SpuModel;
+import org.kunze.diansh.esRepository.GoodsRepository;
 import org.kunze.diansh.service.ISpuService;
+import org.kunze.diansh.service.IndexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 商品控制层
@@ -30,6 +35,11 @@ public class SpuController {
     @Autowired
     private ISpuService spuService;
 
+    @Autowired
+    private IndexService indexService;
+
+    @Autowired
+    private GoodsRepository goodsRepository;
 
     @ApiOperation("商品查询")
     @AutoLog("查询商品")
@@ -106,11 +116,32 @@ public class SpuController {
     @ApiOperation("通过商品分类Id查询相关商品的详细信息")
     @AutoLog("通过商品分类Id查询相关商品的详细信息")
     @PostMapping(value = "/querySpuByCateID")
-    public Result<PageInfo<Sku>> querySpuByCateID(@RequestParam(name = "cateId") String cateId,@RequestParam(name = "pageNo",defaultValue = "1") Integer pageNo,
-                                      @RequestParam(name = "pageSize") Integer pageSize){
-        Result<PageInfo<Sku>> result = new Result<PageInfo<Sku>>();
-        PageInfo<Sku> spuList = spuService.querySpuById(cateId,pageNo,pageSize);
-        result.setResult(spuList);
-        return result;
+    public List<Spu> querySpuByCateID(String cateId){
+        Result<List<Spu>> result = new Result<List<Spu>>();
+        List<Spu> spuList = spuService.querySpuById(cateId);
+        return spuList;
+    }
+
+
+    @GetMapping(value = "/query")
+    public void aa(){
+        SpuBo spuBo = new SpuBo();
+        spuBo.setId("10");
+        spuBo.setCid1("74");
+        spuBo.setCid2("75");
+        spuBo.setCid3("76");
+        int pageNo = 1;
+        int pageSize = 100;
+        int size = 100;
+        do {
+            SpuVo spuVo = new SpuVo();
+            PageInfo<SpuBo> spuModelPageInfo = spuService.qrySpuLists(spuVo, pageNo, pageSize);
+            List<SpuBo> spus = spuModelPageInfo.getList();
+            List<Goods> goods = spus.stream().map(spu -> this.indexService.buildGoods(spu)).collect(Collectors.toList());
+            //把goods放入索引库
+            this.goodsRepository.saveAll(goods);
+            size = spus.size();
+            pageNo ++;
+        }while (size == 100);
     }
 }

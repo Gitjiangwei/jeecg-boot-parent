@@ -72,4 +72,12 @@
             #{item}
         </foreach>
     </select>
+
+    <select id="qryByKeys" resultType="org.kunze.diansh.entity.Brand">
+        select id,`name`,image from kz_brand
+        where is_flag = '0' and id in
+        <foreach collection="brandIds" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
 </mapper>
