@@ -7,11 +7,10 @@ import org.apache.poi.ss.formula.functions.T;
 import org.checkerframework.checker.units.qual.C;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.kunze.diansh.controller.vo.SalesTicketVo;
 import org.kunze.diansh.entity.Commodity;
 import org.kunze.diansh.salesTicket.SalesTicket;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Book;
 import java.awt.print.PageFormat;
@@ -32,41 +31,25 @@ public class IntimidateController {
 
     @ApiOperation("打印接口")
     @AutoLog("打印小票")
-    @GetMapping(value = "/dayin")
-    public Result<T> intimiDate(){
+    @PostMapping(value = "/dayin")
+    public Result<T> intimiDate(@RequestBody SalesTicketVo salesTicketVo){
         Result<T> result = new Result<T>();
         List<Commodity> list = new ArrayList<>();
-        for(int i =0; i<5;i++){
-            Commodity commodity = new Commodity("苹果","5","10","50");
+        for(int i =0; i<salesTicketVo.getCommodityList().size();i++){
+            Commodity commodity = new Commodity(salesTicketVo.getCommodityList().get(i).getSpuName(),salesTicketVo.getCommodityList().get(i).getUnitPrice(),
+                    salesTicketVo.getCommodityList().get(i).getSpuNum(),salesTicketVo.getCommodityList().get(i).getUnitPriceTotle());
             list.add(commodity);
         }
-        printSale(list,"123456","金威超市","12547","5","500","450","50");
+        printSale(list,salesTicketVo);
+
         return result;
     }
 
 
-
-
-
     /**
      * 商品信息
-     * @param commodities
-     * 打印销售小票
-     *
-     * @param order
-     *            订单号
-     *
-     * @param cashier 收银员编号
-     * @param num
-     *            数量
-     * @param sum
-     *            总金额
-     * @param practical
-     *            实收
-     * @param change
-     *            找零
      */
-    private void printSale(List<Commodity> commodities,String order, String shopName, String cashier, String num, String sum, String practical, String change){
+    private void printSale(List<Commodity> list,SalesTicketVo salesTicketVo){
         try {
             // 通俗理解就是书、文档
             Book book = new Book();
@@ -81,7 +64,10 @@ public class IntimidateController {
             // 842)设置打印区域，其实0，0应该是72，72，因为A4纸的默认X,Y边距是72
             pageFormat.setPaper(paper);
 
-            book.append(new SalesTicket(new ArrayList<>(commodities),shopName ,cashier, num, sum, practical, change,order), pageFormat);
+            book.append(new SalesTicket(new ArrayList<>(list),salesTicketVo.getDistributionVo(),salesTicketVo.getShopName() ,
+                    salesTicketVo.getCashier(), salesTicketVo.getSaleNum(), salesTicketVo.getSaleSum(),
+                    salesTicketVo.getPractical(), salesTicketVo.getChanges(),salesTicketVo.getOrders(),
+                    salesTicketVo.getShopAddress(),salesTicketVo.getPickUp()), pageFormat);
 
             // 获取打印服务对象
             PrinterJob job = PrinterJob.getPrinterJob();
