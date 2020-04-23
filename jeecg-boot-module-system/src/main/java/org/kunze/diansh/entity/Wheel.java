@@ -46,4 +46,7 @@ public class Wheel implements Serializable {
 
     /**图片名称*/
     private String wheelName;
+
+    /**图片类型 0：广告 1：新商品*/
+    private String wheelIsflag;
 }

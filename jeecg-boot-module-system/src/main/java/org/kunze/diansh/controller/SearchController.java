@@ -10,11 +10,7 @@ import org.kunze.diansh.entity.SearchRequest;
 import org.kunze.diansh.entity.SearchResult;
 import org.kunze.diansh.service.IndexService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 
 @Api(tags = "全文检索商品")
@@ -29,13 +25,17 @@ public class SearchController {
     /**
      * 搜索商品
      *
-     * @param request
+     * @param
      * @return
      */
     @ApiOperation("全文检索")
-    @PostMapping(value ="page")
-    public Result<SearchResult> search(@RequestBody SearchRequest request) {
+    @PostMapping(value ="/page")
+    public Result<SearchResult> search(@RequestParam(name = "key") String key) {
         Result<SearchResult> result = new Result<>();
+        SearchRequest request = new SearchRequest();
+        request.setKey(key);
+        request.setDescending(true);
+        request.setSortBy("createTime");
         SearchResult goodsPageInfo = this.indexService.search(request);
         result.setResult(goodsPageInfo);
         result.setSuccess(true);
