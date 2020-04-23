@@ -35,6 +35,8 @@ public class OrderCodeUtils {
 
             orderCode = date + totalCount + change(pinyinName) + numberCount + shopOrdertodayNum;
 
+        }else {
+            orderCode = date + totalCount + change(pinyinName) + numberCount + "000001";
         }
 
         return orderCode;
@@ -71,7 +73,7 @@ public class OrderCodeUtils {
     }
 
     public static void main(String[] args){
-        System.out.println(orderCode("领导","9"));
+        System.out.println(orderCode("领导","0"));
     }
 
 
