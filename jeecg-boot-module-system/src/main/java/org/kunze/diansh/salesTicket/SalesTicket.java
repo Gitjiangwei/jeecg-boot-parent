@@ -1,7 +1,11 @@
 package org.kunze.diansh.salesTicket;
 
+import jdk.nashorn.internal.objects.annotations.Function;
+import lombok.Data;
+import org.kunze.diansh.controller.vo.DistributionVo;
 import org.kunze.diansh.entity.Commodity;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -12,9 +16,12 @@ import java.util.Calendar;
 /**
  * 对接打小票机
  */
+@Data
 public class SalesTicket implements Printable {
 
     private ArrayList<Commodity> commodityList;
+
+    private DistributionVo distributionVo;
 
     private String shopName;
 
@@ -32,10 +39,20 @@ public class SalesTicket implements Printable {
 
     private String orders;
 
+    private String shopAddress;
+
+    private String pickUp;
+
+
 
     //构造函数
-    public SalesTicket(ArrayList<Commodity> commodityList,String shopName,String cashier,String saleNum,String saleSum,String practical,String changes,String orders){
+    public SalesTicket(ArrayList<Commodity> commodityList,DistributionVo distributionVo,
+                       String shopName,String cashier, String saleNum,String saleSum,
+                       String practical,String changes,String orders,String shopAddress,
+                       String pickUp){
         this.commodityList = commodityList;
+        //配送信息
+        this.distributionVo = distributionVo;
         //超市名称
         this.shopName = shopName;
         // 收银员编号
@@ -50,6 +67,11 @@ public class SalesTicket implements Printable {
         this.changes = changes;
         //订单编号
         this.orders = orders;
+        //商家地址
+        this.shopAddress = shopAddress;
+
+        //配送方式 1、自提 2、配送
+        this.pickUp = pickUp;
     }
 
     /**
@@ -71,6 +93,10 @@ public class SalesTicket implements Printable {
         double x = pageFormat.getImageableX();
         double y = pageFormat.getImageableY();
 
+
+
+
+
         //虚线
         float[] dash1 = { 4.0f };
         // width - 此 BasicStroke 的宽度。此宽度必须大于或等于 0.0f。如果将宽度设置为
@@ -84,20 +110,32 @@ public class SalesTicket implements Printable {
         //设置画虚线
         graphics2D.setStroke(new BasicStroke(0.5f,BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,4.0f,dash1,0.0f));
         //设置打印字体（字体名称、样式和点大小）（字体名称可以是物理或者逻辑名称）
-        font = new Font("宋体",Font.PLAIN,11);
+        font = new Font("隶书",Font.PLAIN,16);
         graphics2D.setFont(font);//设置字体
         float height = font.getSize2D();//字体高度
-        //标题
-        graphics2D.drawString(shopName,(float) x+40,(float) y+10);
+        //大标题
+        graphics2D.drawString("哄哄",(float) x+50,(float) y+13);
         float line = 2 * height;
+        graphics2D.drawLine((int) x,(int) (y+height+4),(int) x + 158, (int) (y+height+4));
+        graphics2D.drawLine((int) x,(int) (y+height+6),(int) x + 158, (int) (y+height+6));
+        //标题
+        font = new Font("宋体",Font.PLAIN,11);
+        graphics2D.setFont(font);//设置字体
+        /*height = font.getSize2D();//字体高度*/
+        line = 2 * height+5;
+        graphics2D.drawString(shopName,(float) x+40,(float) y+line);
+        line += height;
+        SalesTicketDrawString.drawString(graphics2D,font,shopAddress,(int) x,(int) (y+line),(int) pageFormat.getWidth());
+        //graphics2D.drawString(shopAddress,(float) x,(float) y+line);
+
         font = new Font("宋体",Font.PLAIN,8);
         graphics2D.setFont(font);
         height = font.getSize2D();//字体高度
-
+/*        line = 2 * height+60;
         //显示收银员
-        graphics2D.drawString("收银员："+ cashier,(float) x,(float) y + line);
+        graphics2D.drawString("收银员："+ cashier,(float) x,(float) y + line);*/
 
-        line += height;
+        line += height+60;
         //显示订单号
         graphics2D.drawString("订单号："+orders,(float) x,(float) y + line);
 
@@ -114,17 +152,28 @@ public class SalesTicket implements Printable {
 
         //第4行
         line += height;
-
         //显示内容
         for(int i = 0; i< commodityList.size(); i++){
             Commodity commodity1 = commodityList.get(i);
-            graphics2D.drawString(commodity1.getSpuName(),(float) x,(float) y+line);
-            line += height;
+            int row = SalesTicketDrawString.drawString(graphics2D,font,commodity1.getSpuName(),(int) x,(int) (y+line),(int) pageFormat.getWidth());
+            //graphics2D.drawString(commodity1.getSpuName(),(float) x,(float) y+line);
+            float maxHs = height;
+            if(row > 0){
+                maxHs = height * row + 3;
+            }else {
+                maxHs = -7;
+            }
+            line += height + maxHs;
+
 
             graphics2D.drawString(commodity1.getUnitPrice(),(float) x + 60, (float) y+line);
             graphics2D.drawString(commodity1.getSpuNum(),(float) x + 90,(float) y + line );
-            graphics2D.drawString(commodity1.getUnitPriceTotle(),(float) x + 120,(float) y + line );
-            line += height;
+            graphics2D.drawString(commodity1.getUnitPriceTotle(),(float) x + 115,(float) y + line );
+            float maxH = height;
+            if(row > 0){
+                maxH = height * row + 10;
+            }
+            line += height + maxH;
         }
         line += height;
 
@@ -135,10 +184,47 @@ public class SalesTicket implements Printable {
         graphics2D.drawString("合计：" + saleSum +"元",(float)x+80,(float)y + line);
         line += height;
         graphics2D.drawString("实收：" + practical + "元",(float) x,(float) y + line);
-        graphics2D.drawString("找零：" + changes + "元",(float) x+80,(float) y + line);
         line += height;
         graphics2D.drawString("时间：" + Calendar.getInstance().getTime().toLocaleString(),(float) x,(float) y + line);
 
+        line += height;
+        graphics2D.drawLine((int) x,(int) (y+line),(int) x + 158, (int) (y+line));
+        font = new Font("黑体",Font.PLAIN,14);
+        graphics2D.setFont(font);//设置字体
+        height = font.getSize2D();//字体高度
+
+        String phoneNumber = distributionVo.getContact().substring(0, 3) + "****" + distributionVo.getContact().substring(7, distributionVo.getContact().length());
+        //配送信息
+        line += height;
+        if(pickUp.equals("1")){
+            graphics2D.drawString("配送方式：自提",(float) x,(float)y+line);
+            line += height;
+        }else {
+            graphics2D.drawString("配送方式：商家配送",(float) x,(float)y+line);
+            line += height;
+            int row = SalesTicketDrawString.drawString(graphics2D,font,"配送地址："+distributionVo.getShippingAddress(),(int) x,(int) (y+line),(int) pageFormat.getWidth());
+            /*graphics2D.drawString(",(float)x,(float) y+line);*/
+            float maxH = height;
+            if(row > 0){
+                maxH = height * row + 3;
+            }
+            line += height + maxH;
+        }
+        int row = SalesTicketDrawString.drawString(graphics2D,font,"取货人："+distributionVo.getCall(),(int) x,(int) (y+line),(int) pageFormat.getWidth());
+        float maxH = height;
+        if(row > 0){
+            maxH = height * row + 3;
+        }
+        //graphics2D.drawString(,(float) x,(float) y+line);
+        line += height + maxH;
+        graphics2D.drawString("联系方式：",(float)x,(float) y+line);
+        line += height;
+        graphics2D.drawString(phoneNumber,(float)x,(float)y+line);
+        line += height;
+        graphics2D.drawLine((int) x,(int) (y+line),(int) x + 158, (int) (y+line));
+        font = new Font("宋体",Font.PLAIN,8);
+        graphics2D.setFont(font);
+        height = font.getSize2D();//字体高度
         line += height;
         graphics2D.drawString("欢迎下次再来",(float) x + 20,(float) y + line);
 
@@ -151,4 +237,10 @@ public class SalesTicket implements Printable {
                 return NO_SUCH_PAGE;
         }
     }
+
+
+
+
+
+
 }

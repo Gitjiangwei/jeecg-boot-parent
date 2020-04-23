@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.kunze.diansh.mapper.WheelMapper">
     <insert id="saveWheel">
-        insert INTO kz_wheel(wheel_id,wheel_images,create_time,update_time,update_name,wheel_no,wheel_port,wheel_url,wheel_name,is_flag)
-        values (#{wheelId},#{wheelImages},NOW(),NOW(),#{updateName},#{wheelNo},#{wheelPort},#{wheelUrl},#{wheelName},#{isFlag})
+        insert INTO kz_wheel(wheel_id,wheel_images,create_time,update_time,update_name,wheel_no,wheel_port,wheel_url,wheel_name,is_flag,wheel_isflag)
+        values (#{wheelId},#{wheelImages},NOW(),NOW(),#{updateName},#{wheelNo},#{wheelPort},#{wheelUrl},#{wheelName},#{isFlag},#{wheelIsflag})
     </insert>
 
     <select id="qeryWheel" resultType="org.kunze.diansh.entity.Wheel">
-        select wheel_id,wheel_images,wheel_no,wheel_url,wheel_name from kz_wheel
+        select wheel_id,wheel_images,wheel_no,wheel_url,wheel_name,wheel_isflag from kz_wheel
         <trim prefix="where" prefixOverrides="and">
             <if test="isFlag != null and isFlag != ''">
                 and is_flag = #{isFlag}
@@ -42,7 +42,10 @@
                 wheel_no = #{wheelNo},
             </if>
             <if test="wheelUrl != null and wheelUrl != '' ">
-                wheel_url = #{wheelUrl}
+                wheel_url = #{wheelUrl},
+            </if>
+            <if test="wheelIsflag != null and wheelIsflag != ''">
+                wheel_isflag = #{wheelIsflag},
             </if>
         </trim>
         where wheel_id = #{wheelId}
