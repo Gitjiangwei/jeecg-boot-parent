@@ -114,7 +114,7 @@ public class SalesTicket implements Printable {
         graphics2D.setFont(font);//设置字体
         float height = font.getSize2D();//字体高度
         //大标题
-        graphics2D.drawString("哄哄",(float) x+50,(float) y+13);
+        graphics2D.drawString("#1 哄哄到家",(float) x+25,(float) y+13);
         float line = 2 * height;
         graphics2D.drawLine((int) x,(int) (y+height+4),(int) x + 158, (int) (y+height+4));
         graphics2D.drawLine((int) x,(int) (y+height+6),(int) x + 158, (int) (y+height+6));
@@ -125,9 +125,12 @@ public class SalesTicket implements Printable {
         line = 2 * height+5;
         graphics2D.drawString(shopName,(float) x+40,(float) y+line);
         line += height;
-        SalesTicketDrawString.drawString(graphics2D,font,shopAddress,(int) x,(int) (y+line),(int) pageFormat.getWidth());
+        int rows = SalesTicketDrawString.drawString(graphics2D,font,shopAddress,(int) x,(int) (y+line),(int) pageFormat.getWidth());
         //graphics2D.drawString(shopAddress,(float) x,(float) y+line);
-
+        float maxHe = height;
+        if(rows > 0){
+            maxHe = height * rows + 3;
+        }
         font = new Font("宋体",Font.PLAIN,8);
         graphics2D.setFont(font);
         height = font.getSize2D();//字体高度
@@ -135,11 +138,11 @@ public class SalesTicket implements Printable {
         //显示收银员
         graphics2D.drawString("收银员："+ cashier,(float) x,(float) y + line);*/
 
-        line += height+60;
+        line += height+maxHe;
         //显示订单号
         graphics2D.drawString("订单号："+orders,(float) x,(float) y + line);
 
-        line += height;
+        line += height+3;
 
         //显示标题
         graphics2D.drawString("名称", (float) x + 20, (float) y + line);
@@ -153,15 +156,24 @@ public class SalesTicket implements Printable {
         //第4行
         line += height;
         //显示内容
+
         for(int i = 0; i< commodityList.size(); i++){
             Commodity commodity1 = commodityList.get(i);
-            int row = SalesTicketDrawString.drawString(graphics2D,font,commodity1.getSpuName(),(int) x,(int) (y+line),(int) pageFormat.getWidth());
+            int row = SalesTicketDrawString.drawString(graphics2D,font,commodity1.getSpuName(),(int) x,(int) (y+line),(int) pageFormat.getWidth()-20);
             //graphics2D.drawString(commodity1.getSpuName(),(float) x,(float) y+line);
             float maxHs = height;
             if(row > 0){
                 maxHs = height * row + 3;
             }else {
-                maxHs = -7;
+                JLabel label = new JLabel(commodity1.getSpuName());
+                label.setFont(font);
+                FontMetrics metrics = label.getFontMetrics(label.getFont());
+                int textW = metrics.stringWidth(label.getText());
+                if(textW > x+60){
+                    maxHs = 0;
+                }else {
+                    maxHs = -7;
+                }
             }
             line += height + maxHs;
 
