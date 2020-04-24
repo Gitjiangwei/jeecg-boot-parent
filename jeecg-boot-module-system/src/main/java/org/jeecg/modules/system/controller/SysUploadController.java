@@ -27,19 +27,20 @@ public class SysUploadController {
 
     /**
      * 上传
+     *
      * @param request
      */
     @PostMapping(value = "/uploadMinio")
     public Result<?> uploadMinio(HttpServletRequest request) {
         Result<?> result = new Result<>();
         String bizPath = request.getParameter("biz");
-        if(oConvertUtils.isEmpty(bizPath)){
+        if (oConvertUtils.isEmpty(bizPath)) {
             bizPath = "";
         }
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         MultipartFile file = multipartRequest.getFile("file");// 获取上传文件对象
         String orgName = file.getOriginalFilename();// 获取文件名
-        String file_url =  MinioUtil.upload(file,bizPath);
+        String file_url = MinioUtil.upload(file, bizPath);
         //保存文件信息
         OSSFile minioFile = new OSSFile();
         minioFile.setFileName(orgName);
