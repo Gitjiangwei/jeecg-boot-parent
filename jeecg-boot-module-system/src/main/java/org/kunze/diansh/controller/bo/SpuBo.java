@@ -29,6 +29,10 @@ public class SpuBo implements Serializable {
 
     private String subTitle;// 子标题
 
+    private String image;//商品单图片
+
+    private String images;//商品多图片
+
     private SpuDetail spuDetail;
 
     private List<SkuVo> skuVos;

@@ -2,8 +2,10 @@ package org.kunze.diansh.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
+import org.kunze.diansh.controller.vo.SpuDetailVo;
 import org.kunze.diansh.controller.vo.SpuVo;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.modelData.SpuModel;
@@ -66,4 +68,11 @@ public interface ISpuService extends IService<Spu> {
      * @return
      */
     Boolean deleteSpu(SpuBo spuBo);
+
+    /**
+     * 商品详情页查看
+     * @param spuId
+     * @return
+     */
+    SpuDetailVo selectByPrimaryKey(@Param("spuId") String spuId);
 }

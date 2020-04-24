@@ -4,16 +4,20 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import jdk.nashorn.internal.runtime.linker.LinkerCallSite;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.controller.vo.SkuVo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
+import org.kunze.diansh.controller.vo.SpuDetailVo;
 import org.kunze.diansh.controller.vo.SpuVo;
 import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.SpuDetail;
 import org.kunze.diansh.entity.Stock;
+import org.kunze.diansh.entity.modelData.SpuDetailModel;
 import org.kunze.diansh.entity.modelData.SpuModel;
 import org.kunze.diansh.mapper.SkuMapper;
 import org.kunze.diansh.mapper.SpuDetailMapper;
@@ -27,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -196,7 +201,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             if(null != spuBo.getSpuDetail()){
                 SpuDetail spuDetail = spuBo.getSpuDetail();
                 spuDetail.setSpuId(spu.getId());
-                resultSpuDetail = spuDetailMapper.updateSpuDetail(spuDetail); //更新商品详情
+                resultSpuDetail = spuDetailMapper.updateSpuDetail(spuDetail); //更新
             }
             if(null != spuBo.getSkuVos()){
                 List<Sku> skuList = new ArrayList<Sku>();
@@ -247,6 +252,47 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             resultFlag = true;
         }
         return resultFlag;
+    }
+
+    /**
+     * 商品详情页查看
+     *
+     * @param spuId
+     * @return
+     */
+    @Override
+    public SpuDetailVo selectByPrimaryKey(String spuId) {
+        SpuDetailVo spuDetailVo = new SpuDetailVo();
+        if(spuId == null || spuId.equals("")){
+            return null;
+        }else {
+            SpuDetailModel spuDetailModel = spuMapper.selectByPrimaryKey(spuId);
+            List<Sku> skuList = skuMapper.querySkuBySpuId(spuId);
+            //去掉json中的“\"
+            if(spuDetailModel.getDescription() != null && !spuDetailModel.getDescription().equals("")){
+                //aospuDetailModel.setDescription(StringEscapeUtils.unescapeJava(spuDetailModel.getDescription()));
+                System.out.println("*********************"+spuDetailModel.getDescription());
+            }
+            if(spuDetailModel.getSpecifications() != null && !spuDetailModel.getSpecifications().equals("")){
+                //spuDetailModel.setSpecifications(StringEscapeUtils.unescapeJava(spuDetailModel.getSpecifications()));
+                System.out.println("*********************"+spuDetailModel.getSpecifications());
+            }
+            if(spuDetailModel.getSpecTemplate() != null && !spuDetailModel.getSpecTemplate().equals("")){
+                //spuDetailModel.setSpecTemplate(StringEscapeUtils.unescapeJava(spuDetailModel.getSpecTemplate()));
+                System.out.println("*********************"+spuDetailModel.getSpecTemplate());
+            }
+            for (Sku item:skuList){
+                if(item.getOwnSpec()!=null&&!item.getOwnSpec().equals("")){
+                    //item.setOwnSpec(StringEscapeUtils.escapeJava(item.getOwnSpec()));
+                    System.out.println("*********************"+item.getOwnSpec());
+                }
+            }
+            spuDetailVo.setImages(Arrays.asList(spuDetailModel.getImages().split(",")));
+            spuDetailVo.setSpuDetailModel(spuDetailModel);
+            spuDetailVo.setSkus(skuList);
+            return spuDetailVo;
+        }
+
     }
 
 

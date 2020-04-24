@@ -9,9 +9,11 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
+import org.kunze.diansh.controller.vo.SpuDetailVo;
 import org.kunze.diansh.controller.vo.SpuVo;
 import org.kunze.diansh.entity.Goods;
 import org.kunze.diansh.entity.Spu;
+import org.kunze.diansh.entity.SpuDetail;
 import org.kunze.diansh.entity.modelData.SpuModel;
 import org.kunze.diansh.esRepository.GoodsRepository;
 import org.kunze.diansh.service.ISpuService;
@@ -144,5 +146,21 @@ public class SpuController {
             size = spus.size();
             pageNo ++;
         }while (size == 100);
+    }
+
+    @ApiOperation("前台商品详情查询")
+    @AutoLog("前台商品详情查询")
+    @PostMapping(value = "/spuDetail")
+    public Result<SpuDetailVo> selectByPrimaryKey(@RequestParam(name = "spuId") String spuId){
+        Result<SpuDetailVo> result = new Result<SpuDetailVo>();
+        if(spuId==null||spuId.equals("")){
+            result.setSuccess(false);
+            result.success("参数丢失！");
+        }else {
+            SpuDetailVo spuDetailVo = spuService.selectByPrimaryKey(spuId);
+            result.setSuccess(true);
+            result.setResult(spuDetailVo);
+        }
+        return result;
     }
 }

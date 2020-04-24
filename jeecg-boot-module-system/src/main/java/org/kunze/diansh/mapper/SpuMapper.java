@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
 import org.kunze.diansh.entity.Spu;
+import org.kunze.diansh.entity.modelData.SpuDetailModel;
 import org.kunze.diansh.entity.modelData.SpuModel;
 
 import java.util.List;
@@ -27,4 +28,12 @@ public interface SpuMapper extends BaseMapper<Spu> {
     List<Spu> querySpuById(@Param("id") String cateId);
 
     Spu querySpuByIds(@Param("spuId") String spuId);
+
+    /**
+     * 商品详情页查看
+     * @param spuId
+     * @return
+     */
+    SpuDetailModel selectByPrimaryKey(@Param("spuId") String spuId);
+
 }
