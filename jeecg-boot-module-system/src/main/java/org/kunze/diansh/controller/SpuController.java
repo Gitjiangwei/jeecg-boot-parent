@@ -8,6 +8,7 @@ import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.kunze.diansh.controller.bo.SpuBo;
+import org.kunze.diansh.controller.vo.BeSimilarSpuVo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
 import org.kunze.diansh.controller.vo.SpuDetailVo;
 import org.kunze.diansh.controller.vo.SpuVo;
@@ -160,6 +161,26 @@ public class SpuController {
             SpuDetailVo spuDetailVo = spuService.selectByPrimaryKey(spuId);
             result.setSuccess(true);
             result.setResult(spuDetailVo);
+        }
+        return result;
+    }
+
+    @ApiOperation("前台查询相似商品")
+    @AutoLog("前台查询相似商品")
+    @PostMapping(value = "/simitSpu")
+    public Result<List<BeSimilarSpuVo>> selectSimitSpu(@RequestParam(value = "cid3") String cid3,
+                                                       @RequestParam(value = "spuId") String spuId){
+        Result<List<BeSimilarSpuVo>> result = new Result<List<BeSimilarSpuVo>>();
+        if(cid3 == null || cid3.equals("")){
+            result.setSuccess(true);
+            result.success("参数丢失！");
+        }else if(spuId == null || spuId.equals("")){
+            result.setSuccess(true);
+            result.success("参数丢失！");
+        }else {
+            List<BeSimilarSpuVo> beSimilarSpuVoList = spuService.selectBySimilarSpu(cid3,spuId);
+            result.setSuccess(true);
+            result.setResult(beSimilarSpuVoList);
         }
         return result;
     }

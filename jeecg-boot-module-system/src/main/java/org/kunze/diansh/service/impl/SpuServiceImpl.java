@@ -9,10 +9,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
 import org.kunze.diansh.controller.bo.SpuBo;
-import org.kunze.diansh.controller.vo.SkuVo;
-import org.kunze.diansh.controller.vo.SpuBrandVo;
-import org.kunze.diansh.controller.vo.SpuDetailVo;
-import org.kunze.diansh.controller.vo.SpuVo;
+import org.kunze.diansh.controller.vo.*;
 import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.SpuDetail;
@@ -30,10 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuService {
@@ -268,31 +262,57 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         }else {
             SpuDetailModel spuDetailModel = spuMapper.selectByPrimaryKey(spuId);
             List<Sku> skuList = skuMapper.querySkuBySpuId(spuId);
-            //去掉json中的“\"
-            if(spuDetailModel.getDescription() != null && !spuDetailModel.getDescription().equals("")){
-                //aospuDetailModel.setDescription(StringEscapeUtils.unescapeJava(spuDetailModel.getDescription()));
-                System.out.println("*********************"+spuDetailModel.getDescription());
-            }
-            if(spuDetailModel.getSpecifications() != null && !spuDetailModel.getSpecifications().equals("")){
-                //spuDetailModel.setSpecifications(StringEscapeUtils.unescapeJava(spuDetailModel.getSpecifications()));
-                System.out.println("*********************"+spuDetailModel.getSpecifications());
-            }
-            if(spuDetailModel.getSpecTemplate() != null && !spuDetailModel.getSpecTemplate().equals("")){
-                //spuDetailModel.setSpecTemplate(StringEscapeUtils.unescapeJava(spuDetailModel.getSpecTemplate()));
-                System.out.println("*********************"+spuDetailModel.getSpecTemplate());
-            }
-            for (Sku item:skuList){
-                if(item.getOwnSpec()!=null&&!item.getOwnSpec().equals("")){
-                    //item.setOwnSpec(StringEscapeUtils.escapeJava(item.getOwnSpec()));
-                    System.out.println("*********************"+item.getOwnSpec());
-                }
-            }
             spuDetailVo.setImages(Arrays.asList(spuDetailModel.getImages().split(",")));
             spuDetailVo.setSpuDetailModel(spuDetailModel);
             spuDetailVo.setSkus(skuList);
             return spuDetailVo;
         }
 
+    }
+
+    @Override
+    public List<BeSimilarSpuVo> selectBySimilarSpu(String cid3, String spuId) {
+        if(cid3 == null || cid3.equals("")){
+            return null;
+        }else if(spuId == null || spuId.equals("")){
+            return null;
+        }else {
+            List<String> stringList = spuMapper.selectCid3SpuByIds(cid3,spuId);
+            List<String> a = new ArrayList<String>();
+            int mun = 4;
+            for(int i = 0; i < mun;i++) {
+                if(a.size() == 4){
+                    break;
+                }
+                if((i+1)==mun && a.size()!=4){
+                    mun++;
+                }
+                //获取0至spuId集合总数之间的随机数
+                int random = new Random().nextInt(stringList.size());
+                Boolean flag = false;
+                if(a.size() != 0) {
+                    for (int j = 0; j < a.size(); j++) {
+                        if (random == Integer.parseInt(a.get(j))) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if(!flag) {
+                        a.add(String.valueOf(random));
+                    }
+                }else {
+                    a.add(String.valueOf(random));
+                }
+            }
+            //获取集合中的spuId值
+            List<String> spuIds = new ArrayList<String>();
+            for(int i=0;i < a.size();i++){
+                spuIds.add(stringList.get(Integer.parseInt(a.get(i))));
+            }
+            //查询相似商品
+            List<BeSimilarSpuVo> similarSpuVos = spuMapper.selectSimilarSpu(spuIds);
+            return similarSpuVos;
+        }
     }
 
 

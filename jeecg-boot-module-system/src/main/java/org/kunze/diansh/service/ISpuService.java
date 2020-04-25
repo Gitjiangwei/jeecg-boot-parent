@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.bo.SpuBo;
+import org.kunze.diansh.controller.vo.BeSimilarSpuVo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
 import org.kunze.diansh.controller.vo.SpuDetailVo;
 import org.kunze.diansh.controller.vo.SpuVo;
@@ -74,5 +75,14 @@ public interface ISpuService extends IService<Spu> {
      * @param spuId
      * @return
      */
-    SpuDetailVo selectByPrimaryKey(@Param("spuId") String spuId);
+    SpuDetailVo selectByPrimaryKey(String spuId);
+
+
+    /**
+     * 相似商品
+     * @param cid3
+     * @param spuId
+     * @return
+     */
+    List<BeSimilarSpuVo> selectBySimilarSpu(String cid3,String spuId);
 }
