@@ -3,6 +3,7 @@ package org.kunze.diansh.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.vo.BeSimilarSpuVo;
+import org.kunze.diansh.controller.vo.CategorySpuVo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.modelData.SpuDetailModel;
@@ -52,4 +53,11 @@ public interface SpuMapper extends BaseMapper<Spu> {
      */
     List<BeSimilarSpuVo> selectSimilarSpu(@Param("spuList") List<String> spus);
 
+
+    /**
+     * 首页分类商品
+     * @param spus
+     * @return
+     */
+    List<CategorySpuVo> selectCategorySpu(@Param("spuList") List<String> spus);
 }

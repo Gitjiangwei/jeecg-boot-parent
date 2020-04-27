@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.bo.SpuBo;
-import org.kunze.diansh.controller.vo.BeSimilarSpuVo;
-import org.kunze.diansh.controller.vo.SpuBrandVo;
-import org.kunze.diansh.controller.vo.SpuDetailVo;
-import org.kunze.diansh.controller.vo.SpuVo;
+import org.kunze.diansh.controller.vo.*;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.modelData.SpuModel;
 
@@ -85,4 +82,11 @@ public interface ISpuService extends IService<Spu> {
      * @return
      */
     List<BeSimilarSpuVo> selectBySimilarSpu(String cid3,String spuId);
+
+    /**
+     * 首页分类商品
+     * @param cid3
+     * @return
+     */
+    List<BeSimilarSpuVo> selectCategorySpu(String cid3);
 }

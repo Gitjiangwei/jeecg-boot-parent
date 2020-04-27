@@ -184,4 +184,20 @@ public class SpuController {
         }
         return result;
     }
+
+    @ApiOperation("首页查询分类商品")
+    @AutoLog("首页查询分类商品")
+    @PostMapping(value = "/categorySpu")
+    public Result<List<BeSimilarSpuVo>> selectCategorySpu(@RequestParam(value = "cid3") String cid3){
+        Result<List<BeSimilarSpuVo>> result = new Result<List<BeSimilarSpuVo>>();
+        if(cid3 == null || cid3.equals("")){
+            result.setSuccess(true);
+            result.success("参数丢失！");
+        }else {
+            List<BeSimilarSpuVo> beSimilarSpuVoList = spuService.selectCategorySpu(cid3);
+            result.setSuccess(true);
+            result.setResult(beSimilarSpuVoList);
+        }
+        return result;
+    }
 }

@@ -277,37 +277,9 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         }else if(spuId == null || spuId.equals("")){
             return null;
         }else {
-            List<String> stringList = spuMapper.selectCid3SpuByIds(cid3,spuId);
-            List<String> a = new ArrayList<String>();
-            int mun = 4;
-            for(int i = 0; i < mun;i++) {
-                if(a.size() == 4){
-                    break;
-                }
-                if((i+1)==mun && a.size()!=4){
-                    mun++;
-                }
-                //获取0至spuId集合总数之间的随机数
-                int random = new Random().nextInt(stringList.size());
-                Boolean flag = false;
-                if(a.size() != 0) {
-                    for (int j = 0; j < a.size(); j++) {
-                        if (random == Integer.parseInt(a.get(j))) {
-                            flag = true;
-                            break;
-                        }
-                    }
-                    if(!flag) {
-                        a.add(String.valueOf(random));
-                    }
-                }else {
-                    a.add(String.valueOf(random));
-                }
-            }
-            //获取集合中的spuId值
-            List<String> spuIds = new ArrayList<String>();
-            for(int i=0;i < a.size();i++){
-                spuIds.add(stringList.get(Integer.parseInt(a.get(i))));
+            List<String> spuIds = querySpuId(cid3,spuId);
+            if(spuIds==null){
+                return null;
             }
             //查询相似商品
             List<BeSimilarSpuVo> similarSpuVos = spuMapper.selectSimilarSpu(spuIds);
@@ -315,5 +287,62 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         }
     }
 
+    /**
+     * 首页分类商品
+     *
+     * @param cid3
+     * @return
+     */
+    @Override
+    public List<BeSimilarSpuVo> selectCategorySpu(String cid3) {
+        if(cid3 == null || cid3.equals("")){
+            return null;
+        }else {
+            List<String> spuIds = querySpuId(cid3,"");
+            if(spuIds==null){
+                return null;
+            }
+            List<BeSimilarSpuVo> similarSpuVos = spuMapper.selectSimilarSpu(spuIds);
+            return similarSpuVos;
+        }
+    }
 
+    private List<String> querySpuId(String cid3,String spuId){
+            List<String> stringList = spuMapper.selectCid3SpuByIds(cid3, spuId);
+            if(stringList.size()==0){
+                return null;
+            }
+            List<String> a = new ArrayList<String>();
+            int mun = 4;
+            for (int i = 0; i < mun; i++) {
+                if (a.size() == 4) {
+                    break;
+                }
+                if ((i + 1) == mun && a.size() != 4) {
+                    mun++;
+                }
+                //获取0至spuId集合总数之间的随机数
+                int random = new Random().nextInt(stringList.size());
+                Boolean flag = false;
+                if (a.size() != 0) {
+                    for (int j = 0; j < a.size(); j++) {
+                        if (random == Integer.parseInt(a.get(j))) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (!flag) {
+                        a.add(String.valueOf(random));
+                    }
+                } else {
+                    a.add(String.valueOf(random));
+                }
+            }
+        //获取集合中的spuId值
+        List<String> spuIds = new ArrayList<String>();
+        for (int i = 0; i < a.size(); i++) {
+            spuIds.add(stringList.get(Integer.parseInt(a.get(i))));
+        }
+        return spuIds;
+    }
 }
