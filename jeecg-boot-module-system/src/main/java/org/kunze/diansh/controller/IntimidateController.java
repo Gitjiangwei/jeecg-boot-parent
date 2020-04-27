@@ -18,7 +18,6 @@ import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -43,7 +42,6 @@ public class IntimidateController {
         }
         printSale(list,salesTicketVo);*/
         SalesTicketVo salesTicketVo = new SalesTicketVo();
-        salesTicketVo.setCashier("123456");
         salesTicketVo.setChanges("150");
         List<Commodity> commodities = new ArrayList<>();
         Commodity commodity = new Commodity("凯迪拉克","5","5000","25000");
@@ -99,7 +97,7 @@ public class IntimidateController {
             pageFormat.setPaper(paper);
 
             book.append(new SalesTicket(new ArrayList<>(list),salesTicketVo.getDistributionVo(),salesTicketVo.getShopName() ,
-                    salesTicketVo.getCashier(), salesTicketVo.getSaleNum(), salesTicketVo.getSaleSum(),
+                    salesTicketVo.getSaleNum(), salesTicketVo.getSaleSum(),
                     salesTicketVo.getPractical(), salesTicketVo.getChanges(),salesTicketVo.getOrders(),
                     salesTicketVo.getShopAddress(),salesTicketVo.getPickUp()), pageFormat);
 

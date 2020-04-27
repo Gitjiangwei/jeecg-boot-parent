@@ -25,8 +25,6 @@ public class SalesTicket implements Printable {
 
     private String shopName;
 
-    private String cashier;
-
     private Font font;
 
     private String saleNum;
@@ -47,7 +45,7 @@ public class SalesTicket implements Printable {
 
     //构造函数
     public SalesTicket(ArrayList<Commodity> commodityList,DistributionVo distributionVo,
-                       String shopName,String cashier, String saleNum,String saleSum,
+                       String shopName, String saleNum,String saleSum,
                        String practical,String changes,String orders,String shopAddress,
                        String pickUp){
         this.commodityList = commodityList;
@@ -56,7 +54,7 @@ public class SalesTicket implements Printable {
         //超市名称
         this.shopName = shopName;
         // 收银员编号
-        this.cashier = cashier;
+        /*this.cashier = cashier;*/
         //商品总数
         this.saleNum = saleNum;
         //总金额
@@ -134,9 +132,6 @@ public class SalesTicket implements Printable {
         font = new Font("宋体",Font.PLAIN,8);
         graphics2D.setFont(font);
         height = font.getSize2D();//字体高度
-/*        line = 2 * height+60;
-        //显示收银员
-        graphics2D.drawString("收银员："+ cashier,(float) x,(float) y + line);*/
 
         line += height+maxHe;
         //显示订单号
