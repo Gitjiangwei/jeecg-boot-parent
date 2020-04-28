@@ -37,9 +37,12 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
         if(count > addressMaxSizi){
             throw new AddressException("添加收获地址失败，您的收货地址已达到上限"+addressMaxSizi+"条！");
         }
+
         if(count > 0){
-            //重置用户所有地址为非默认地址
-            addressMapper.resetAddressDefault(address.getUserId());
+            if(address.getIsDefault().equals("1")){
+                //重置用户所有地址为非默认地址
+                addressMapper.resetAddressDefault(address.getUserId());
+            }
         }
         address.setId(UUID.randomUUID().toString().replace("-",""));
         int resultNum = addressMapper.insertAddress(address);

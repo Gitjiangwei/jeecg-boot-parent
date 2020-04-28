@@ -11,6 +11,7 @@ import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
 import org.kunze.diansh.controller.vo.SpuVo;
 import org.kunze.diansh.entity.Goods;
+import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.modelData.SpuModel;
 import org.kunze.diansh.esRepository.GoodsRepository;
@@ -40,6 +41,7 @@ public class SpuController {
 
     @Autowired
     private GoodsRepository goodsRepository;
+
 
     @ApiOperation("商品查询")
     @AutoLog("查询商品")
@@ -116,10 +118,14 @@ public class SpuController {
     @ApiOperation("通过商品分类Id查询相关商品的详细信息")
     @AutoLog("通过商品分类Id查询相关商品的详细信息")
     @PostMapping(value = "/querySpuByCateID")
-    public List<Spu> querySpuByCateID(String cateId){
-        Result<List<Spu>> result = new Result<List<Spu>>();
-        List<Spu> spuList = spuService.querySpuById(cateId);
-        return spuList;
+    public Result<PageInfo<SpuModel>> querySpuByCateID(String cateId,
+                                                  @RequestParam(name = "pageNo",defaultValue = "1") Integer pageNo,
+                                                  @RequestParam(name = "pageSize") Integer pageSize){
+        Result<PageInfo<SpuModel>> result = new Result<PageInfo<SpuModel>>();
+        PageInfo<SpuModel> spuList = spuService.querySpuById(cateId,pageNo,pageSize);
+        result.setSuccess(true);
+        result.setResult(spuList);
+        return result;
     }
 
 

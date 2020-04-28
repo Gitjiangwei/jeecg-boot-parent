@@ -34,7 +34,7 @@ public class UserController {
     @ApiOperation("添加用户地址信息")
     @AutoLog("添加用户地址信息")
     @PostMapping(value = "/insertAddress")
-    public Result<Object> insertAddress(@RequestParam(name = "address") String address) throws AddressException {
+    public Result<Object> insertAddress(@RequestParam(name = "address") String address){
         Result<Object> resultList = new Result<Object>();
         Address addressObject = JSON.parseObject(address,Address.class);
         if(!addressValidate(addressObject)){
@@ -49,7 +49,13 @@ public class UserController {
 //            resultList.setMessage("未登录，请登录后添加地址！");
 //            return resultList;
 //        }
-        addressService.insertAddress(addressObject);
+        try {
+            addressService.insertAddress(addressObject);
+        } catch (AddressException e) {
+            resultList.setSuccess(false);
+            resultList.setMessage("创建地址时出现错误！");
+            e.printStackTrace();
+        }
         return resultList;
     }
 
@@ -100,7 +106,7 @@ public class UserController {
     @ApiOperation("设置默认地址")
     @AutoLog("设置默认地址")
     @PostMapping(value = "/updateDefaultByID")
-    public Result<T> updateDefaultByID(@RequestParam(name = "id") String id, @RequestParam(name = "userID") String userID) throws AddressException {
+    public Result<T> updateDefaultByID(@RequestParam(name = "id") String id, @RequestParam(name = "userID") String userID){
         Result<T> result = new Result<T>();
         if (null == id || "".equals(id)) {
             result.error500("参数为空！");
@@ -108,9 +114,16 @@ public class UserController {
         if (null == userID || "".equals(userID)) {
             result.error500("参数为空！");
         }
-        addressService.updateDefaultByID(id, userID);
+        try {
+            addressService.updateDefaultByID(id, userID);
+        } catch (AddressException e) {
+            result.setSuccess(false);
+            result.setMessage("设置默认地址时出现错误！");
+            e.printStackTrace();
+        }
         return result;
     }
+
 
 
     //验证地址格式

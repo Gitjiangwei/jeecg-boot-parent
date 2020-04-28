@@ -1,5 +1,7 @@
 package org.kunze.diansh.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
@@ -24,6 +26,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -90,10 +93,10 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
      * @return
      */
     @Override
-    public PageInfo<Sku> querySpuById(String cateId,Integer pageNo,Integer pageSize) {
+    public PageInfo<SpuModel> querySpuById(String cateId,Integer pageNo,Integer pageSize) {
         PageHelper.startPage(pageNo,pageSize);
-        List<Sku> skuList = spuMapper.querySpuById(cateId);
-        return new PageInfo<Sku>(skuList);
+        List<SpuModel> spuList = spuMapper.querySpuById(cateId);
+        return new PageInfo<SpuModel>(spuList);
     }
 
     /**

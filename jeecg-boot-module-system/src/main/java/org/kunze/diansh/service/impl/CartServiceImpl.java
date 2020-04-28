@@ -130,13 +130,16 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
      * @param skuId 商品id
      */
     @Override
-    public void deleteCart(String skuId) {
+    public void deleteCart(List skuId) {
         //登录用户对象
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         String key = KEY_PREFIX+"456789";
         BoundHashOperations<String,Object,Object> hashOps = this.redisTemplate.boundHashOps(key);
-        //从Redis中删除
-        hashOps.delete(skuId);
+        for (Object sid:skuId) {
+            //从Redis中删除
+            hashOps.delete(sid);
+        }
+
     }
 
     /**

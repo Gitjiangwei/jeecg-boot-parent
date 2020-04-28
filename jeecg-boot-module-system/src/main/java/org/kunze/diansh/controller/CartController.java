@@ -68,9 +68,10 @@ public class CartController {
     @ApiOperation("删除购物车商品")
     @AutoLog("删除购物车商品")
     @PostMapping("/deleteCart")
-    public Result<Void> deleteCart(String skuId){
+    public Result<Void> deleteCart(@RequestParam(name = "skuId") String skuId){
         Result<Void> resultList = new Result<Void>();
-        cartService.deleteCart(skuId);
+        List<Object> skuList= JSON.parseArray(skuId);
+        cartService.deleteCart(skuList);
         return resultList;
     }
 

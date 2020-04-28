@@ -6,10 +6,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.concurrent.Delayed;
+import java.util.concurrent.TimeUnit;
 
 @Data
 //订单实体
-public class Order implements Serializable {
+public class Order implements Serializable, Delayed {
 
     //订单id
     private String orderId;
@@ -84,4 +86,13 @@ public class Order implements Serializable {
     private int buyerRate;
 
 
+    @Override
+    public long getDelay(TimeUnit timeUnit) {
+        return 0;
+    }
+
+    @Override
+    public int compareTo(Delayed delayed) {
+        return 0;
+    }
 }

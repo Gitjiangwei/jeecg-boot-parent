@@ -4,6 +4,7 @@ import lombok.Data;
 import org.kunze.diansh.entity.Address;
 import org.kunze.diansh.entity.Cart;
 import org.kunze.diansh.entity.Order;
+import org.kunze.diansh.entity.OrderDetail;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class OrderBo {
     private Address address;
 
     //购物车集合
-    private List<Cart> cartList;
+    private List<OrderDetail> odList;
 
     //订单
     private Order order;

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.kunze.diansh.controller.bo.OrderBo;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,9 @@ public class OrderController {
     @ApiOperation("创建订单")
     @AutoLog("创建订单")
     @PostMapping(value = "/createOrder")
-    public Result<Order> createOrder(String aid, String[] cids, String shopId, String userID){
-        Result<Order> orderResult = new Result<Order>();
-        Order order = orderService.createOrder(aid,cids,shopId,userID);
+    public Result<OrderBo> createOrder(String aid, String[] cids, String shopId, String userID){
+        Result<OrderBo> orderResult = new Result<OrderBo>();
+        OrderBo order = orderService.createOrder(aid,cids,shopId,userID);
         if(null != order){
             orderResult.success("创建成功！");
             orderResult.setResult(order);

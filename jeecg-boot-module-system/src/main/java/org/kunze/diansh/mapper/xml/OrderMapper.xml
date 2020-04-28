@@ -41,4 +41,17 @@
         select count(1) from kz_order o,kz_shop s where o.shop_id = s.id and TO_DAYS(NOW()) = TO_DAYS(NOW())
         and shop_id = #{shopId}
     </select>
+
+    <!-- 查询订单数据 根据订单状态   -->
+    <select id="selectOrderByStatus" resultType="org.kunze.diansh.entity.Order">
+        select order_id,shop_id,address_id,amount_payment,payment,payment_type,post_free,status,create_time,update_time,
+        payment_time,consign_time,end_time,close_time,shipping_name,shipping_code,user_id,buyer_message,buyer_nick,buyer_rete
+        from kz_order where user_id = #{userID} and shop_id = #{shopID}
+        <trim prefix="and" prefixOverrides="and">
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </trim>
+        order by status asc
+    </select>
 </mapper>

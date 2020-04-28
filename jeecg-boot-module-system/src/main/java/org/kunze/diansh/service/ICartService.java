@@ -30,6 +30,6 @@ public interface ICartService extends IService<Cart> {
      * 删除购物车商品
      * @param skuId 商品id
      */
-    void deleteCart(String skuId);
+    void deleteCart(List skuId);
 
 }

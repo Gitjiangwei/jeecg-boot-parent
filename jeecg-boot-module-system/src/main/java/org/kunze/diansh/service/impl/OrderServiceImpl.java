@@ -2,6 +2,7 @@ package org.kunze.diansh.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.common.util.OrderCodeUtils;
+import org.kunze.diansh.controller.bo.OrderBo;
 import org.kunze.diansh.entity.Address;
 import org.kunze.diansh.entity.Cart;
 import org.kunze.diansh.entity.Order;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +43,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     @Override
     @Transactional
-    public Order createOrder(String aid,String[] cids,String shopId,String userID) {
+    public OrderBo createOrder(String aid, String[] cids, String shopId, String userID) {
         //当前时间
         Date date = new Date();
         //根据aid查找相关的地址信息
@@ -83,6 +85,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             new Exception("创建订单失败！插入订单时出现未知错误");
         }
 
+        List<OrderDetail> odList = new ArrayList<OrderDetail>();
         for (Cart cart:cartList) {
             OrderDetail od = new OrderDetail();
             od.setId(UUID.randomUUID().toString().replace("-",""));
@@ -94,16 +97,30 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             od.setPrice(Integer.parseInt(cart.getCartPrice()));
             od.setImage(cart.getImage());
             Integer odRows = orderMapper.insertOrderDetail(od);
+            odList.add(od);
             if (rows != 1){
                 new Exception("创建订单失败！插入订单时出现未知错误");
             }
         }
-        Order result = new Order();
-        result.setOrderId(order.getOrderId()); //订单id
-        result.setAmountPayment(totalPrice.toString()); //应付金额
+        OrderBo result = new OrderBo();
+        result.setAddress(address);
+        result.setOrder(order);
+        result.setOdList(odList);
         return result;
     }
 
+    /**
+     * 根据订单状态查询订单数据
+     * @param status 订单状态
+     * @param userID 用户id
+     * @param shopID 店铺id
+     * @return 订单数据
+     */
+    @Override
+    public List<Order> selectOrderByStatus(String status, String userID, String shopID) {
+
+        return null;
+    }
 
 
 }
