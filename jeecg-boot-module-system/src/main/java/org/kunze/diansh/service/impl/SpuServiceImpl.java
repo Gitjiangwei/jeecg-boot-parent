@@ -6,16 +6,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import jdk.nashorn.internal.runtime.linker.LinkerCallSite;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
 import org.kunze.diansh.controller.bo.SpuBo;
-import org.kunze.diansh.controller.vo.SkuVo;
-import org.kunze.diansh.controller.vo.SpuBrandVo;
-import org.kunze.diansh.controller.vo.SpuVo;
+import org.kunze.diansh.controller.vo.*;
 import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.SpuDetail;
 import org.kunze.diansh.entity.Stock;
+import org.kunze.diansh.entity.modelData.SpuDetailModel;
 import org.kunze.diansh.entity.modelData.SpuModel;
 import org.kunze.diansh.mapper.SkuMapper;
 import org.kunze.diansh.mapper.SpuDetailMapper;
@@ -29,9 +30,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuService {
@@ -201,7 +200,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             if(null != spuBo.getSpuDetail()){
                 SpuDetail spuDetail = spuBo.getSpuDetail();
                 spuDetail.setSpuId(spu.getId());
-                resultSpuDetail = spuDetailMapper.updateSpuDetail(spuDetail); //更新商品详情
+                resultSpuDetail = spuDetailMapper.updateSpuDetail(spuDetail); //更新
             }
             if(null != spuBo.getSkuVos()){
                 List<Sku> skuList = new ArrayList<Sku>();
@@ -254,5 +253,101 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         return resultFlag;
     }
 
+    /**
+     * 商品详情页查看
+     *
+     * @param spuId
+     * @return
+     */
+    @Override
+    public SpuDetailVo selectByPrimaryKey(String spuId) {
+        SpuDetailVo spuDetailVo = new SpuDetailVo();
+        if(spuId == null || spuId.equals("")){
+            return null;
+        }else {
+            SpuDetailModel spuDetailModel = spuMapper.selectByPrimaryKey(spuId);
+            List<Sku> skuList = skuMapper.querySkuBySpuId(spuId);
+            spuDetailVo.setImages(Arrays.asList(spuDetailModel.getImages().split(",")));
+            spuDetailVo.setSpuDetailModel(spuDetailModel);
+            spuDetailVo.setSkus(skuList);
+            return spuDetailVo;
+        }
 
+    }
+
+    @Override
+    public List<BeSimilarSpuVo> selectBySimilarSpu(String cid3, String spuId) {
+        if(cid3 == null || cid3.equals("")){
+            return null;
+        }else if(spuId == null || spuId.equals("")){
+            return null;
+        }else {
+            List<String> spuIds = querySpuId(cid3,spuId);
+            if(spuIds==null){
+                return null;
+            }
+            //查询相似商品
+            List<BeSimilarSpuVo> similarSpuVos = spuMapper.selectSimilarSpu(spuIds);
+            return similarSpuVos;
+        }
+    }
+
+    /**
+     * 首页分类商品
+     *
+     * @param cid3
+     * @return
+     */
+    @Override
+    public List<BeSimilarSpuVo> selectCategorySpu(String cid3) {
+        if(cid3 == null || cid3.equals("")){
+            return null;
+        }else {
+            List<String> spuIds = querySpuId(cid3,"");
+            if(spuIds==null){
+                return null;
+            }
+            List<BeSimilarSpuVo> similarSpuVos = spuMapper.selectSimilarSpu(spuIds);
+            return similarSpuVos;
+        }
+    }
+
+    private List<String> querySpuId(String cid3,String spuId){
+            List<String> stringList = spuMapper.selectCid3SpuByIds(cid3, spuId);
+            if(stringList.size()==0){
+                return null;
+            }
+            List<String> a = new ArrayList<String>();
+            int mun = 4;
+            for (int i = 0; i < mun; i++) {
+                if (a.size() == 4) {
+                    break;
+                }
+                if ((i + 1) == mun && a.size() != 4) {
+                    mun++;
+                }
+                //获取0至spuId集合总数之间的随机数
+                int random = new Random().nextInt(stringList.size());
+                Boolean flag = false;
+                if (a.size() != 0) {
+                    for (int j = 0; j < a.size(); j++) {
+                        if (random == Integer.parseInt(a.get(j))) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (!flag) {
+                        a.add(String.valueOf(random));
+                    }
+                } else {
+                    a.add(String.valueOf(random));
+                }
+            }
+        //获取集合中的spuId值
+        List<String> spuIds = new ArrayList<String>();
+        for (int i = 0; i < a.size(); i++) {
+            spuIds.add(stringList.get(Integer.parseInt(a.get(i))));
+        }
+        return spuIds;
+    }
 }

@@ -31,6 +31,10 @@ public class Spu implements Serializable {
 
     private String isFlag;// 是否有效，逻辑删除用
 
+    private String images; //商品多图片
+
+    private String image; //商品单图片
+
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;// 创建时间

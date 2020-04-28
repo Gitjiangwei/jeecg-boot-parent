@@ -16,9 +16,6 @@ public class SalesTicketVo implements Serializable {
     /**超市名称*/
     private String shopName;
 
-    /**收银员编号*/
-    private String cashier;
-
     /**数量*/
     private String saleNum;
 

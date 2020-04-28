@@ -7,6 +7,7 @@ import org.apache.poi.ss.formula.functions.T;
 import org.checkerframework.checker.units.qual.C;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.kunze.diansh.controller.vo.DistributionVo;
 import org.kunze.diansh.controller.vo.SalesTicketVo;
 import org.kunze.diansh.entity.Commodity;
 import org.kunze.diansh.salesTicket.SalesTicket;
@@ -17,7 +18,6 @@ import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -32,16 +32,48 @@ public class IntimidateController {
     @ApiOperation("打印接口")
     @AutoLog("打印小票")
     @PostMapping(value = "/dayin")
-    public Result<T> intimiDate(@RequestBody SalesTicketVo salesTicketVo){
-        Result<T> result = new Result<T>();
-        List<Commodity> list = new ArrayList<>();
+    public Result<SalesTicketVo> intimiDate(@RequestParam(name = "pickUp") String pickUp){
+        Result<SalesTicketVo> result = new Result<SalesTicketVo>();
+/*        List<Commodity> list = new ArrayList<>();
         for(int i =0; i<salesTicketVo.getCommodityList().size();i++){
             Commodity commodity = new Commodity(salesTicketVo.getCommodityList().get(i).getSpuName(),salesTicketVo.getCommodityList().get(i).getUnitPrice(),
                     salesTicketVo.getCommodityList().get(i).getSpuNum(),salesTicketVo.getCommodityList().get(i).getUnitPriceTotle());
             list.add(commodity);
         }
-        printSale(list,salesTicketVo);
-
+        printSale(list,salesTicketVo);*/
+        SalesTicketVo salesTicketVo = new SalesTicketVo();
+        salesTicketVo.setChanges("150");
+        List<Commodity> commodities = new ArrayList<>();
+        Commodity commodity = new Commodity("凯迪拉克","5","5000","25000");
+        commodities.add(commodity);
+        Commodity commodity1 = new Commodity("苹果(500克/盒)苹果(500克/盒)苹果(500克/盒)苹果(500克/盒)","10","5","50");
+        commodities.add(commodity1);
+        Commodity commodity2 = new Commodity("凯迪拉克(500克/盒)","5","5000","25000");
+        commodities.add(commodity2);
+        Commodity commodity3 = new Commodity("蓝莓(500克/盒)","10","5","50");
+        commodities.add(commodity3);
+        Commodity commodity4 = new Commodity("蓝莓(500克/盒)","10","5","50");
+        commodities.add(commodity4);
+        salesTicketVo.setCommodityList((ArrayList<Commodity>) commodities);
+        DistributionVo distributionVo = new DistributionVo();
+        distributionVo.setCall("姜先生");
+        distributionVo.setContact("13023080927");
+        if(pickUp.equals("2")) {
+            salesTicketVo.setPickUp("商家配送");
+            distributionVo.setShippingAddress("北京市海淀区西三旗街道永泰西里社区23幢2单元402室");
+        }else {
+            salesTicketVo.setPickUp("自提");
+            distributionVo.setShippingAddress("");
+        }
+        salesTicketVo.setDistributionVo(distributionVo);
+        salesTicketVo.setOrders("123456");
+        salesTicketVo.setPractical("25000");
+        salesTicketVo.setSaleNum("40");
+        salesTicketVo.setSaleSum("25150");
+        salesTicketVo.setShopAddress("长治市潞州区紫金西街5号");
+        salesTicketVo.setShopName("金威超市");
+        result.setSuccess(true);
+        result.setResult(salesTicketVo);
         return result;
     }
 
@@ -65,7 +97,7 @@ public class IntimidateController {
             pageFormat.setPaper(paper);
 
             book.append(new SalesTicket(new ArrayList<>(list),salesTicketVo.getDistributionVo(),salesTicketVo.getShopName() ,
-                    salesTicketVo.getCashier(), salesTicketVo.getSaleNum(), salesTicketVo.getSaleSum(),
+                    salesTicketVo.getSaleNum(), salesTicketVo.getSaleSum(),
                     salesTicketVo.getPractical(), salesTicketVo.getChanges(),salesTicketVo.getOrders(),
                     salesTicketVo.getShopAddress(),salesTicketVo.getPickUp()), pageFormat);
 

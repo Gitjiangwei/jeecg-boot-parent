@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.SpuFeaturesMapper">
+
+    <insert id="saveSpuFeatures">
+        insert into kz_spu_features(features_id,spu_id,features_flag,create_time,create_name,features_weight,remarks)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{featuresId},#{spuId},#{featuresFlag},NOW(),#{createName},#{featuresWeight},#{remarks})
+        </foreach>
+    </insert>
+</mapper>
