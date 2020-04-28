@@ -27,7 +27,7 @@ public interface SpuMapper extends BaseMapper<Spu> {
 
     int deleteSpu(@Param("spu") Spu spu);
 
-    List<Spu> querySpuById(@Param("id") String cateId);
+    List<Spu> querySpuById(@Param("id") String cateId,@Param("shopId") String shopId);
 
     Spu querySpuByIds(@Param("spuId") String spuId);
 
@@ -43,7 +43,7 @@ public interface SpuMapper extends BaseMapper<Spu> {
      * @param cid3
      * @return
      */
-    List<String> selectCid3SpuByIds(@Param("ci3") String cid3,@Param("spuId") String spuId);
+    List<String> selectCid3SpuByIds(@Param("ci3") String cid3,@Param("spuId") String spuId,@Param("shopId") String shopId);
 
 
     /**

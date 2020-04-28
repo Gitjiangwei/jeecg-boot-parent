@@ -31,7 +31,7 @@ public interface ISpuService extends IService<Spu> {
      * @param cateId 商品分类Id
      * @return
      */
-    List<Spu> querySpuById(String cateId);
+    List<Spu> querySpuById(String cateId,String shopId);
 
     /**
      * 查询品牌以作下拉框使用
@@ -81,12 +81,12 @@ public interface ISpuService extends IService<Spu> {
      * @param spuId
      * @return
      */
-    List<BeSimilarSpuVo> selectBySimilarSpu(String cid3,String spuId);
+    List<BeSimilarSpuVo> selectBySimilarSpu(String cid3,String spuId,String shopId);
 
     /**
      * 首页分类商品
      * @param cid3
      * @return
      */
-    List<BeSimilarSpuVo> selectCategorySpu(String cid3);
+    List<BeSimilarSpuVo> selectCategorySpu(String cid3,String shopId);
 }

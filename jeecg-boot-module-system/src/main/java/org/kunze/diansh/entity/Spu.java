@@ -44,4 +44,6 @@ public class Spu implements Serializable {
     private Date lastUpdateTime;// 最后修改时间
 
     private String updateName; //修改/创建人
+
+    private String shopId; //超市Id
 }

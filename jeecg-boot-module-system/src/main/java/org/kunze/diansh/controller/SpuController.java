@@ -51,9 +51,13 @@ public class SpuController {
                                                  @RequestParam(name = "pageNo",defaultValue = "1") Integer pageNo,
                                                  @RequestParam(name = "pageSize") Integer pageSize){
         Result<PageInfo<SpuModel>> result = new Result<PageInfo<SpuModel>>();
-        PageInfo<SpuModel> spuModelPageInfo = spuService.qrySpuList(spuVo,pageNo,pageSize);
-        result.setSuccess(true);
-        result.setResult(spuModelPageInfo);
+        if(spuVo.getShopId()==null || spuVo.getShopId().equals("")){
+            result.error500("超市唯一参数丢失！");
+        }else {
+            PageInfo<SpuModel> spuModelPageInfo = spuService.qrySpuList(spuVo, pageNo, pageSize);
+            result.setSuccess(true);
+            result.setResult(spuModelPageInfo);
+        }
         return result;
     }
 
@@ -83,11 +87,15 @@ public class SpuController {
     @PostMapping(value = "/saveGood")
     public Result<SpuBo> saveSpu(@RequestBody SpuBo spuBo){
         Result<SpuBo> result = new Result<SpuBo>();
-        Boolean resultOk = spuService.saveSpu(spuBo);
-        if(resultOk){
-            result.success("添加成功");
-        }else{
-            result.success("添加失败！");
+        if(spuBo.getShopId()==null || spuBo.getShopId().equals("")){
+            result.error500("超市唯一参数丢失！");
+        }else {
+            Boolean resultOk = spuService.saveSpu(spuBo);
+            if (resultOk) {
+                result.success("添加成功");
+            } else {
+                result.success("添加失败！");
+            }
         }
         return result;
     }
@@ -119,9 +127,9 @@ public class SpuController {
     @ApiOperation("通过商品分类Id查询相关商品的详细信息")
     @AutoLog("通过商品分类Id查询相关商品的详细信息")
     @PostMapping(value = "/querySpuByCateID")
-    public List<Spu> querySpuByCateID(String cateId){
+    public List<Spu> querySpuByCateID(String cateId,String shopId){
         Result<List<Spu>> result = new Result<List<Spu>>();
-        List<Spu> spuList = spuService.querySpuById(cateId);
+        List<Spu> spuList = spuService.querySpuById(cateId,shopId);
         return spuList;
     }
 
@@ -169,7 +177,8 @@ public class SpuController {
     @AutoLog("前台查询相似商品")
     @PostMapping(value = "/simitSpu")
     public Result<List<BeSimilarSpuVo>> selectSimitSpu(@RequestParam(value = "cid3") String cid3,
-                                                       @RequestParam(value = "spuId") String spuId){
+                                                       @RequestParam(value = "spuId") String spuId,
+                                                       @RequestParam(value = "shopId") String shopId){
         Result<List<BeSimilarSpuVo>> result = new Result<List<BeSimilarSpuVo>>();
         if(cid3 == null || cid3.equals("")){
             result.setSuccess(true);
@@ -178,7 +187,7 @@ public class SpuController {
             result.setSuccess(true);
             result.success("参数丢失！");
         }else {
-            List<BeSimilarSpuVo> beSimilarSpuVoList = spuService.selectBySimilarSpu(cid3,spuId);
+            List<BeSimilarSpuVo> beSimilarSpuVoList = spuService.selectBySimilarSpu(cid3,spuId,shopId);
             result.setSuccess(true);
             result.setResult(beSimilarSpuVoList);
         }
@@ -188,13 +197,17 @@ public class SpuController {
     @ApiOperation("首页查询分类商品")
     @AutoLog("首页查询分类商品")
     @PostMapping(value = "/categorySpu")
-    public Result<List<BeSimilarSpuVo>> selectCategorySpu(@RequestParam(value = "cid3") String cid3){
+    public Result<List<BeSimilarSpuVo>> selectCategorySpu(@RequestParam(value = "cid3") String cid3,
+                                                          @RequestParam(value = "shopId") String shopId){
         Result<List<BeSimilarSpuVo>> result = new Result<List<BeSimilarSpuVo>>();
         if(cid3 == null || cid3.equals("")){
             result.setSuccess(true);
             result.success("参数丢失！");
+        }else if(shopId == null || shopId.equals("")){
+            result.setSuccess(true);
+            result.success("参数丢失！");
         }else {
-            List<BeSimilarSpuVo> beSimilarSpuVoList = spuService.selectCategorySpu(cid3);
+            List<BeSimilarSpuVo> beSimilarSpuVoList = spuService.selectCategorySpu(cid3,shopId);
             result.setSuccess(true);
             result.setResult(beSimilarSpuVoList);
         }

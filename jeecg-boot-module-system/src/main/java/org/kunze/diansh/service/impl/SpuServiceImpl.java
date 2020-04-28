@@ -89,8 +89,8 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
      * @return
      */
     @Override
-    public List<Spu> querySpuById(String cateId) {
-        return spuMapper.querySpuById(cateId);
+    public List<Spu> querySpuById(String cateId,String shopId) {
+        return spuMapper.querySpuById(cateId,shopId);
     }
 
     /**
@@ -271,13 +271,13 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
     }
 
     @Override
-    public List<BeSimilarSpuVo> selectBySimilarSpu(String cid3, String spuId) {
+    public List<BeSimilarSpuVo> selectBySimilarSpu(String cid3, String spuId,String shopId) {
         if(cid3 == null || cid3.equals("")){
             return null;
         }else if(spuId == null || spuId.equals("")){
             return null;
         }else {
-            List<String> spuIds = querySpuId(cid3,spuId);
+            List<String> spuIds = querySpuId(cid3,spuId,shopId);
             if(spuIds==null){
                 return null;
             }
@@ -294,11 +294,11 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
      * @return
      */
     @Override
-    public List<BeSimilarSpuVo> selectCategorySpu(String cid3) {
+    public List<BeSimilarSpuVo> selectCategorySpu(String cid3,String shopId) {
         if(cid3 == null || cid3.equals("")){
             return null;
         }else {
-            List<String> spuIds = querySpuId(cid3,"");
+            List<String> spuIds = querySpuId(cid3,"",shopId);
             if(spuIds==null){
                 return null;
             }
@@ -307,8 +307,8 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         }
     }
 
-    private List<String> querySpuId(String cid3,String spuId){
-            List<String> stringList = spuMapper.selectCid3SpuByIds(cid3, spuId);
+    private List<String> querySpuId(String cid3,String spuId,String shopId){
+            List<String> stringList = spuMapper.selectCid3SpuByIds(cid3, spuId,shopId);
             if(stringList.size()==0){
                 return null;
             }
