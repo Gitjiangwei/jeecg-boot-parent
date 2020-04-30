@@ -20,20 +20,6 @@ public class SchedulingTaskFeatures implements Job {
     private SpuFeaturesMapper spuFeaturesMapper;
 
 
-    /**
-     * 监控每日特卖数据
-     */
-/*    public void updateOverMonitor() {
-        //1、查询热卖表中过期的SkuId
-        List<String> skuIds = spuFeaturesMapper.selectFeaturesSkuId();
-        if(skuIds != null){
-            //2、将过期的热卖商品Sku进行取消
-            spuFeaturesMapper.updateSkuFeatures(skuIds,"0");
-            //3、删除过期的热卖商品
-            spuFeaturesMapper.delFeatures();
-        }
-    }*/
-
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
