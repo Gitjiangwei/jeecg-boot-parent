@@ -12,6 +12,7 @@
 
     <select id="selectFeatures" resultType="org.kunze.diansh.controller.vo.SpuFeaturesVo">
         SELECT
+        feat.id,
         feat.spu_id,
         sku.id AS 'skuId',
         sku.title,
@@ -78,5 +79,21 @@
                 </foreach>
             </if>
         </trim>
+    </select>
+
+
+    <select id="selectByKey" resultType="org.kunze.diansh.entity.modelData.SpuFeaturesIdsModel">
+        select spu_id,sku_id,features_price from kz_spu_features where features_id = #{id}
+    </select>
+
+
+    <select id="selectFeaturesDetail" resultType="org.kunze.diansh.entity.modelData.SpuFeaturesDetailModel">
+        SELECT spu.id as 'spuId',spu.cid3,spu.images,image,deta.specifications,deta.packing_list,deta.after_service FROM kz_spu spu
+        LEFT JOIN kz_spu_detail deta ON spu.id = deta.spu_id
+        WHERE spu.id = #{spuId} and spu.is_flag = '0' and spu.saleable ='1'
+    </select>
+
+    <select id="selectFeaturesSku" resultType="org.kunze.diansh.controller.vo.SkuFeaturesVo">
+        SELECT id,title,price,own_spec from kz_sku where id = #{skuId}
     </select>
 </mapper>

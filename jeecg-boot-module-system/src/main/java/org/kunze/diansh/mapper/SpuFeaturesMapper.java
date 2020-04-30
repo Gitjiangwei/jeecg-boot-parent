@@ -2,8 +2,13 @@ package org.kunze.diansh.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.kunze.diansh.controller.vo.SkuFeaturesVo;
 import org.kunze.diansh.controller.vo.SpuFeaturesVo;
+import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.SpuFeatures;
+import org.kunze.diansh.entity.modelData.SpuFeaturesDetailModel;
+import org.kunze.diansh.entity.modelData.SpuFeaturesIdsModel;
+import org.kunze.diansh.entity.modelData.SpuFeaturesModel;
 
 import java.util.List;
 
@@ -40,4 +45,23 @@ public interface SpuFeaturesMapper extends BaseMapper<SpuFeatures> {
      * @return
      */
     List<String> selectSkuNotState(@Param("list") List<String> skuIds);
+
+
+    SpuFeaturesIdsModel selectByKey(@Param("id") String id);
+
+
+    /***
+     * 查询每日特卖商品详情基本信息
+     * @param spuId
+     * @return
+     */
+    SpuFeaturesDetailModel selectFeaturesDetail(@Param("spuId") String spuId);
+
+
+    /***
+     * 查询特卖商品的SKU
+     * @param skuId
+     * @return
+     */
+    SkuFeaturesVo selectFeaturesSku(@Param("skuId") String skuId);
 }

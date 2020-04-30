@@ -5,8 +5,14 @@ import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.system.entity.SysUser;
 import org.kunze.diansh.controller.bo.SpuFeaturesBo;
+import org.kunze.diansh.controller.vo.SkuFeaturesVo;
+import org.kunze.diansh.controller.vo.SpuDetailVo;
+import org.kunze.diansh.controller.vo.SpuFeaturesDetailVo;
 import org.kunze.diansh.controller.vo.SpuFeaturesVo;
 import org.kunze.diansh.entity.SpuFeatures;
+import org.kunze.diansh.entity.modelData.SpuFeaturesDetailModel;
+import org.kunze.diansh.entity.modelData.SpuFeaturesIdsModel;
+import org.kunze.diansh.entity.modelData.SpuFeaturesModel;
 import org.kunze.diansh.mapper.SpuFeaturesMapper;
 import org.kunze.diansh.service.ISpuFeaturesService;
 import org.springframework.beans.BeanUtils;
@@ -14,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,7 +51,14 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
         spuFeaturesList.add(spuFeatures);
         int result = spuFeaturesMapper.saveSpuFeatures(spuFeaturesList);
         if(result>0){
-            isFlag = true;
+            if(spuFeaturesBo.getSkuId()!=null && !spuFeaturesBo.getSkuId().equals("")){
+                List<String> stringList = new ArrayList<>();
+                stringList.add(spuFeaturesBo.getSkuId());
+                result = spuFeaturesMapper.updateSkuFeatures(stringList,"1");
+                if(result > 0){
+                    isFlag = true;
+                }
+            }
         }
         return isFlag;
     }
@@ -65,33 +79,36 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
         }
     }
 
-    /**
-     * 监控每日特卖数据
+
+    /***
+     * 每日特卖商品详情
+     * @param featuresId
+     * @return
      */
     @Override
-    public void updateOverMonitor() {
-        //1、查询热卖表中过期的SkuId
-        List<String> skuIds = spuFeaturesMapper.selectFeaturesSkuId();
-        if(skuIds != null){
-            //2、将过期的热卖商品Sku进行取消
-            spuFeaturesMapper.updateSkuFeatures(skuIds,"0");
-            //3、删除过期的热卖商品
-            spuFeaturesMapper.delFeatures();
+    public SpuFeaturesDetailVo selectFeaturesDetail(String featuresId) {
+        if(featuresId == null || featuresId.equals("")){
+            return null;
         }
+        SpuFeaturesIdsModel spuFeaturesIdsModel = spuFeaturesMapper.selectByKey(featuresId);
+        if(spuFeaturesIdsModel.getSpuId() == null || spuFeaturesIdsModel.getSpuId().equals("")){
+            return null;
+        }
+        SpuFeaturesDetailVo spuFeaturesDetailVo = new SpuFeaturesDetailVo();
+        SpuFeaturesDetailModel spuFeaturesDetailModel = spuFeaturesMapper.selectFeaturesDetail(spuFeaturesIdsModel.getSpuId());
+        spuFeaturesDetailVo.setSpuFeaturesDetailModel(spuFeaturesDetailModel);
+        List<String> strings = new ArrayList<>();
+        if(spuFeaturesDetailModel.getImages().contains(",")){
+            strings = new ArrayList<String>(Arrays.asList(spuFeaturesDetailModel.getImages().split(",")));
+        }else {
+            strings.add(spuFeaturesDetailModel.getImages());
+        }
+        spuFeaturesDetailVo.setImages(strings);
+        SkuFeaturesVo skuFeaturesVo =  spuFeaturesMapper.selectFeaturesSku(spuFeaturesIdsModel.getSkuId());
+        skuFeaturesVo.setPrice(spuFeaturesIdsModel.getFeaturesPrice());
+        spuFeaturesDetailVo.setSkuFeaturesVo(skuFeaturesVo);
+        return spuFeaturesDetailVo;
     }
 
-    /**
-     * 监控每日特卖数据
-     */
-    @Override
-    public void updateMonitor() {
-        //1、查询热卖表中过期的SkuId
-        List<String> skuIds = spuFeaturesMapper.selectFeaturesSkuIds();
-        if (skuIds != null){
-            List<String> notSkuIds = spuFeaturesMapper.selectSkuNotState(skuIds);
-            if(notSkuIds != null){
-                spuFeaturesMapper.updateSkuFeatures(notSkuIds,"0");
-            }
-        }
-    }
+
 }

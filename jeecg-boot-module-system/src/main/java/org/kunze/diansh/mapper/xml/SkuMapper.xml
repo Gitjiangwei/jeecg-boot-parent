@@ -36,12 +36,12 @@
 
     <select id="querySkuById" resultType="org.kunze.diansh.entity.Sku">
         select id,spu_id,title,images,new_price,price,indexes,own_spec,`enable`,create_time,last_update_time,shop_id,update_name
-        from kz_sku where `enable`=1 and id = #{id}
+        from kz_sku where `enable`=1 and id = #{id} and is_features = '0'
     </select>
 
     <select id="querySkuBySpuId" resultType="org.kunze.diansh.entity.Sku">
       select id,spu_id,title,images,new_price,price,indexes,own_spec,`enable`,create_time,last_update_time,shop_id,update_name
         from kz_sku
-        where `enable`=1 and spu_id = #{spuId}
+        where `enable`=1 and spu_id = #{spuId} and is_features = '0'
     </select>
 </mapper>

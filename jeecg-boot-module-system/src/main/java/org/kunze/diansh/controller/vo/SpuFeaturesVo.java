@@ -7,6 +7,9 @@ import java.io.Serializable;
 @Data
 public class SpuFeaturesVo implements Serializable {
 
+    /**id*/
+    private String id;
+
     /**SpuId*/
     private String spuId;
 

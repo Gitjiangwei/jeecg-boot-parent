@@ -36,4 +36,13 @@ public class SpuFeaturesBo implements Serializable {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date specialendTime;
+
+    /**SKuId*/
+    private String skuId;
+
+    /**库存*/
+    private String featuresStock;
+
+    /**特卖价格*/
+    private String featuresPrice;
 }
