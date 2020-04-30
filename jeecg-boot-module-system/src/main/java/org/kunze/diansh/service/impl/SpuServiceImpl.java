@@ -261,6 +261,9 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             return null;
         }else {
             SpuDetailModel spuDetailModel = spuMapper.selectByPrimaryKey(spuId);
+            if(spuDetailModel == null){
+                return null;
+            }
             List<Sku> skuList = skuMapper.querySkuBySpuId(spuId);
             spuDetailVo.setImages(Arrays.asList(spuDetailModel.getImages().split(",")));
             spuDetailVo.setSpuDetailModel(spuDetailModel);

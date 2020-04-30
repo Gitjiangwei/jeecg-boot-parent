@@ -132,7 +132,7 @@
     </select>
 
     <select id="selectSimilarSpu" resultType="org.kunze.diansh.controller.vo.BeSimilarSpuVo">
-        select spu.id as 'spuId',spu.title as 'spuTitle',spu.image as 'image',
+        select sku.id as 'skuId',spu.id as 'spuId',spu.title as 'spuTitle',spu.image as 'image',
         sku.new_price as 'spuNewPrice',sku.price as 'spuPrice' from kz_spu spu
         LEFT JOIN kz_sku sku ON spu.id = sku.spu_id
         where spu.id in

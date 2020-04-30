@@ -3,10 +3,80 @@
 <mapper namespace="org.kunze.diansh.mapper.SpuFeaturesMapper">
 
     <insert id="saveSpuFeatures">
-        insert into kz_spu_features(features_id,spu_id,features_flag,create_time,create_name,features_weight,remarks)
+        insert into kz_spu_features(features_id,spu_id,features_flag,create_time,create_name,features_weight,remarks,shop_id,specialstart_time,specialend_time,sku_id,features_stock,features_price)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{featuresId},#{spuId},#{featuresFlag},NOW(),#{createName},#{featuresWeight},#{remarks})
+            (#{item.featuresId},#{item.spuId},#{item.featuresFlag},NOW(),#{item.createName},#{item.featuresWeight},#{item.remarks},#{item.shopId},#{item.specialstartTime},#{item.specialendTime},#{item.skuId},#{item.featuresStock},#{item.featuresPrice})
         </foreach>
     </insert>
+
+    <select id="selectFeatures" resultType="org.kunze.diansh.controller.vo.SpuFeaturesVo">
+        SELECT
+        feat.spu_id,
+        sku.id AS 'skuId',
+        sku.title,
+        spu.image,
+        feat.features_price,
+        sku.price,
+        CASE feat.features_stock
+        WHEN '0' THEN
+        '售罄'
+        ELSE
+        feat.features_stock
+        END  as 'featuresStock '
+        FROM
+        kz_spu_features feat
+        LEFT JOIN kz_spu spu ON feat.spu_id = spu.id
+        LEFT JOIN kz_sku sku ON spu.id = sku.spu_id
+        AND feat.sku_id = sku.id
+        WHERE
+        NOW() &gt; feat.specialstart_time
+        AND NOW() &lt; feat.specialend_time
+        AND sku.is_features = '1'
+        AND sku.`enable` = '1'
+        <if test="shopId != null and shopId != '' ">
+            AND feat.shop_id = #{shopId}
+        </if>
+        ORDER BY feat.create_time
+        <if test="more == 1 ">
+            LIMIT 1
+        </if>
+    </select>
+
+    <update id="updateSkuFeatures">
+        update kz_sku set is_features = #{isFeatures}
+        where id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectFeaturesSkuId" resultType="String">
+        SELECT sku_id from kz_spu_features feat
+        WHERE NOW() &gt; feat.specialend_time
+    </select>
+
+    <delete id="delFeatures">
+        delete from kz_spu_features where NOW() &gt; feat.specialend_time
+    </delete>
+
+    <select id="selectFeaturesSkuIds" resultType="String">
+        SELECT sku_id from kz_spu_features feat
+        WHERE  NOW() &gt; feat.specialstart_time
+        AND NOW() &lt; feat.specialend_time
+    </select>
+
+    <select id="selectSkuNotState" resultType="String">
+
+        SELECT id from kz_sku
+        <trim prefix="where" prefixOverrides="and">
+            is_features = '0'
+            <if test="list != null">
+                and id in
+                <foreach collection="list" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </trim>
+    </select>
 </mapper>

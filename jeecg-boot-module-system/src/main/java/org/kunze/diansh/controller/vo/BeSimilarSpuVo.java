@@ -29,5 +29,7 @@ public class BeSimilarSpuVo implements Serializable {
     /**商品原价格*/
     private String spuPrice;
 
+    /**SkuId*/
+    private String skuId;
 
 }

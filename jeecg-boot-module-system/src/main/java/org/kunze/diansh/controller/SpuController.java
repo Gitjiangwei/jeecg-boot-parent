@@ -127,10 +127,12 @@ public class SpuController {
     @ApiOperation("通过商品分类Id查询相关商品的详细信息")
     @AutoLog("通过商品分类Id查询相关商品的详细信息")
     @PostMapping(value = "/querySpuByCateID")
-    public List<Spu> querySpuByCateID(String cateId,String shopId){
+    public Result<List<Spu>> querySpuByCateID(String cateId,String shopId){
         Result<List<Spu>> result = new Result<List<Spu>>();
         List<Spu> spuList = spuService.querySpuById(cateId,shopId);
-        return spuList;
+        result.setResult(spuList);
+        result.setSuccess(true);
+        return result;
     }
 
 
