@@ -44,8 +44,8 @@ public class SpuFeaturesController  {
     }
 
 
-    @ApiOperation("首页查询热卖商品")
-    @AutoLog("首页查询热卖商品")
+    @ApiOperation("首页查询每日特卖商品")
+    @AutoLog("首页查询每日特卖商品")
     @PostMapping(value = "/queryFeats")
     public Result<List<SpuFeaturesVo>> selectFeatures(@RequestParam(name = "shopId") String shopId,
                                                       @RequestParam(name = "more",defaultValue = "1") String more){
@@ -61,6 +61,9 @@ public class SpuFeaturesController  {
     }
 
 
+    @ApiOperation("每日特卖商品详情")
+    @AutoLog("每日特卖商品详情")
+    @PostMapping(value = "queryFeatsDetail")
     public Result<SpuFeaturesDetailVo> selectFeaturesDetail(@RequestParam(name = "featuresId") String featuresId){
         Result<SpuFeaturesDetailVo> result = new Result<>();
         if(featuresId == null || featuresId.equals("")){

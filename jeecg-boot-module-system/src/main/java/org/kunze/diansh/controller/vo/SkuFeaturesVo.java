@@ -18,4 +18,7 @@ public class SkuFeaturesVo implements Serializable {
 
     //规格参数
     private String ownSpec;
+
+    //库存
+    private String featuresStock;
 }

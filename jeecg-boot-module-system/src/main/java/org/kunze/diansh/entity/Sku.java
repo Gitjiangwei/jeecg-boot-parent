@@ -52,6 +52,7 @@ public class Sku implements Serializable {
     //操作人
     private String updateName;
 
-
+    //是否为特卖
+    private String isFeatures;
 
 }

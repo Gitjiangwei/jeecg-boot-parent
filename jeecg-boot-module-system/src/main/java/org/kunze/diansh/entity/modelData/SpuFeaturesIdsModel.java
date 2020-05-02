@@ -12,4 +12,6 @@ public class SpuFeaturesIdsModel implements Serializable {
     private String skuId;
 
     private String featuresPrice;
+
+    private String featuresStock;
 }

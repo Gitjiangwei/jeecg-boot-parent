@@ -106,6 +106,7 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
         spuFeaturesDetailVo.setImages(strings);
         SkuFeaturesVo skuFeaturesVo =  spuFeaturesMapper.selectFeaturesSku(spuFeaturesIdsModel.getSkuId());
         skuFeaturesVo.setPrice(spuFeaturesIdsModel.getFeaturesPrice());
+        skuFeaturesVo.setFeaturesStock(spuFeaturesIdsModel.getFeaturesStock());
         spuFeaturesDetailVo.setSkuFeaturesVo(skuFeaturesVo);
         return spuFeaturesDetailVo;
     }

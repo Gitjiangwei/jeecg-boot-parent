@@ -83,7 +83,7 @@
 
 
     <select id="selectByKey" resultType="org.kunze.diansh.entity.modelData.SpuFeaturesIdsModel">
-        select spu_id,sku_id,features_price from kz_spu_features where features_id = #{id}
+        select spu_id,sku_id,features_price,features_stock from kz_spu_features where features_id = #{id}
     </select>
 
 
@@ -94,6 +94,6 @@
     </select>
 
     <select id="selectFeaturesSku" resultType="org.kunze.diansh.controller.vo.SkuFeaturesVo">
-        SELECT id,title,price,own_spec from kz_sku where id = #{skuId}
+        SELECT id as 'skuId',title,price,own_spec from kz_sku where id = #{skuId}
     </select>
 </mapper>
