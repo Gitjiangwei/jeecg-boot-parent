@@ -91,9 +91,9 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
      * @return
      */
     @Override
-    public PageInfo<SpuModel> querySpuById(String cateId,Integer pageNo,Integer pageSize) {
+    public PageInfo<SpuModel> querySpuById(String cateId,Integer pageNo,Integer pageSize,String shopId) {
         PageHelper.startPage(pageNo,pageSize);
-        List<SpuModel> spuList = spuMapper.querySpuById(cateId);
+        List<SpuModel> spuList = spuMapper.querySpuById(cateId,shopId);
         return new PageInfo<SpuModel>(spuList);
     }
 
@@ -265,6 +265,9 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             return null;
         }else {
             SpuDetailModel spuDetailModel = spuMapper.selectByPrimaryKey(spuId);
+            if(spuDetailModel == null){
+                return null;
+            }
             List<Sku> skuList = skuMapper.querySkuBySpuId(spuId);
             spuDetailVo.setImages(Arrays.asList(spuDetailModel.getImages().split(",")));
             spuDetailVo.setSpuDetailModel(spuDetailModel);
@@ -275,13 +278,13 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
     }
 
     @Override
-    public List<BeSimilarSpuVo> selectBySimilarSpu(String cid3, String spuId) {
+    public List<BeSimilarSpuVo> selectBySimilarSpu(String cid3, String spuId,String shopId) {
         if(cid3 == null || cid3.equals("")){
             return null;
         }else if(spuId == null || spuId.equals("")){
             return null;
         }else {
-            List<String> spuIds = querySpuId(cid3,spuId);
+            List<String> spuIds = querySpuId(cid3,spuId,shopId);
             if(spuIds==null){
                 return null;
             }
@@ -298,11 +301,11 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
      * @return
      */
     @Override
-    public List<BeSimilarSpuVo> selectCategorySpu(String cid3) {
+    public List<BeSimilarSpuVo> selectCategorySpu(String cid3,String shopId) {
         if(cid3 == null || cid3.equals("")){
             return null;
         }else {
-            List<String> spuIds = querySpuId(cid3,"");
+            List<String> spuIds = querySpuId(cid3,"",shopId);
             if(spuIds==null){
                 return null;
             }
@@ -311,8 +314,8 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         }
     }
 
-    private List<String> querySpuId(String cid3,String spuId){
-            List<String> stringList = spuMapper.selectCid3SpuByIds(cid3, spuId);
+    private List<String> querySpuId(String cid3,String spuId,String shopId){
+            List<String> stringList = spuMapper.selectCid3SpuByIds(cid3, spuId,shopId);
             if(stringList.size()==0){
                 return null;
             }

@@ -35,13 +35,57 @@
     </update>
 
     <select id="querySkuById" resultType="org.kunze.diansh.entity.Sku">
-        select id,spu_id,title,images,new_price,price,indexes,own_spec,`enable`,create_time,last_update_time,shop_id,update_name
-        from kz_sku where `enable`=1 and id = #{id}
+        SELECT
+	id,
+	sku.spu_id,
+	title,
+	images,
+	CASE sku.is_features
+	WHEN '1' THEN
+	feat.features_price
+	ELSE
+	sku.new_price
+	END AS 'newPrice',
+	price,
+	indexes,
+	own_spec,
+	`enable`,
+	sku.create_time,
+	last_update_time,
+	sku.shop_id,
+	update_name,
+	CASE sku.is_features
+	WHEN '1' THEN
+	'特卖'
+	ELSE
+	''
+	END AS 'isFeatures'
+FROM
+	kz_sku sku
+LEFT JOIN kz_spu_features feat ON sku.id = feat.sku_id
+WHERE
+	`enable` = 1
+AND sku.spu_id = #{id}
     </select>
 
     <select id="querySkuBySpuId" resultType="org.kunze.diansh.entity.Sku">
-      select id,spu_id,title,images,new_price,price,indexes,own_spec,`enable`,create_time,last_update_time,shop_id,update_name
-        from kz_sku
-        where `enable`=1 and spu_id = #{spuId}
+      select id,sku.spu_id,title,images,new_price,
+    CASE sku.is_features
+	WHEN '1' THEN
+	feat.features_price
+	ELSE
+	sku.new_price
+	END AS 'newPrice',
+	price,
+      indexes,own_spec,`enable`,sku.create_time,last_update_time,sku.shop_id,update_name,
+      	CASE sku.is_features
+	WHEN '1' THEN
+	'特卖'
+	ELSE
+	''
+	END AS 'isFeatures'
+        from kz_sku sku
+        LEFT JOIN kz_spu_features feat ON sku.id = feat.sku_id
+        where `enable`=1 and sku.spu_id = #{spuId}
     </select>
 </mapper>

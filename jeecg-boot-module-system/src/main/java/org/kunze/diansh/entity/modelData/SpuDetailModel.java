@@ -26,4 +26,6 @@ public class SpuDetailModel {
     private String afterService; //售后服务
 
     private String images; //商品多图片
+
+    private String shopId; //超市id
 }

@@ -49,12 +49,10 @@ public class Sku implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String lastUpdateTime;
 
-    //店铺Id
-    private String shopId;
-
     //操作人
     private String updateName;
 
-
+    //是否为特卖
+    private String isFeatures;
 
 }

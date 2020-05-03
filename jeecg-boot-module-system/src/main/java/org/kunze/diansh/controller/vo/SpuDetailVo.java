@@ -20,4 +20,5 @@ public class SpuDetailVo implements Serializable {
     private List<Sku> skus; //sku集合
 
 
+
 }

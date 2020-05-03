@@ -10,8 +10,12 @@
         LEFT JOIN kz_category cate2 ON spu.cid2 = cate2.id   and cate2.is_flag='0'
         LEFT JOIN kz_category cate3 ON spu.cid3 = cate3.id   and cate3.is_flag='0'
         LEFT JOIN kz_brand br ON spu.brand_id = br.id and br.is_flag = '0'
+        LEFT JOIN kz_shop shop ON spu.shop_id = shop_id
         <trim prefix="where" prefixOverrides="and">
             spu.is_flag = '0'
+            <if test="shopId != null and shopId != ''">
+                and shopId = #{shopId}
+            </if>
             <if test="title != null and title != '' ">
                and title like CONCAT('%',#{title},'%')
             </if>
@@ -37,8 +41,12 @@
         LEFT JOIN kz_category cate2 ON spu.cid2 = cate2.id   and cate2.is_flag='0'
         LEFT JOIN kz_category cate3 ON spu.cid3 = cate3.id   and cate3.is_flag='0'
         LEFT JOIN kz_brand br ON spu.brand_id = br.id and br.is_flag = '0'
+        LEFT JOIN kz_shop shop ON spu.shop_id = shop_id
         <trim prefix="where" prefixOverrides="and">
             spu.is_flag = '0'
+            <if test="shopId != null and shopId != ''">
+                and shopId = #{shopId}
+            </if>
             <if test="title != null and title != '' ">
                 and title like CONCAT('%',#{title},'%')
             </if>
@@ -88,6 +96,7 @@
             <if test="updateName != null and updateName != ''">update_name=#{updateName}</if>
             <if test="images != null and images != ''">update_name=#{images}</if>
             <if test="image != null and images != ''">update_name=#{image}</if>
+            <if test="shopId != null and shopId != ''">shop_id=#{shopId}</if>
         </trim>
         where id=#{id}
     </update>
@@ -100,6 +109,7 @@
         select spu.id as id,spu.title as title,spu.image as image,min(sku.price) as price
         from kz_spu spu left join kz_sku sku on spu.id = sku.spu_id
         where spu.cid3 = #{cateId}
+        AND spu.shop_id = #{shopId}
         group by spu.id
     </select>
 
@@ -110,7 +120,7 @@
 
 
     <select id="selectByPrimaryKey" resultType="org.kunze.diansh.entity.modelData.SpuDetailModel">
-            select id as 'spuId',title,sub_title,cid3,description,specifications,spec_template,packing_list,after_service,images from kz_spu s
+            select id as 'spuId',title,sub_title,cid3,description,specifications,spec_template,packing_list,after_service,images,shop_id from kz_spu s
             LEFT JOIN kz_spu_detail detail ON s.id = detail.spu_id
             where s.id = #{spuId}
     </select>
@@ -120,11 +130,12 @@
         <if test="spuId != null and spuId != '' ">
             and id &lt;&gt; #{spuId}
         </if>
+        and shop_id = #{shopId}
         and is_flag = '0' and saleable = '1'
     </select>
 
     <select id="selectSimilarSpu" resultType="org.kunze.diansh.controller.vo.BeSimilarSpuVo">
-        select spu.id as 'spuId',spu.title as 'spuTitle',spu.image as 'image',
+        select sku.id as 'skuId',spu.id as 'spuId',spu.title as 'spuTitle',spu.image as 'image',
         sku.new_price as 'spuNewPrice',sku.price as 'spuPrice' from kz_spu spu
         LEFT JOIN kz_sku sku ON spu.id = sku.spu_id
         where spu.id in

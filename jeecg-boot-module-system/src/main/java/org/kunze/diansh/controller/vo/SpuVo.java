@@ -27,4 +27,6 @@ public class SpuVo implements Serializable {
 
     private String images; //商品多图片
 
+    private String shopId; //超市id
+
 }
