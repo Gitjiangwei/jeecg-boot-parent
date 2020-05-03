@@ -145,11 +145,11 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
     /**
      * 查询选中的商品集合
      */
-    public List<Cart> selectCartByCids(String cids[], String userID){
+    public List<Cart> selectCartByCids(List cids, String userID){
         String key = KEY_PREFIX+userID;
         BoundHashOperations<String,Object,Object> hashOps = this.redisTemplate.boundHashOps(key);
         List<Cart> cartList = new ArrayList<Cart>();
-        for (String id:cids) {
+        for (Object id:cids) {
             Cart cart = JSONObject.parseObject(hashOps.get(id).toString(),Cart.class);
             cartList.add(cart);
         }

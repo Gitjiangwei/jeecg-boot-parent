@@ -53,7 +53,7 @@ public class Order implements Serializable,Delayed {
         this.createTime = createTime;
         Calendar cal = Calendar.getInstance();
         cal.setTime(createTime);
-        cal.add(Calendar.SECOND,10);
+        cal.add(Calendar.MINUTE,2);
         this.cancelTime = cal.getTime(); //设置取消时间为15分钟后
     }
 
