@@ -100,6 +100,7 @@
         select spu.id as id,spu.title as title,spu.image as image,min(sku.price) as price
         from kz_spu spu left join kz_sku sku on spu.id = sku.spu_id
         where spu.cid3 = #{cateId}
+        group by spu.id
     </select>
 
 

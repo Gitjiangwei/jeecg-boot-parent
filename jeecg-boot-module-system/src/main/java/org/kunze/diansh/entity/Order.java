@@ -2,16 +2,22 @@ package org.kunze.diansh.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
+@Getter
+@Setter
 @Data
 //订单实体
-public class Order implements Serializable, Delayed {
+public class Order implements Serializable,Delayed {
 
     //订单id
     private String orderId;
@@ -35,12 +41,21 @@ public class Order implements Serializable, Delayed {
     private String postFee;
 
     //订单状态   1.未付款 2.已付款 3.未发货 4.已发货 5.交易成功 6.交易关闭
-    private String status;
+    private Integer status;
+
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     //订单创建时间
     private Date createTime;
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(createTime);
+        cal.add(Calendar.SECOND,10);
+        this.cancelTime = cal.getTime(); //设置取消时间为15分钟后
+    }
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -85,14 +100,24 @@ public class Order implements Serializable, Delayed {
     //买家是否已经评价,0未评价，1已评价
     private int buyerRate;
 
+    //购物车集合
+    private List<OrderDetail> odList;
+
+    //取消时间
+    private Date cancelTime;
+
+
 
     @Override
-    public long getDelay(TimeUnit timeUnit) {
-        return 0;
+    public long getDelay(TimeUnit unit) {
+        //取消时间 - 当前时间
+        long l = unit.convert(cancelTime.getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+        return l;
     }
 
     @Override
-    public int compareTo(Delayed delayed) {
-        return 0;
+    public int compareTo(Delayed o) {
+        //这里根据取消时间来比较，如果取消时间小的，就会优先被队列提取出来
+        return this.getCancelTime().compareTo(((Order) o).getCancelTime());
     }
 }

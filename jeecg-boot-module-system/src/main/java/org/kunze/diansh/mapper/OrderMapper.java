@@ -38,4 +38,11 @@ public interface OrderMapper extends BaseMapper<Order> {
      * @return 订单数据
      */
     List<Order> selectOrderByStatus(@Param("status") String status,@Param("userID") String userID,@Param("shopID") String shopID);
+
+    /**
+     * 根据订单id查询订单详细数据
+     * @param orderId 订单id
+     * @return
+     */
+    List<OrderDetail> selectOrderDetailById(@Param("orderId") String orderId);
 }

@@ -77,7 +77,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setUpdateTime(date);//更新时间
         order.setAmountPayment(totalPrice.toString()); //应付金额
         order.setPayment("0"); //实付金额
-        order.setStatus("1"); //订单状态 未付款
+        order.setStatus(1); //订单状态 未付款
 
         //插入订单数据
         Integer rows = orderMapper.insertOrder(order);
@@ -118,8 +118,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     @Override
     public List<Order> selectOrderByStatus(String status, String userID, String shopID) {
-
-        return null;
+        List<Order>  orders = orderMapper.selectOrderByStatus(status,userID,shopID);
+        if(orders.size() != 0){
+            for (int  i=0;i<orders.size();i++) {
+                Order order = orders.get(i);
+                List<OrderDetail> odlist = orderMapper.selectOrderDetailById(order.getOrderId());
+                order.setOdList(odlist);
+                orders.set(i,order);
+            }
+        }
+        return orders;
     }
 
 
