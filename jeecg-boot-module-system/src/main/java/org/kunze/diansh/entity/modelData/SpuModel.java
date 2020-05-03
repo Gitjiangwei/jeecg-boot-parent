@@ -35,5 +35,7 @@ public class SpuModel implements Serializable {
 
     private String bName; //商品品牌名称
 
+    private String image; //图片
 
+    private String price; //价格
 }

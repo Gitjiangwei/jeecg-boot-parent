@@ -31,7 +31,7 @@ public interface ISpuService extends IService<Spu> {
      * @param cateId 商品分类Id
      * @return
      */
-    List<Spu> querySpuById(String cateId,String shopId);
+    PageInfo<SpuModel> querySpuById(String cateId,Integer pageNo,Integer pageSize,String shopId);
 
     /**
      * 查询品牌以作下拉框使用

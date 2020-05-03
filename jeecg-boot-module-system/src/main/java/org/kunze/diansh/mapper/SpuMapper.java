@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.vo.BeSimilarSpuVo;
 import org.kunze.diansh.controller.vo.CategorySpuVo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
+import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.modelData.SpuDetailModel;
 import org.kunze.diansh.entity.modelData.SpuModel;
@@ -27,7 +28,7 @@ public interface SpuMapper extends BaseMapper<Spu> {
 
     int deleteSpu(@Param("spu") Spu spu);
 
-    List<Spu> querySpuById(@Param("id") String cateId,@Param("shopId") String shopId);
+    List<SpuModel> querySpuById(@Param("cateId") String cateId,@Param("shopId") String shopId);
 
     Spu querySpuByIds(@Param("spuId") String spuId);
 

@@ -24,7 +24,7 @@ public class Sku implements Serializable {
     //商品的图片，多个图片以‘,’分割
     private String images;
 
-    //当前价格，单位为分
+    //当前价格
     private String newPrice;
 
     //销售价格，单位为分

@@ -1,6 +1,5 @@
 package org.kunze.diansh.salesTicket;
 
-import jdk.nashorn.internal.objects.annotations.Function;
 import lombok.Data;
 import org.kunze.diansh.controller.vo.DistributionVo;
 import org.kunze.diansh.entity.Commodity;

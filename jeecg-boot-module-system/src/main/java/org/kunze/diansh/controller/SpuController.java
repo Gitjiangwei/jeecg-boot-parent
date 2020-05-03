@@ -1,5 +1,7 @@
 package org.kunze.diansh.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,17 +15,22 @@ import org.kunze.diansh.controller.vo.SpuBrandVo;
 import org.kunze.diansh.controller.vo.SpuDetailVo;
 import org.kunze.diansh.controller.vo.SpuVo;
 import org.kunze.diansh.entity.Goods;
+import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.SpuDetail;
 import org.kunze.diansh.entity.modelData.SpuModel;
 import org.kunze.diansh.esRepository.GoodsRepository;
+import org.kunze.diansh.mapper.SkuMapper;
+import org.kunze.diansh.mapper.SpuMapper;
 import org.kunze.diansh.service.ISpuService;
 import org.kunze.diansh.service.IndexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -127,11 +134,13 @@ public class SpuController {
     @ApiOperation("通过商品分类Id查询相关商品的详细信息")
     @AutoLog("通过商品分类Id查询相关商品的详细信息")
     @PostMapping(value = "/querySpuByCateID")
-    public Result<List<Spu>> querySpuByCateID(String cateId,String shopId){
-        Result<List<Spu>> result = new Result<List<Spu>>();
-        List<Spu> spuList = spuService.querySpuById(cateId,shopId);
-        result.setResult(spuList);
+    public Result<PageInfo<SpuModel>> querySpuByCateID(String cateId,
+                                                  @RequestParam(name = "pageNo",defaultValue = "1") Integer pageNo,
+                                                  @RequestParam(name = "pageSize") Integer pageSize,String shopId){
+        Result<PageInfo<SpuModel>> result = new Result<PageInfo<SpuModel>>();
+        PageInfo<SpuModel> spuList = spuService.querySpuById(cateId,pageNo,pageSize,shopId);
         result.setSuccess(true);
+        result.setResult(spuList);
         return result;
     }
 
@@ -214,5 +223,72 @@ public class SpuController {
             result.setResult(beSimilarSpuVoList);
         }
         return result;
+    }
+
+
+
+    //测试插入
+    @Autowired
+    private SpuMapper spuMapper;
+
+    @Autowired
+    private SkuMapper skuMapper;
+
+    @GetMapping(value = "/testInsert")
+    public void testInsert(){
+        JSONObject json = JSONObject.parseObject(getJson());
+
+        JSONArray jsonArray = json.getJSONArray("data");
+
+
+        Integer spuFlag = 1000;
+        for(int i=0;i<jsonArray.size();i++){
+            JSONObject object = jsonArray.getJSONObject(i);
+            Spu spu = new Spu();
+            spuFlag++;
+            spu.setId(spuFlag.toString());
+            spu.setTitle(object.get("name").toString());
+            spu.setImage(object.get("main_image").toString());
+            spu.setCid3("877");
+            spu.setCid2("872");
+            spu.setCid1("871");
+            spu.setBrandId("9637");
+            int rows = spuMapper.saveSpu(spu);
+            List<Sku> skuList = new ArrayList<Sku>();
+            if(rows != 0){
+
+                Sku s = new Sku();
+                s.setId(UUID.randomUUID().toString().replace("-",""));
+                s.setSpuId(spu.getId());
+                s.setTitle(object.get("name").toString());
+                s.setImages(object.get("main_image").toString());
+                s.setPrice("1000");
+                s.setNewPrice("2000");
+                s.setEnable("1");
+                skuList.add(s);
+                skuMapper.saveSku(skuList);
+            }
+        }
+    }
+
+    public static String getJson() {
+        String jsonStr = "";
+        try {
+            File file = new File("D:\\opt\\分类\\分类\\粮油调味.json");
+            FileReader fileReader = new FileReader(file);
+            Reader reader = new InputStreamReader(new FileInputStream(file),"Utf-8");
+
+            int ch = 0;
+            StringBuffer sb = new StringBuffer();
+            while ((ch = reader.read()) != -1) {
+                sb.append((char) ch);
+            }
+            fileReader.close();
+            reader.close();
+            jsonStr = sb.toString();
+            return jsonStr;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

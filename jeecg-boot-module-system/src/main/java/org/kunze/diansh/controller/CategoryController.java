@@ -1,5 +1,6 @@
 package org.kunze.diansh.controller;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +33,8 @@ public class CategoryController {
     @ApiOperation("商品分类菜单接口")
     @AutoLog("查询商品分类")
     @GetMapping(value = "/qryList")
-    public Result<List<Category>> qryLists(@RequestParam(required = false, defaultValue = "0") String pid,
-                                           @RequestParam(required = false) String id) {
+    public @ResponseBody Result<List<Category>> qryLists(@RequestParam(required = false, defaultValue = "0") String pid,
+                                    @RequestParam(required = false) String id) {
         Result<List<Category>> result = new Result<>();
         List<Category> categoryList = categoryService.qryList(pid, id);
    /*     if(CollectionUtils.isEmpty(categoryList)){

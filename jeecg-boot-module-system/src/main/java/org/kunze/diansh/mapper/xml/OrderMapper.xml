@@ -2,4 +2,62 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.kunze.diansh.mapper.OrderMapper">
 
+
+    <!-- 插入订单数据   -->
+    <insert id="insertOrder" parameterType="org.kunze.diansh.entity.Order">
+        INSERT INTO kz_order ( order_id,shop_id,address_id,amount_payment, payment, payment_type, post_free, status, create_time, update_time, payment_time,
+          consign_time, end_time, close_time, shipping_name, shipping_code, user_id, buyer_message, buyer_nick, buyer_rete )
+        VALUES
+        (#{orderId},
+        #{shopId},
+        #{addressId},
+        #{amountPayment},
+        #{payment},
+        #{paymentType},
+        #{postFee},
+        #{status},
+        #{createTime},
+        #{updateTime},
+        #{paymentTime},
+        #{consignTime},
+        #{endTime},
+        #{closeTime},
+        #{shippingName},
+        #{shippingCode},
+        #{userID},
+        #{buyerMessage},
+        #{buyerNick},
+        #{buyerRate});
+    </insert>
+
+    <!-- 插入订单详情数据   -->
+    <insert id="insertOrderDetail" parameterType="org.kunze.diansh.entity.OrderDetail">
+        insert into kz_order_detail(id,order_id,sku_id,num,title,own_spec,price,image)
+        values(#{id},#{orderId},#{skuId},#{num},#{title},#{ownSpec},#{price},#{image});
+    </insert>
+
+    <!-- 查询某个超市当天的订单数量   -->
+    <select id="selectShopOrderNum" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(1) from kz_order o,kz_shop s where o.shop_id = s.id and o.create_time = TO_DAYS(NOW())
+        and shop_id = #{shopId}
+    </select>
+
+    <!-- 查询订单数据 根据订单状态   -->
+    <select id="selectOrderByStatus" resultType="org.kunze.diansh.entity.Order">
+        select order_id,shop_id,address_id,amount_payment,payment,payment_type,post_free,`status`,create_time,update_time,
+        payment_time,consign_time,end_time,close_time,shipping_name,shipping_code,user_id,buyer_message,buyer_nick,buyer_rete
+        from kz_order where user_id = #{userID} and shop_id = #{shopID}
+        <trim prefix="and" prefixOverrides="and">
+            <if test="status != null and status != ''">
+                and `status` = #{status}
+            </if>
+        </trim>
+        order by `status` asc
+    </select>
+
+    <!-- 根据订单id查询订单详细信息   -->
+    <select id="selectOrderDetailById" resultType="org.kunze.diansh.entity.OrderDetail">
+        select id,order_id,sku_id,num,title,own_spec,price,image from kz_order_detail
+        where order_id = #{orderId}
+    </select>
 </mapper>

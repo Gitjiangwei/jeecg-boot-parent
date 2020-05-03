@@ -22,15 +22,14 @@ public interface ICartService extends IService<Cart> {
 
     /**
      * 修改购物车商品数量
-     * @param skuId 商品id
-     * @param cartNum 商品数量
+     * @param cartList
      */
-    void updateCart(String skuId,Integer cartNum);
+    void updateCart(List<Cart> cartList);
 
     /**
      * 删除购物车商品
      * @param skuId 商品id
      */
-    void deleteCart(String skuId);
+    void deleteCart(List skuId);
 
 }

@@ -20,7 +20,7 @@ public class Address implements Serializable {
     private String consignee;
 
     //先生/女士
-    private String consigneeSex;
+    private int consigneeSex;
 
     //省
     private String province;
@@ -43,8 +43,11 @@ public class Address implements Serializable {
     //地址类型
     private String addType;
 
+    //默认地址
+    private String isDefault;
+
     //状态 0:可用 1：删除
-    private String status;
+    private int status;
 
 
 }

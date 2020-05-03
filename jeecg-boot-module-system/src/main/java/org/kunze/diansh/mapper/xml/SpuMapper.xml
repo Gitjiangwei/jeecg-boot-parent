@@ -3,9 +3,9 @@
 <mapper namespace="org.kunze.diansh.mapper.SpuMapper">
     <select id="qrySpuList" resultType="org.kunze.diansh.entity.modelData.SpuModel">
 
-        select spu.id,shop_name as 'shopId',spu.title,sub_title,spu.saleable,CONCAT(cate1.`name`,'/',cate2.`name`,'/',cate3.`name`) as 'cName',br.`name` AS 'bName',
-        spu.create_time,spu.last_update_time,spu.update_name,spu.images,spu.image
-        from kz_spu spu
+        select spu.id,spu.title,sub_title,spu.saleable,CONCAT(cate1.`name`,'/',cate2.`name`,'/',cate3.`name`) as 'cName',br.`name` AS 'bName',
+        spu.create_time,spu.last_update_time,spu.update_name,images,image
+         from kz_spu spu
         LEFT JOIN kz_category cate1 ON spu.cid1 = cate1.id  and cate1.is_flag='0'
         LEFT JOIN kz_category cate2 ON spu.cid2 = cate2.id   and cate2.is_flag='0'
         LEFT JOIN kz_category cate3 ON spu.cid3 = cate3.id   and cate3.is_flag='0'
@@ -34,8 +34,8 @@
 
     <select id="qrySpuLists" resultType="org.kunze.diansh.entity.Spu">
 
-        select spu.id,spu.shop_id,spu.title,sub_title,spu.saleable,cid1,cid2,cid3,spu.brand_id,
-        spu.create_time,spu.last_update_time,spu.update_name,spu.images,spu.image
+        select spu.id,spu.title,sub_title,spu.saleable,cid1,cid2,cid3,spu.brand_id,
+        spu.create_time,spu.last_update_time,spu.update_name,images,image
         from kz_spu spu
         LEFT JOIN kz_category cate1 ON spu.cid1 = cate1.id  and cate1.is_flag='0'
         LEFT JOIN kz_category cate2 ON spu.cid2 = cate2.id   and cate2.is_flag='0'
@@ -78,8 +78,8 @@
     </select>
 
     <insert id="saveSpu">
-        insert into kz_spu(id,title,sub_title,cid1,cid2,cid3,brand_id,create_time,last_update_time,update_name,images,image,shop_id)
-        values (#{id},#{title},#{subTitle},#{cid1},#{cid2},#{cid3},#{brandId},NOW(),NOW(),#{updateName},#{images},#{image},#{shopId})
+        insert into kz_spu(id,title,sub_title,cid1,cid2,cid3,brand_id,create_time,last_update_time,update_name,images,image)
+        values (#{id},#{title},#{subTitle},#{cid1},#{cid2},#{cid3},#{brandId},NOW(),NOW(),#{updateName},#{images},#{image})
     </insert>
 
     <update id="updateSpu" parameterType="org.kunze.diansh.entity.Spu">
@@ -105,9 +105,12 @@
         update kz_spu set is_flag = 1,last_update_time=NOW(),update_name = #{spu.updateName} where id = #{spu.id}
     </delete>
 
-    <select id="querySpuById" resultType="org.kunze.diansh.entity.Spu">
-        select spu.id,title,cid1,cid2,cid3,brand_id,saleable,spu.is_flag,create_time,last_update_time,update_name,images
-        from kz_category cate left join kz_spu spu on cate.id = spu.cid3 where spu.is_flag = '0' and cate.id = #{id} AND spu.shop_id = #{shopId}
+    <select id="querySpuById" resultType="org.kunze.diansh.entity.modelData.SpuModel">
+        select spu.id as id,spu.title as title,spu.image as image,min(sku.price) as price
+        from kz_spu spu left join kz_sku sku on spu.id = sku.spu_id
+        where spu.cid3 = #{cateId}
+        AND spu.shop_id = #{shopId}
+        group by spu.id
     </select>
 
 
