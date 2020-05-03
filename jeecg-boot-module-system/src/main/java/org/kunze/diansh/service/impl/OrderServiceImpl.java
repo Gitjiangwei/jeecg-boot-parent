@@ -43,7 +43,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     @Override
     @Transactional
-    public OrderBo createOrder(String aid, String[] cids, String shopId, String userID) {
+    public OrderBo createOrder(String aid, List cids, String shopId, String userID) {
         //当前时间
         Date date = new Date();
         //根据aid查找相关的地址信息

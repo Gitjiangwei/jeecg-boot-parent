@@ -1,5 +1,6 @@
 package org.kunze.diansh.controller;
 
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +39,11 @@ public class OrderController {
     @ApiOperation("创建订单")
     @AutoLog("创建订单")
     @PostMapping(value = "/createOrder")
-    public Result<OrderBo> createOrder(String aid, String[] cids, String shopId, String userID){
+    public Result<OrderBo> createOrder(@RequestParam("aid") String aid, @RequestParam("cids") String cids,
+                                       @RequestParam("shopId")  String shopId,@RequestParam("userID")  String userID){
         Result<OrderBo> orderResult = new Result<OrderBo>();
-        OrderBo order = orderService.createOrder(aid,cids,shopId,userID);
+        List cidsList = JSON.parseArray(cids);
+        OrderBo order = orderService.createOrder(aid,cidsList,shopId,userID);
         if(null != order){
             orderResult.success("创建成功！");
             orderResult.setResult(order);

@@ -17,7 +17,7 @@ public interface IOrderService extends IService<Order> {
      * @param shopId 店铺id
      * @param userID 用户id
      */
-    OrderBo createOrder(String aid, String[] cids, String shopId, String userID);
+    OrderBo createOrder(String aid, List cids, String shopId, String userID);
 
     /**
      * 根据订单状态查询订单数据
