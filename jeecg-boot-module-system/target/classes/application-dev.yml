@@ -122,7 +122,7 @@ spring:
   data:
     elasticsearch:
       cluster-name: elasticsearch
-      cluster-nodes: 192.168.1.5:9200
+      cluster-nodes: 192.168.1.5:9300
 #mybatis plus 设置
 mybatis-plus:
   mapper-locations: classpath*:org/**/**/**/xml/*Mapper.xml
@@ -146,7 +146,7 @@ jeecg:
   uploadType: local
   path:
     #文件上传根目录 设置
-    upload: D://opt//upFiles
+    upload: D://opt//upFiles/
     #webapp文件路径
     webapp: D://opt//webapp
   #短信秘钥
@@ -186,4 +186,5 @@ logging:
 cas:
   prefixUrl: http://cas.example.org:8443/cas
 address_max: 10
+
 
