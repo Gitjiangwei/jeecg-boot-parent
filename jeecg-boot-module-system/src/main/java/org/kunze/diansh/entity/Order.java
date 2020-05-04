@@ -35,7 +35,7 @@ public class Order implements Serializable,Delayed {
     private String payment;
 
     //支付类型，1、在线支付，2、货到付款
-    private String paymentType;
+    private String pickUp;
 
     //邮费。单位:分。如:20007，表示:200元7分
     private String postFee;

@@ -1,18 +1,17 @@
 package org.kunze.diansh.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.common.util.OrderCodeUtils;
+import org.jeecg.modules.message.mapper.SysUserShopMapper;
+import org.jeecg.modules.message.websocket.WebSocket;
 import org.kunze.diansh.controller.bo.OrderBo;
-import org.kunze.diansh.entity.Address;
-import org.kunze.diansh.entity.Cart;
-import org.kunze.diansh.entity.Order;
-import org.kunze.diansh.entity.OrderDetail;
+import org.kunze.diansh.entity.*;
 import org.kunze.diansh.mapper.AddressMapper;
-import org.kunze.diansh.mapper.CartMapper;
 import org.kunze.diansh.mapper.OrderMapper;
+import org.kunze.diansh.mapper.ShopMapper;
 import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +32,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     CartServiceImpl cartService = new CartServiceImpl();
+
+    @Autowired
+    private ShopMapper shopMapper;
+
+    @Autowired
+    private WebSocket webSocket;
+
+    @Autowired
+    private SysUserShopMapper sysUserShopMapper;
 
     /**
      * 创建订单
@@ -67,8 +75,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         //订单
         Order order = new Order();
+        Shop shop = shopMapper.selectByKey(shopId);
+        if(shop == null){
+            return  null;
+        }
         //生成订单号
-        order.setOrderId(OrderCodeUtils.orderCode("哈哈",orderNum.toString()));
+        order.setOrderId(OrderCodeUtils.orderCode(shop.getShopName(),orderNum.toString()));
         order.setShopId(shopId); //店铺id
         order.setUserID(userID); //用户id
 
@@ -128,6 +140,38 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             }
         }
         return orders;
+    }
+
+    /***
+     * 订单支付后修改状态
+     * @param orderId
+     * @return
+     */
+    @Override
+    public String updateOrderStatus(String orderId) {
+        String flag = "error";
+        //1、修改订单状态为【已支付】
+        int orderStatus = orderMapper.updateOrderStatus("2",orderId);
+        if(orderStatus > 0){
+            //获取订单信息
+            Order order = orderMapper.selectById(orderId);
+            if(order==null){
+                return flag;
+            }
+            List<String> stringList = sysUserShopMapper.selectByIds(order.getShopId());
+            JSONObject obj = new JSONObject();
+            if(stringList.size()>0 && stringList.size() == 1){
+                obj.put("cmd","user");
+                obj.put("userId",stringList.get(0));
+                obj.put("msgId", "M0001");
+                obj.put("msgTxt", "您有一条新的订单，请注意查收");
+                webSocket.sendOneMessage(stringList.get(0),obj.toJSONString());
+            }else {
+
+            }
+            flag = "OK";
+        }
+        return flag;
     }
 
 

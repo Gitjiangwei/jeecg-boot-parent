@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.message.mapper.SysUserShopMapper">
+
+        <update id="updateOnline">
+            update sys_user_shop set is_online = #{status}
+            where user_id = #{userId}
+        </update>
+
+    <select id="selectByIds" resultType="String">
+        SELECT user_id FROM sys_user_shop WHERE is_online = '1' and `status` = '2'
+        and shop_id = #{shopId}
+    </select>
+</mapper>

@@ -27,4 +27,12 @@ public interface IOrderService extends IService<Order> {
      * @return 订单数据
      */
     List<Order> selectOrderByStatus(String status, String userID, String shopID);
+
+
+    /***
+     * 订单支付后修改状态
+     * @param orderId
+     * @return
+     */
+    String updateOrderStatus(String orderId);
 }

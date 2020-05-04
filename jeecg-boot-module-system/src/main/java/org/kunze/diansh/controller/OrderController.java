@@ -75,4 +75,25 @@ public class OrderController {
         }
         return  result;
     }
+
+
+
+    @ApiOperation("付款后修改订单状态为【已付款】")
+    @AutoLog("付款成功后修改订单状态")
+    @PostMapping(value = "/updatePayMent")
+    public Result<T> updateOrderStatus(@RequestParam(name = "orderId") String orderId){
+        Result<T> result = new Result<T>();
+        if(orderId == null || orderId.equals("")){
+            result.error500("参数丢失！");
+        }else {
+            String resultOk = orderService.updateOrderStatus(orderId);
+            if(resultOk.equals("error")){
+                result.error500("出现未知异常！");
+            }else if (resultOk.equals("OK")){
+                result.success("下单成功！");
+            }
+        }
+        return result;
+
+    }
 }

@@ -45,4 +45,21 @@ public interface OrderMapper extends BaseMapper<Order> {
      * @return
      */
     List<OrderDetail> selectOrderDetailById(@Param("orderId") String orderId);
+
+
+    /***
+     * 修改订单状态
+     * @param orderId 订单id
+     * @param orderStatus 订单状态
+     * @return
+     */
+    int updateOrderStatus(@Param("orderStatus") String orderStatus, @Param("orderId") String orderId);
+
+
+    /***
+     * 根据订单ID查询订单信息
+     * @param orderId
+     * @return
+     */
+    Order selectById(@Param("orderId") String orderId);
 }

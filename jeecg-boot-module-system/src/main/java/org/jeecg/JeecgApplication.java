@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 
 import org.apache.catalina.Context;
 import org.apache.tomcat.util.scan.StandardJarScanner;
+import org.jeecg.modules.message.websocket.WebSocket;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -43,6 +44,8 @@ public class JeecgApplication {
                 "swagger-ui: \thttp://" + ip + ":" + port + path + "/swagger-ui.html\n\t" +
                 "Doc: \t\thttp://" + ip + ":" + port + path + "/doc.html\n" +
                 "----------------------------------------------------------");
-
+        //解决WebSocket不能注入的问题
+        WebSocket.setApplicationContext(application);
+        log.info("WebSocket注入成功！");
     }
 }
