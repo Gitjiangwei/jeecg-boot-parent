@@ -36,7 +36,7 @@ public class OrderComsumer extends Thread implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("*************** 启动轮询订单监听 *******************");
         OrderComsumer oc = new OrderComsumer();
-        for(int i=0; i < 10;i++ ){
+        for(int i=0; i < 1;i++ ){
             Order o = new Order();
             o.setCreateTime(new Date());
             System.out.println("预计取消时间"+ o.getCancelTime().toString());

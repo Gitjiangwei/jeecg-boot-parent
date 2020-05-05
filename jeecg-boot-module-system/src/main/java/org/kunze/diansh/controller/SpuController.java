@@ -208,8 +208,8 @@ public class SpuController {
     @ApiOperation("首页查询分类商品")
     @AutoLog("首页查询分类商品")
     @PostMapping(value = "/categorySpu")
-    public Result<List<BeSimilarSpuVo>> selectCategorySpu(@RequestParam(value = "cid3") String cid3,
-                                                          @RequestParam(value = "shopId") String shopId){
+    public Result<List<BeSimilarSpuVo>> selectCategorySpu(@RequestParam(value = "cid3",required = false) String cid3,
+                                                          @RequestParam(value = "shopId",required = false) String shopId){
         Result<List<BeSimilarSpuVo>> result = new Result<List<BeSimilarSpuVo>>();
         if(cid3 == null || cid3.equals("")){
             result.setSuccess(true);

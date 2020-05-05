@@ -1,6 +1,7 @@
 package org.kunze.diansh.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -78,9 +79,11 @@ public class SpecificationController {
     @ApiOperation("商品规格参数模板修改")
     @AutoLog("修改商品规格参数模板")
     @PostMapping(value = "/updateSpec")
-    public Result<T> updateSpecification(@RequestParam(name = "categoryId",required = false) String categoryId,
-                                         @RequestParam(name = "specifications", required = false) String specifications) {
+    public Result<T> updateSpecification(@RequestBody(required = false) String params) {
         Result<T> result = new Result<T>();
+        JSONObject array = JSON.parseObject(params);
+        String categoryId = array.get("categoryId").toString();
+        String specifications = array.get("specifications").toString();
         if ((specifications != null && !specifications.equals("")) && (categoryId != null && !categoryId.equals(""))) {
             //ok:添加成功；error：添加失败；NOT：参数为空
             String resultOk = specificationService.updateSpecification(categoryId, specifications);
