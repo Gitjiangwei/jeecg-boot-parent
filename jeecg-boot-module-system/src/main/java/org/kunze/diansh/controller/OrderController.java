@@ -1,7 +1,6 @@
 package org.kunze.diansh.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,10 @@ import org.kunze.diansh.controller.bo.OrderBo;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -55,17 +57,19 @@ public class OrderController {
     @ApiOperation("根据订单状态查询订单")
     @AutoLog("根据订单状态查询订单")
     @PostMapping(value = "/queryOrder")
-    public Result<List<Order>> queryOrder(@RequestBody String json){
-        Result<List<Order>> result = new Result<List<Order>>();
-        JSONObject jsonObject = (JSONObject) JSONObject.parse(json);
-        if(jsonObject.get("userID") == null || jsonObject.get("userID").toString().equals("")){
+    public Result<List<Order>> queryOrder(@RequestParam(name = "status") String status,
+                                          @RequestParam(name = "userID")String userID,
+                                          @RequestParam(name = "shopID") String shopID){
+        Result<List<Order>> result = new Result<List<Order>>(){};
+
+        if(userID == null || userID.equals("")){
             return result.error500("参数丢失");
         }
-        if(jsonObject.get("shopID") == null || jsonObject.get("shopID").toString().equals("")){
+        if(shopID == null || shopID.equals("")){
             return result.error500("参数丢失");
         }
         try{
-           List<Order> orderList = orderService.selectOrderByStatus(jsonObject.get("status").toString(),jsonObject.get("userID").toString(),jsonObject.get("shopID").toString());
+            List<Order> orderList = orderService.selectOrderByStatus(status,userID,shopID);
             result.setSuccess(true);
             result.setResult(orderList);
         }catch (Exception e){
