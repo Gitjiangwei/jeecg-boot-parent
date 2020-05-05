@@ -32,7 +32,7 @@ public class SalesTicket implements Printable {
 
     private String practical;
 
-    private String changes;
+    //private String changes;
 
     private String orders;
 
@@ -45,7 +45,7 @@ public class SalesTicket implements Printable {
     //构造函数
     public SalesTicket(ArrayList<Commodity> commodityList,DistributionVo distributionVo,
                        String shopName, String saleNum,String saleSum,
-                       String practical,String changes,String orders,String shopAddress,
+                       String practical,String orders,String shopAddress,
                        String pickUp){
         this.commodityList = commodityList;
         //配送信息
@@ -61,7 +61,7 @@ public class SalesTicket implements Printable {
         //实收
         this.practical = practical;
         //找零
-        this.changes = changes;
+        /* this.changes = changes;*/
         //订单编号
         this.orders = orders;
         //商家地址

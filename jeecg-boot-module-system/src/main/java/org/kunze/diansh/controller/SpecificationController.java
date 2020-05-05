@@ -78,7 +78,7 @@ public class SpecificationController {
     @ApiOperation("商品规格参数模板修改")
     @AutoLog("修改商品规格参数模板")
     @PostMapping(value = "/updateSpec")
-    public Result<T> updateSpecification(@RequestParam(name = "categoryId") String categoryId,
+    public Result<T> updateSpecification(@RequestParam(name = "categoryId",required = false) String categoryId,
                                          @RequestParam(name = "specifications", required = false) String specifications) {
         Result<T> result = new Result<T>();
         if ((specifications != null && !specifications.equals("")) && (categoryId != null && !categoryId.equals(""))) {

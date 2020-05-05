@@ -27,4 +27,10 @@ public class WheelVo implements Serializable {
 
     /**图片名称*/
     private String wheelName;
+
+    /**超市Id*/
+    private String shopId;
+
+    /**超市名称*/
+    private String shopName;
 }

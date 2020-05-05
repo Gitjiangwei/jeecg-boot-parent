@@ -2,13 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.kunze.diansh.mapper.WheelMapper">
     <insert id="saveWheel">
-        insert INTO kz_wheel(wheel_id,wheel_images,create_time,update_time,update_name,wheel_no,wheel_port,wheel_url,wheel_name,is_flag,wheel_isflag)
-        values (#{wheelId},#{wheelImages},NOW(),NOW(),#{updateName},#{wheelNo},#{wheelPort},#{wheelUrl},#{wheelName},#{isFlag},#{wheelIsflag})
+        insert INTO kz_wheel(wheel_id,wheel_images,create_time,update_time,update_name,wheel_no,wheel_port,wheel_url,wheel_name,is_flag,wheel_isflag,shop_id)
+        values (#{wheelId},#{wheelImages},NOW(),NOW(),#{updateName},#{wheelNo},#{wheelPort},#{wheelUrl},#{wheelName},#{isFlag},#{wheelIsflag},#{shopId})
     </insert>
 
     <select id="qeryWheel" resultType="org.kunze.diansh.entity.Wheel">
-        select wheel_id,wheel_images,wheel_no,wheel_url,wheel_name,wheel_isflag from kz_wheel
+        select wheel_id,wheel_images,wheel_no,wheel_url,wheel_name,wheel_isflag,shop.shop_name from kz_wheel wheel
+        LEFT JOIN kz_shop shop ON wheel.shop_id = shop.id
         <trim prefix="where" prefixOverrides="and">
+            <if test="shopId != null and shopId !='' ">
+                and shop_id = #{shopId}
+            </if>
             <if test="isFlag != null and isFlag != ''">
                 and is_flag = #{isFlag}
             </if>
@@ -19,7 +23,7 @@
                 and wheel_name like CONCAT('%',#{wheelName},'%')
             </if>
         </trim>
-        order by wheel_no,update_time desc,create_time desc
+        order by wheel_no,wheel.update_time desc,wheel.create_time desc
     </select>
 
     <update id="updateWheel">
@@ -46,6 +50,9 @@
             </if>
             <if test="wheelIsflag != null and wheelIsflag != ''">
                 wheel_isflag = #{wheelIsflag},
+            </if>
+            <if test="shopId != null and shopId != ''">
+                shop_id = #{shopId},
             </if>
         </trim>
         where wheel_id = #{wheelId}

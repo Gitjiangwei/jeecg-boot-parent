@@ -26,7 +26,7 @@ public class SalesTicketVo implements Serializable {
     private String practical;
 
     /**找零*/
-    private String changes;
+   // private String changes;
 
     /**订单号*/
     private String orders;

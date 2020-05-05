@@ -3,7 +3,7 @@
 <mapper namespace="org.kunze.diansh.mapper.BrandMapper">
 
     <select id="qryBrand" resultType="org.kunze.diansh.entity.modelData.BrandModel">
-        select br.id as 'bId',br.name as 'bName',image ,letter,kca.`name` as 'kName',create_time,update_time,update_name
+        select br.id as 'bId',br.name as 'bName',br.image ,letter,kca.`name` as 'kName',create_time,update_time,update_name
         from kz_brand br
         LEFT JOIN kz_category_brand ca on br.id=ca.brand_id
         LEFT JOIN kz_category kca on ca.category_id = kca.id

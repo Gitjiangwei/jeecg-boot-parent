@@ -11,6 +11,8 @@ import org.kunze.diansh.controller.vo.DistributionVo;
 import org.kunze.diansh.controller.vo.SalesTicketVo;
 import org.kunze.diansh.entity.Commodity;
 import org.kunze.diansh.salesTicket.SalesTicket;
+import org.kunze.diansh.service.IIntimidateService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Book;
@@ -26,12 +28,13 @@ import java.util.List;
 @RequestMapping(value = "/kunze/imidate")
 public class IntimidateController {
 
+    @Autowired
+    private IIntimidateService intimidateService;
 
 
-
-    @ApiOperation("打印接口")
-    @AutoLog("打印小票")
-    @PostMapping(value = "/dayin")
+    @ApiOperation("打印接口【假数据】")
+    @AutoLog("打印小票【假数据】")
+    @PostMapping(value = "/dayinfalse")
     public Result<SalesTicketVo> intimiDate(@RequestParam(name = "pickUp") String pickUp){
         Result<SalesTicketVo> result = new Result<SalesTicketVo>();
 /*        List<Commodity> list = new ArrayList<>();
@@ -42,7 +45,7 @@ public class IntimidateController {
         }
         printSale(list,salesTicketVo);*/
         SalesTicketVo salesTicketVo = new SalesTicketVo();
-        salesTicketVo.setChanges("150");
+        //salesTicketVo.setChanges("150");
         List<Commodity> commodities = new ArrayList<>();
         Commodity commodity = new Commodity("凯迪拉克","5","5000","25000");
         commodities.add(commodity);
@@ -77,6 +80,20 @@ public class IntimidateController {
         return result;
     }
 
+    @ApiOperation("打印接口")
+    @AutoLog("打印小票")
+    @PostMapping(value = "/dayin")
+    public Result<SalesTicketVo> intimiDateTrue(@RequestParam(name = "orderId") String orderId){
+        Result<SalesTicketVo> result = new Result<SalesTicketVo>();
+        if(orderId == null || orderId.equals("")){
+            result.error500("参数丢失！");
+        }else {
+            SalesTicketVo salesTicketVo = intimidateService.selectSales(orderId);
+            result.setSuccess(true);
+            result.setResult(salesTicketVo);
+        }
+        return result;
+    }
 
     /**
      * 商品信息
@@ -98,7 +115,7 @@ public class IntimidateController {
 
             book.append(new SalesTicket(new ArrayList<>(list),salesTicketVo.getDistributionVo(),salesTicketVo.getShopName() ,
                     salesTicketVo.getSaleNum(), salesTicketVo.getSaleSum(),
-                    salesTicketVo.getPractical(), salesTicketVo.getChanges(),salesTicketVo.getOrders(),
+                    salesTicketVo.getPractical(),salesTicketVo.getOrders(),
                     salesTicketVo.getShopAddress(),salesTicketVo.getPickUp()), pageFormat);
 
             // 获取打印服务对象
