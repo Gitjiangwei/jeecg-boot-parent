@@ -2,8 +2,64 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.kunze.diansh.mapper.ShopMapper">
     <select id="selectByKey" resultType="org.kunze.diansh.entity.Shop">
-        select id,shop_name,create_time,status,shop_address,image,business_hours
+        select id,shop_name,create_time,status,shop_address,image
         from kz_shop
         where id = #{shopId} and status = '0'
     </select>
+
+
+    <select id="queryShopList" resultType="org.kunze.diansh.controller.vo.ShopVo">
+        select id,shop_name,create_time,shop_address,image,CONCAT(start_business,'-',end_business) as 'businessHours',person_charge,telphone,idenitiy,update_time
+        from kz_shop
+        <trim prefix="where" prefixOverrides="and">
+            status = '0'
+            <if test="shopName != null and shopName != ''">
+                and  shop_name like CONCAT('%',#{shopName},'%')
+            </if>
+            <if test="shopAddress != null and shopAddress != '' ">
+                and shop_address like CONCAT('%',#{shopAddress},'%')
+            </if>
+<!--            <if test="businessHours != null and businessHours != ''">
+                and business_hours = #{businessHours}
+            </if>-->
+        </trim>
+        order by update_time desc,create_time desc
+    </select>
+
+    <insert id="insertShop">
+        insert into kz_shop(id,shop_name,create_time,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time)
+        values (#{id},#{shopName},NOW(),#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW())
+    </insert>
+
+    <update id="updateShop">
+        update kz_shop
+        <trim prefix="set" suffixOverrides=",">
+            update_time = NOW(),
+            <if test="shopName != null and shopName != ''">
+                shop_name = #{shopName},
+            </if>
+            <if test="shopAddress != null and shopAddress != ''">
+                shop_address = #{shopAddress},
+            </if>
+            <if test="image != null and image != ''">
+                image = #{image},
+            </if>
+            <if test="startBusiness != null and startBusiness != ''">
+                start_business = #{startBusiness},
+            </if>
+            <if test="endBusiness != null and endBusiness != ''">
+                end_business = #{endBusiness},
+            </if>
+            <if test="personCharge != null and personCharge != ''">
+                person_charge = #{personCharge},
+            </if>
+            <if test="telphone != null and telphone != ''">
+                telphone = #{telphone},
+            </if>
+            <if test="idenitiy != null and idenitiy != ''">
+                idenitiy = #{idenitiy},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
 </mapper>
