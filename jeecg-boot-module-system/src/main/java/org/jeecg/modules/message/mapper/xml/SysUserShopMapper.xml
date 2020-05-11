@@ -11,4 +11,31 @@
         SELECT user_id FROM sys_user_shop WHERE is_online = '1' and `status` = '2'
         and shop_id = #{shopId}
     </select>
+
+    <insert id="saveSysUserShop">
+        insert sys_user_shop(id,shop_id,user_id,status)
+        values (#{id},#{shopId},#{userId},#{status})
+    </insert>
+
+    <update id="updateSysUserShop">
+        update sys_user_shop
+        <trim prefix="set" suffixOverrides=",">
+            <if test="shopId != null and shopId != '' ">
+                shop_id = #{shopId},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status}
+            </if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="delSysUserShop">
+        delete from sys_user_shop
+        where user_id = #{userId}
+    </delete>
+    <select id="selectByUserId" resultType="String">
+        select shop_id from sys_user_shop
+        where user_id = #{userId}
+    </select>
 </mapper>

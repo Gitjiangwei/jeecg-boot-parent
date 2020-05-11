@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class Shop implements Serializable {
+public class KzShop implements Serializable {
 
     //超市ID
     private String id;

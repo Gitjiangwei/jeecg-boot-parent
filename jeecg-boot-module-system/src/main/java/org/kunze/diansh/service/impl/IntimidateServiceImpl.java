@@ -45,7 +45,7 @@ public class IntimidateServiceImpl implements IIntimidateService {
         //4、根据订单id来获取详细订单中商品信息
         List<OrderDetail> orderDetails = orderMapper.selectOrderDetailById(orderId);
         //5、根据订单信息中的超市id查询超市信息
-        Shop shop = shopMapper.selectByKey(order.getShopId());
+        KzShop shop = shopMapper.selectByKey(order.getShopId());
 
         //6、添加配送信息
         DistributionVo distributionVo = new DistributionVo();
