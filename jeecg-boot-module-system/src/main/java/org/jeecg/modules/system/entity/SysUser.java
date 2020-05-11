@@ -81,7 +81,7 @@ public class SysUser implements Serializable {
     /**
      * 性别（1：男 2：女）
      */
-    @Excel(name = "性别", width = 15,dicCode="sex")
+    @Excel(name = "性别", width = 15, dicCode = "sex")
     @Dict(dicCode = "sex")
     private Integer sex;
 
@@ -105,14 +105,14 @@ public class SysUser implements Serializable {
     /**
      * 状态(1：正常  2：冻结 ）
      */
-    @Excel(name = "状态", width = 15,dicCode="user_status")
+    @Excel(name = "状态", width = 15, dicCode = "user_status")
     @Dict(dicCode = "user_status")
     private Integer status;
 
     /**
      * 删除状态（0，正常，1已删除）
      */
-    @Excel(name = "删除状态", width = 15,dicCode="del_flag")
+    @Excel(name = "删除状态", width = 15, dicCode = "del_flag")
     @TableLogic
     private String delFlag;
 
@@ -161,13 +161,14 @@ public class SysUser implements Serializable {
     /**
      * 身份（0 普通成员 1 上级）
      */
-    @Excel(name="（1普通成员 2上级）",width = 15)
+    @Excel(name = "（1普通成员 2上级）", width = 15)
     private Integer identity;
 
     /**
      * 负责部门
      */
-    @Excel(name="负责部门",width = 15,dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
-    @Dict(dictTable ="sys_depart",dicText = "depart_name",dicCode = "id")
+    @Excel(name = "负责部门", width = 15, dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
+    @Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
     private String departIds;
+
 }
