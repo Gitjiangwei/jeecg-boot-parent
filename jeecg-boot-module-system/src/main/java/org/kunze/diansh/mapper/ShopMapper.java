@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.vo.ShopVo;
 import org.kunze.diansh.entity.KzShop;
+import org.kunze.diansh.entity.modelData.MonthMenuModel;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ShopMapper extends BaseMapper<KzShop> {
 
@@ -33,4 +35,16 @@ public interface ShopMapper extends BaseMapper<KzShop> {
      * @return
      */
     int updateShop(KzShop shop);
+
+    /***
+     * 超市销售排行
+     * @return
+     */
+    List<Map<String,String>> selectStoreLeaderboard(@Param("more") String more,@Param("choiceTime") String choiceTime);
+
+
+    /**
+     * 门店销售统计图
+     * */
+   MonthMenuModel selectStoreByShop(@Param("shopId") String shopId,@Param("year") String year);
 }

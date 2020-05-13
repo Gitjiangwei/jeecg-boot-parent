@@ -62,4 +62,54 @@
         </trim>
         where id = #{id}
     </update>
+
+
+    <select id="selectStoreLeaderboard" resultType="Map">
+        SELECT shop.id,shop.shop_name as 'shopName',SUM(ord.payment) as 'payment' FROM kz_shop shop
+        LEFT JOIN kz_order ord ON shop.id = ord.shop_id AND ord.`status` = '5'
+        <if test="choiceTime == 1">
+           AND to_days(ord.end_time) = to_days(now())
+        </if>
+        <if test="choiceTime == 2">
+            AND YEARWEEK(date_format(ord.end_time,'%Y-%m-%d' )) = YEARWEEK(now())
+        </if>
+        <if test="choiceTime == 3">
+            AND DATE_FORMAT(ord.end_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m')
+        </if>
+        <if test="choiceTime == 4">
+            AND YEAR(ord.end_time)= YEAR(NOW())
+        </if>
+        GROUP BY shop.id
+        ORDER BY payment DESC
+        <if test="more == 1">
+            limit 7
+        </if>
+    </select>
+
+
+    <select id="selectStoreByShop" resultType="org.kunze.diansh.entity.modelData.MonthMenuModel">
+        SELECT
+            sum( CASE WHEN MONTH ( ord.end_time )=1 THEN ord.payment   ELSE 0 END ) AS january,
+            sum( CASE WHEN MONTH ( ord.end_time )=2 THEN ord.payment   ELSE 0 END ) AS february,
+            sum( CASE WHEN MONTH ( ord.end_time )=3 THEN ord.payment   ELSE 0 END ) AS march,
+            sum( CASE WHEN MONTH ( ord.end_time )=4 THEN ord.payment   ELSE 0 END ) AS april,
+            sum( CASE WHEN MONTH ( ord.end_time )=5 THEN ord.payment   ELSE 0 END ) AS may,
+            sum( CASE WHEN MONTH ( ord.end_time )=6 THEN ord.payment   ELSE 0 END ) AS june,
+            sum( CASE WHEN MONTH ( ord.end_time )=7 THEN ord.payment   ELSE 0 END ) AS july,
+            sum( CASE WHEN MONTH ( ord.end_time )=8 THEN ord.payment   ELSE 0 END ) AS august,
+            sum( CASE WHEN MONTH ( ord.end_time )=9 THEN ord.payment   ELSE 0 END ) AS september,
+            sum( CASE WHEN MONTH ( ord.end_time )=10 THEN ord.payment   ELSE 0 END ) AS october,
+            sum( CASE WHEN MONTH ( ord.end_time )=11 THEN ord.payment   ELSE 0 END ) AS november,
+            sum( CASE WHEN MONTH ( ord.end_time )=12 THEN ord.payment   ELSE 0 END ) AS december
+         FROM kz_shop shop
+         LEFT JOIN kz_order ord ON shop.id = ord.shop_id AND ord.`status` = '5'
+         <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="year != null and year != ''">
+              and   YEAR ( ord.end_time ) = #{year}
+            </if>
+            <if test="shopId != null and shopId != ''">
+                AND shop.id = #{shopId}
+            </if>
+         </trim>
+    </select>
 </mapper>
