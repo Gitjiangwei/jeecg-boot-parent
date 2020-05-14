@@ -1,5 +1,8 @@
 package org.kunze.diansh.service;
 
+import org.apache.ibatis.annotations.Param;
+import org.kunze.diansh.controller.vo.SalesVo;
+
 import java.util.List;
 import java.util.Map;
 
@@ -20,4 +23,26 @@ public interface IMenuService {
      */
     List<String> selectStoreByShop(String shopId,String year);
 
+
+    /***
+     * 查询总订单量和当前完成的订单量
+     * @param shopId
+     * @return
+     */
+    Map<String,String> selectOrderLeader(String shopId);
+
+
+    /***
+     * 查询近10天的订单量
+     * @param shopId
+     * @return
+     */
+    List<Map<String,String>> selectOrderLeaders(String shopId);
+
+    /**
+     * 查询销售额
+     * @param shopId
+     * @return
+     */
+    SalesVo selectSales(String shopId);
 }

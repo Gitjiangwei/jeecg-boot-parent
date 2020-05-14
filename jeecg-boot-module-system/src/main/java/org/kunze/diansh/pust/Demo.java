@@ -1,5 +1,6 @@
 package org.kunze.diansh.pust;
 
+import com.alibaba.fastjson.JSON;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -227,14 +228,47 @@ public class Demo {
 		filecast.setTestMode();
 		client.send(filecast);
 	}
-	
+
+	//Android自定义播放
+	/**
+	 * 使用的是sdk的AndroidCustomizedcast对象
+	 * object里面存放是android实际取的内容，其它参数是UM原定的可看业务而定
+	 * setCustomField里面是android实际读取的，也可和移动端自定义数据结构
+	 * 使用customizedcast.getPostBody()打印推送的内容
+	 * 此处Alias = persionId || userId
+	 * */
+	public void android() throws Exception{
+		AndroidCustomizedcast customizedcast = new AndroidCustomizedcast(appkey,appMasterSecret);
+		JSONObject result = new JSONObject();
+		JSONObject custom = new JSONObject();
+		JSONObject object = new JSONObject();
+		JSONArray array = new JSONArray();
+		object.put("sound","todayTask");
+		object.put("messageTitle", "测试推送标题"); //推送标题
+		object.put("pushContent","测试推送的内容, android推送"); //推送内容
+		array.put(object);
+		result.put("arr0",array);
+		custom.put("result",result);
+		customizedcast.setCustomField(custom);
+		customizedcast.setAlias("1815","SINA_WEIBO"); // 此处Alias = persionId || userId
+		customizedcast.setTicker("您有一条新的订单");
+		customizedcast.setTitle("您有一条新的订单，请注意查收");
+		customizedcast.setText("测试推送的内容, android推送");
+		customizedcast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
+		customizedcast.setProductionMode();
+		System.out.println("发送内容："+customizedcast.getPostBody());
+		client.send(customizedcast);
+	}
+
 	public static void main(String[] args) {
 		// TODO set your appkey and master secret here
 		String appkey = "5eb2184adbc2ec0856ab2aac";
 		String appMasterSecret = "xe2gzni0gkjesy8mfomucngiddpiumm1";
 		Demo demo = new Demo(appkey, appMasterSecret);
 		try {
-			demo.sendAndroidUnicast();
+			//demo.android();
+			demo.sendAndroidBroadcast();
+//			demo.sendAndroidUnicast();
 //			demo.sendIOSBroadcast();
 //			demo.sendIOSUnicast();
 			/* TODO these methods are all available, just fill in some fields and do the test

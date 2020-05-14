@@ -10,6 +10,7 @@ import org.kunze.diansh.entity.*;
 import org.kunze.diansh.mapper.AddressMapper;
 import org.kunze.diansh.mapper.OrderMapper;
 import org.kunze.diansh.mapper.ShopMapper;
+import org.kunze.diansh.pust.Demo;
 import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     private SysUserShopMapper sysUserShopMapper;
+
 
     /**
      * 创建订单
@@ -161,11 +163,20 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             List<String> stringList = sysUserShopMapper.selectByIds(order.getShopId());
             JSONObject obj = new JSONObject();
             if(stringList.size()>0 && stringList.size() == 1){
+                //通过WebScoket进行发送
                 obj.put("cmd","user");
                 obj.put("userId",stringList.get(0));
                 obj.put("msgId", "M0001");
                 obj.put("msgTxt", "您有一条新的订单，请注意查收");
                 webSocket.sendOneMessage(stringList.get(0),obj.toJSONString());
+                //通过友盟进行消息推送
+                Demo demo = new Demo("5eb2184adbc2ec0856ab2aac","xe2gzni0gkjesy8mfomucngiddpiumm1");
+                try {
+                    demo.sendAndroidBroadcast();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }else {
 
             }

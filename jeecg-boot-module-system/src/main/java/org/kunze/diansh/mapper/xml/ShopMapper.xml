@@ -112,4 +112,100 @@
             </if>
          </trim>
     </select>
+
+
+    <select id="selectOrderLeader" resultType="Map">
+        SELECT count(todays.order_id) as 'todaysOrder',count(total.order_id) as 'totalOrder' FROM kz_order o
+        LEFT JOIN (
+        SELECT order_id
+         FROM kz_order
+        WHERE `status` = '5'
+        and to_days(end_time) = to_days(now())
+        ) todays ON o.order_id = todays.order_id
+        LEFT JOIN (
+        SELECT order_id
+         FROM kz_order
+        WHERE `status` = '5'
+        ) total ON o.order_id = total.order_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="shopId != null and shopId != ''">
+                 o.shop_id = #{shopId}
+            </if>
+        </trim>
+    </select>
+
+
+    <select id="selectOrderLeaders" resultType="Map">
+            select a.click_date as 'clickDate',ifnull(b.count,0) as 'counts'
+            from (
+                SELECT curdate() as click_date
+                union all
+                SELECT date_sub(curdate(), interval 1 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 2 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 3 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 4 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 5 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 6 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 7 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 8 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 9 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 10 day) as click_date
+            ) a left join (
+                  select date(end_time) as datetime, count(*) as count
+                  from kz_order WHERE  `status` = '5'
+                  <if test="shopId != null and shopId != ''">
+                    AND  shop_id = #{shopId}
+                  </if>
+                  group by date(end_time)
+            ) b on a.click_date = b.datetime
+            ORDER BY date(clickDate) DESC
+    </select>
+
+    <select id="selectSales" resultType="org.kunze.diansh.entity.modelData.SalesModel">
+        SELECT total.total,lastWeek.lastWeek,`week`.`week`,today.today,yestToday.yestToday FROM
+        (
+            SELECT IFNULL(SUM(o.payment),0) as 'total' FROM kz_order o
+            where o.`status` = '5'
+            <if test="shopId != null and shopId != ''">
+                AND o.shop_id = #{shopId}
+            </if>
+        ) total,
+        (
+            SELECT IFNULL(SUM(o.payment),0) as 'lastWeek'  FROM kz_order o
+            WHERE o.`status` = '5' AND YEARWEEK(date_format(o.end_time,'%Y-%m-%d')) =YEARWEEK(now())-1
+            <if test="shopId != null and shopId != ''">
+                AND o.shop_id = #{shopId}
+            </if>
+        ) lastWeek,
+        (
+            SELECT IFNULL(SUM(o.payment),0) as 'week' FROM kz_order o
+            WHERE o.`status` = '5' AND YEARWEEK(date_format(o.end_time,'%Y-%m-%d')) =YEARWEEK(now())
+            <if test="shopId != null and shopId != ''">
+                AND o.shop_id = #{shopId}
+            </if>
+        ) `week`,
+        (
+            SELECT IFNULL(SUM(o.payment),0) as 'today'  FROM kz_order o
+            WHERE o.`status` = '5' AND to_days(o.end_time) = to_days(now())
+            <if test="shopId != null and shopId != ''">
+                AND o.shop_id = #{shopId}
+            </if>
+        ) today,
+        (
+            SELECT IFNULL(SUM(o.payment),0) as 'yestToday' FROM kz_order o
+            WHERE o.`status` = '5' AND TO_DAYS(NOW( ) ) - TO_DAYS(o.end_time) &lt;= 1
+            <if test="shopId != null and shopId != ''">
+               AND o.shop_id = #{shopId}
+            </if>
+        ) yestToday
+    </select>
 </mapper>

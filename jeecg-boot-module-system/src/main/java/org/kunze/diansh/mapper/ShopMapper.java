@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.vo.ShopVo;
 import org.kunze.diansh.entity.KzShop;
 import org.kunze.diansh.entity.modelData.MonthMenuModel;
+import org.kunze.diansh.entity.modelData.SalesModel;
 
 import java.util.List;
 import java.util.Map;
@@ -47,4 +48,27 @@ public interface ShopMapper extends BaseMapper<KzShop> {
      * 门店销售统计图
      * */
    MonthMenuModel selectStoreByShop(@Param("shopId") String shopId,@Param("year") String year);
+
+
+    /***
+     * 查询总订单量和当日订单量
+     * @param shopId
+     * @return
+     */
+   Map<String,String> selectOrderLeader(@Param("shopId") String shopId);
+
+    /***
+     * 查询近10天的订单量
+     * @param shopId
+     * @return
+     */
+   List<Map<String,String>> selectOrderLeaders(@Param("shopId") String shopId);
+
+
+    /**
+     * 查询销售额
+     * @param shopId
+     * @return
+     */
+   SalesModel selectSales(@Param("shopId") String shopId);
 }
