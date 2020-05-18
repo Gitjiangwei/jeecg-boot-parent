@@ -208,4 +208,65 @@
             </if>
         ) yestToday
     </select>
+
+    <select id="selectMonthMoney" resultType="String">
+        SELECT IFNULL(SUM(payment),0) FROM kz_order o WHERE shop_id = #{shopId} AND `status`= '5' AND
+        DATE_FORMAT(o.end_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m')
+    </select>
+
+    <select id="selectTotalSpuNum" resultType="String">
+        SELECT COUNT(1) FROM kz_spu spu WHERE spu.shop_id = #{shopId} AND spu.is_flag = '0'
+    </select>
+
+    <select id="selectTotalOrder" resultType="String">
+        SELECT COUNT(1) FROM kz_order o WHERE shop_id = #{shopId} AND (`status`='3' OR `status` = '4' OR `status` = '5')
+    </select>
+
+
+    <select id="selectOrderstatistics" resultType="Map">
+        SELECT pending,completed FROM (
+        SELECT COUNT(1) AS 'pending' FROM kz_order o WHERE o.`status` = '2' AND o.shop_id = #{shopId}
+        ) o1,
+        (
+        SELECT COUNT(1) AS 'completed' FROM kz_order o WHERE o.`status` = '5' AND o.shop_id = #{shopId}
+        ) o2
+
+    </select>
+
+    <select id="selectWarehouseStatistics" resultType="Map">
+        SELECT notsheif,stock FROM (
+        SELECT COUNT(1) AS 'notsheif' FROM kz_spu spu WHERE spu.saleable = '0' AND spu.shop_id = #{shopId}
+        ) notsheif,
+        (
+        SELECT COUNT(1) AS 'stock' FROM kz_spu spu
+        LEFT JOIN kz_sku sku ON spu.id = sku.spu_id
+        LEFT JOIN kz_stock stock ON sku.id = stock.sku_id
+        WHERE stock.stock &lt;=10 AND spu.shop_id = #{shopId}
+        ) stock
+    </select>
+
+    <select id="selectSevenDeal" resultType="Map">
+        select a.click_date as 'clickDate',IFNULL(b.count,0) as 'count'
+        from (
+            SELECT DATE_FORMAT(curdate(),'%m-%d') as click_date
+            union all
+            SELECT DATE_FORMAT(date_sub(curdate(), interval 1 day),'%m-%d') as click_date
+            union all
+            SELECT DATE_FORMAT(date_sub(curdate(), interval 2 day),'%m-%d') as click_date
+            union all
+            SELECT DATE_FORMAT(date_sub(curdate(), interval 3 day),'%m-%d') as click_date
+            union all
+            SELECT DATE_FORMAT(date_sub(curdate(), interval 4 day),'%m-%d') as click_date
+            union all
+            SELECT DATE_FORMAT(date_sub(curdate(), interval 5 day),'%m-%d') as click_date
+            union all
+            SELECT DATE_FORMAT(date_sub(curdate(), interval 6 day),'%m-%d') as click_date
+        ) a left join (
+          select DATE_FORMAT(end_time,'%m-%d') as datetime, count(*) as count
+          from kz_order WHERE `status` = '5' AND shop_id = #{shopId}
+          group by date(end_time)
+
+        ) b on a.click_date = b.datetime
+        ORDER BY  a.click_date desc
+    </select>
 </mapper>

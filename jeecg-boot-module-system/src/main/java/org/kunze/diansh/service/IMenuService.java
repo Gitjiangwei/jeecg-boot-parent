@@ -1,6 +1,7 @@
 package org.kunze.diansh.service;
 
 import org.apache.ibatis.annotations.Param;
+import org.kunze.diansh.controller.vo.InformationVo;
 import org.kunze.diansh.controller.vo.SalesVo;
 
 import java.util.List;
@@ -45,4 +46,34 @@ public interface IMenuService {
      * @return
      */
     SalesVo selectSales(String shopId);
+
+    /**
+     * 查询平台数据统计
+     * @param shopId
+     * @return
+     */
+    InformationVo selectInfo(String shopId);
+
+    /***
+     * 订单统计
+     * @param shopId
+     * @return
+     */
+    Map<String,String> selectOrderstatistics(String shopId);
+
+
+    /***
+     * 库存统计
+     * @param shopId
+     * @return
+     */
+    Map<String,String> selectWarehouseStatistics(String shopId);
+
+
+    /**
+     * 查询近7天的成交量
+     * @param shopId
+     * @return
+     */
+    List<Map<String,String>> selectSevenDeal(String shopId);
 }

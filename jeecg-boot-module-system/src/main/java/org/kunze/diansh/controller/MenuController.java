@@ -3,6 +3,7 @@ package org.kunze.diansh.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.api.vo.Result;
+import org.kunze.diansh.controller.vo.InformationVo;
 import org.kunze.diansh.controller.vo.SalesVo;
 import org.kunze.diansh.service.IMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,53 @@ public class MenuController {
         SalesVo salesVo = menuService.selectSales(shopId);
         result.setSuccess(true);
         result.setResult(salesVo);
+        return result;
+    }
+
+
+    @ApiOperation("查询平台信息数据统计")
+    @GetMapping(value = "/selectInfo")
+    public Result<InformationVo> selectInfo(@RequestParam(name = "shopId") String shopId){
+        Result<InformationVo> result = new Result<InformationVo>();
+        if(shopId==null || shopId.equals("")){
+            result.error500("参数丢失！");
+        }else {
+            InformationVo informationVo = menuService.selectInfo(shopId);
+            result.setSuccess(true);
+            result.setResult(informationVo);
+        }
+        return result;
+    }
+
+    @ApiOperation("超市订单统计")
+    @GetMapping(value = "/selectOrderstatistics")
+    public Result<Map<String,String>> selectOrderstatistics(@RequestParam(name = "shopId") String shopId){
+        Result<Map<String,String>> result = new Result<Map<String,String>>();
+        Map<String,String> stringMap = menuService.selectOrderstatistics(shopId);
+        result.setSuccess(true);
+        result.setResult(stringMap);
+        return result;
+    }
+
+
+    @ApiOperation("超市库存统计")
+    @GetMapping(value = "/selectWarehouseStatistics")
+    public Result<Map<String,String>> selectWarehouseStatistics(@RequestParam(name = "shopId") String shopId){
+        Result<Map<String,String>> result = new Result<Map<String,String>>();
+        Map<String,String> stringMap = menuService.selectWarehouseStatistics(shopId);
+        result.setSuccess(true);
+        result.setResult(stringMap);
+        return result;
+    }
+
+
+    @ApiOperation("超市库存统计")
+    @GetMapping(value = "/selectSevenDeal")
+    public Result<List<Map<String,String>>> selectSevenDeal(@RequestParam(name = "shopId") String shopId){
+        Result<List<Map<String,String>>> result = new Result<List<Map<String,String>>>();
+        List<Map<String,String>> mapList = menuService.selectSevenDeal(shopId);
+        result.setSuccess(true);
+        result.setResult(mapList);
         return result;
     }
 }

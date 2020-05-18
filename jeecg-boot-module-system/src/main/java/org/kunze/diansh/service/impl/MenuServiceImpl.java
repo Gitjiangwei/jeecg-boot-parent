@@ -1,5 +1,6 @@
 package org.kunze.diansh.service.impl;
 
+import org.kunze.diansh.controller.vo.InformationVo;
 import org.kunze.diansh.controller.vo.SalesVo;
 import org.kunze.diansh.entity.modelData.MonthMenuModel;
 import org.kunze.diansh.entity.modelData.SalesModel;
@@ -146,5 +147,53 @@ public class MenuServiceImpl implements IMenuService {
         //4、当天销售额
         salesVo.setToDays(salesModel.getToday());
         return salesVo;
+    }
+
+    /**
+     * 查询平台数据统计
+     *
+     * @param shopId
+     * @return
+     */
+    @Override
+    public InformationVo selectInfo(String shopId) {
+        InformationVo informationVo = new InformationVo();
+        if(shopId!=null && !shopId.equals("")) {
+            informationVo.setMoneyMoney(shopMapper.selectMonthMoney(shopId));
+            informationVo.setOrderNum(shopMapper.selectTotalOrder(shopId));
+            informationVo.setSpuNum(shopMapper.selectTotalSpuNum(shopId));
+        }
+        return informationVo;
+    }
+
+    /***
+     * 订单统计
+     * @param shopId
+     * @return
+     */
+    @Override
+    public Map<String, String> selectOrderstatistics(String shopId) {
+        return shopMapper.selectOrderstatistics(shopId);
+    }
+
+    /***
+     * 库存统计
+     * @param shopId
+     * @return
+     */
+    @Override
+    public Map<String, String> selectWarehouseStatistics(String shopId) {
+        return shopMapper.selectWarehouseStatistics(shopId);
+    }
+
+    /**
+     * 查询近7天的成交量
+     *
+     * @param shopId
+     * @return
+     */
+    @Override
+    public List<Map<String, String>> selectSevenDeal(String shopId) {
+        return shopMapper.selectSevenDeal(shopId);
     }
 }

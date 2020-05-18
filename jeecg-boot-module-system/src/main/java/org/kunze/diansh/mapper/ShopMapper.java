@@ -71,4 +71,52 @@ public interface ShopMapper extends BaseMapper<KzShop> {
      * @return
      */
    SalesModel selectSales(@Param("shopId") String shopId);
+
+
+    /***
+     * 查询超市当月销售额
+     * @param shopId
+     * @return
+     */
+   String selectMonthMoney(@Param("shopId") String shopId);
+
+
+    /**
+     * 查询超市的商品总数(包含上架和未上架)
+     * @param shopId
+     * @return
+     */
+   String selectTotalSpuNum(@Param("shopId") String shopId);
+
+
+    /**
+     * 查询超市的总订单
+     * @param shopId
+     * @return
+     */
+   String selectTotalOrder(@Param("shopId") String shopId);
+
+
+    /***
+     * 订单统计
+     * @param shopId
+     * @return
+     */
+   Map<String,String> selectOrderstatistics(@Param("shopId") String shopId);
+
+
+    /**
+     * 库存统计
+     * @param shopId
+     * @return
+     */
+   Map<String,String> selectWarehouseStatistics(@Param("shopId") String shopId);
+
+
+    /***
+     * 查询近7天的成交量
+     * @param shopId
+     * @return
+     */
+   List<Map<String,String>> selectSevenDeal(@Param("shopId") String shopId);
 }
