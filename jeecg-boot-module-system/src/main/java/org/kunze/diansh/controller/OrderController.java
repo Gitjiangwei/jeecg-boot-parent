@@ -1,6 +1,7 @@
 package org.kunze.diansh.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -8,14 +9,14 @@ import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.kunze.diansh.controller.bo.OrderBo;
+import org.kunze.diansh.controller.vo.OrderVo;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -42,7 +43,8 @@ public class OrderController {
     public Result<OrderBo> createOrder(@RequestParam("aid") String aid, @RequestParam("cids") String cids,
                                        @RequestParam("shopId")  String shopId,@RequestParam("userID")  String userID){
         Result<OrderBo> orderResult = new Result<OrderBo>();
-        List cidsList = JSON.parseArray(cids);
+        List cidsList = new ArrayList(Arrays.asList(cids.split(",")));
+        //List cidsList = JSON.parseArray(cids);
         OrderBo order = orderService.createOrder(aid,cidsList,shopId,userID);
         if(null != order){
             orderResult.success("创建成功！");
@@ -96,6 +98,21 @@ public class OrderController {
             }
         }
         return result;
+    }
 
+
+    @ApiOperation("后台管理系统查询订单")
+    @AutoLog("后台管理系统查询订单")
+    @GetMapping(value = "/selectOrder")
+    public Result<PageInfo<OrderVo>> selectOrder(@RequestParam(name = "orderId",required = false) String orderId,
+                                                 @RequestParam(name = "status",required = false) String status,
+                                                 @RequestParam(name = "shopId") String shopId,
+                                                 @RequestParam(name = "pageNo") Integer pageNo,
+                                                 @RequestParam(name = "pageSize") Integer pageSize){
+        Result<PageInfo<OrderVo>> result = new Result<PageInfo<OrderVo>>();
+        PageInfo<OrderVo> orderVoPageInfo = orderService.selectOrder(shopId,status,orderId,pageNo,pageSize);
+        result.setResult(orderVoPageInfo);
+        result.setSuccess(true);
+        return result;
     }
 }

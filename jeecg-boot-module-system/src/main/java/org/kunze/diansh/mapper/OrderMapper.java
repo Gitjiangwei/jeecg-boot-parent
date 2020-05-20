@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.entity.OrderDetail;
+import org.kunze.diansh.entity.modelData.OrderModel;
 
 import java.util.List;
 
@@ -62,4 +63,12 @@ public interface OrderMapper extends BaseMapper<Order> {
      * @return
      */
     Order selectById(@Param("orderId") String orderId);
+
+
+    /***
+     *后台查询订单信息
+     * @param order
+     * @return
+     */
+    List<OrderModel> selectOrder(Order order);
 }

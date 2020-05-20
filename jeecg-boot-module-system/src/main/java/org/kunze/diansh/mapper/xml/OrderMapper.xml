@@ -73,4 +73,19 @@
          from kz_order
         where order_id = #{orderId}
     </select>
+
+    <select id="selectOrder" resultType="org.kunze.diansh.entity.modelData.OrderModel">
+        SELECT o.order_id,o.payment,address.consignee,address.consignee_sex,address.telphone,o.create_time,o.`status`,o.pick_up,o.buyer_message,o.end_time FROM kz_order o
+        LEFT JOIN kz_address  address ON o.address_id = address.id
+        <trim prefix="where" prefixOverrides="and">
+            o.shop_id = #{shopId}
+            <if test="orderId != null and orderId != ''">
+                and  o.order_id = #{orderId}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </trim>
+        order by o.create_time desc
+    </select>
 </mapper>

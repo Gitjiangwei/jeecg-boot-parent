@@ -12,7 +12,7 @@
 
     <select id="selectFeatures" resultType="org.kunze.diansh.controller.vo.SpuFeaturesVo">
         SELECT
-        feat.id,
+        feat.features_id,
         feat.spu_id,
         sku.id AS 'skuId',
         sku.title,

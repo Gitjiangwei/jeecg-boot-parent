@@ -1,6 +1,7 @@
 package org.kunze.diansh.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.kunze.diansh.controller.vo.ShopVo;
@@ -31,11 +32,13 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, KzShop> implements 
      */
     @Override
     public PageInfo<ShopVo> queryShopList(ShopVo shopVo,Integer pageNo,Integer pageSize) {
-        PageHelper.startPage(pageNo,pageSize);
+        Page page = PageHelper.startPage(pageNo,pageSize);
         KzShop shop = new KzShop();
         BeanUtils.copyProperties(shopVo,shop);
         List<ShopVo> shops = shopMapper.queryShopList(shop);
-        return new PageInfo<ShopVo>(shops);
+        PageInfo pageInfo =  new PageInfo<ShopVo>(shops);
+        pageInfo.setTotal(page.getTotal());
+        return pageInfo;
     }
 
     /***
