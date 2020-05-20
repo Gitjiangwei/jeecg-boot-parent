@@ -85,7 +85,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         //订单
         Order order = new Order();
-        Shop shop = shopMapper.selectByKey(shopId);
+        KzShop shop = shopMapper.selectByKey(shopId);
         if(shop == null){
             return  null;
         }
