@@ -3,9 +3,9 @@ package org.kunze.diansh.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import org.kunze.diansh.controller.vo.ShopVo;
-import org.kunze.diansh.entity.Shop;
+import org.kunze.diansh.entity.KzShop;
 
-public interface IShopService extends IService<Shop> {
+public interface IShopService extends IService<KzShop> {
 
     /***
      * 查询所有商家
@@ -20,7 +20,7 @@ public interface IShopService extends IService<Shop> {
      * @param shop
      * @return
      */
-    Boolean insertShop(Shop shop);
+    Boolean insertShop(KzShop shop);
 
 
     /**
@@ -28,5 +28,5 @@ public interface IShopService extends IService<Shop> {
      * @param shop
      * @return
      */
-    Boolean updateShop(Shop shop);
+    Boolean updateShop(KzShop shop);
 }

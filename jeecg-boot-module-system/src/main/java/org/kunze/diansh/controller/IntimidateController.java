@@ -1,5 +1,6 @@
 package org.kunze.diansh.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -77,14 +78,17 @@ public class IntimidateController {
         salesTicketVo.setShopName("金威超市");
         result.setSuccess(true);
         result.setResult(salesTicketVo);
+        printSale(commodities,salesTicketVo);
         return result;
     }
 
     @ApiOperation("打印接口")
     @AutoLog("打印小票")
     @PostMapping(value = "/dayin")
-    public Result<SalesTicketVo> intimiDateTrue(@RequestParam(name = "orderId") String orderId){
+    public Result<SalesTicketVo> intimiDateTrue(@RequestBody String orderId){
         Result<SalesTicketVo> result = new Result<SalesTicketVo>();
+        JSONObject jsonObject = JSONObject.parseObject(orderId);
+        orderId = jsonObject.get("orderId").toString();
         if(orderId == null || orderId.equals("")){
             result.error500("参数丢失！");
         }else {

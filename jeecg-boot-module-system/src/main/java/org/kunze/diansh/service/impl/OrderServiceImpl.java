@@ -3,15 +3,23 @@ package org.kunze.diansh.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.common.util.EmptyUtils;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.aspectj.weaver.ast.Or;
 import org.jeecg.common.util.OrderCodeUtils;
 import org.jeecg.modules.message.mapper.SysUserShopMapper;
 import org.jeecg.modules.message.websocket.WebSocket;
 import org.kunze.diansh.controller.bo.OrderBo;
+import org.kunze.diansh.controller.vo.OrderVo;
 import org.kunze.diansh.entity.*;
+import org.kunze.diansh.entity.modelData.OrderModel;
 import org.kunze.diansh.mapper.AddressMapper;
 import org.kunze.diansh.mapper.OrderMapper;
 import org.kunze.diansh.mapper.ShopMapper;
+import org.kunze.diansh.pust.Demo;
 import org.kunze.diansh.service.IOrderService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -180,11 +188,20 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             List<String> stringList = sysUserShopMapper.selectByIds(order.getShopId());
             JSONObject obj = new JSONObject();
             if(stringList.size()>0 && stringList.size() == 1){
+                //通过WebScoket进行发送
                 obj.put("cmd","user");
                 obj.put("userId",stringList.get(0));
                 obj.put("msgId", "M0001");
                 obj.put("msgTxt", "您有一条新的订单，请注意查收");
                 webSocket.sendOneMessage(stringList.get(0),obj.toJSONString());
+                //通过友盟进行消息推送
+                Demo demo = new Demo("5eb2184adbc2ec0856ab2aac","xe2gzni0gkjesy8mfomucngiddpiumm1");
+                try {
+                    demo.sendAndroidBroadcast();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }else {
 
             }
@@ -225,6 +242,49 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             totalPrice = totalPrice+price.intValue();
         }
         return totalPrice.toString();
+    }
+
+    /***
+     * 后台管理系统查询订单数据
+     * @param shopId
+     * @param status
+     * @param orderId
+     * @return
+     */
+    @Override
+    public PageInfo<OrderVo> selectOrder(String shopId, String status, String orderId,Integer pageNo,Integer pageSize) {
+        if(shopId == null || shopId.equals("")){
+            return null;
+        }else {
+            Order order = new Order();
+            order.setShopId(shopId);
+            if(status!=null && !status.equals("")) {
+                order.setStatus(Integer.valueOf(status));
+            }
+            if(orderId!=null && !orderId.equals("")) {
+                order.setOrderId(orderId);
+            }
+            Page page= PageHelper.startPage(pageNo,pageSize);
+            List<OrderModel> orderModels = orderMapper.selectOrder(order);
+            List<OrderVo> orderVos = new ArrayList<OrderVo>();
+            for (int i = 0;i<orderModels.size(); i++){
+                OrderVo orderVo = new OrderVo();
+                BeanUtils.copyProperties(orderModels.get(i),orderVo);
+                String sex = "";
+                if(orderModels.get(i).getConsigneeSex() != null && !orderModels.get(i).getConsigneeSex().equals("")) {
+                    if (orderModels.get(i).getConsigneeSex().equals("2")) {
+                        sex = "女士";
+                    } else {
+                        sex = "先生";
+                    }
+                }
+                orderVo.setConsigneeSex(orderModels.get(i).getConsignee()==null?"":orderModels.get(i).getConsignee()+sex);
+                orderVos.add(orderVo);
+            }
+            PageInfo pageInfo = new PageInfo<OrderVo>(orderVos);
+            pageInfo.setTotal(page.getTotal());
+            return pageInfo;
+        }
     }
 
 

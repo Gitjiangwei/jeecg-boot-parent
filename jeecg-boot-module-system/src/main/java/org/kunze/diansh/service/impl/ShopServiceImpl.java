@@ -1,10 +1,11 @@
 package org.kunze.diansh.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.kunze.diansh.controller.vo.ShopVo;
-import org.kunze.diansh.entity.Shop;
+import org.kunze.diansh.entity.KzShop;
 import org.kunze.diansh.mapper.ShopMapper;
 import org.kunze.diansh.service.IShopService;
 import org.springframework.beans.BeanUtils;
@@ -17,7 +18,7 @@ import java.util.UUID;
 
 
 @Service
-public class ShopServiceImpl extends ServiceImpl<ShopMapper,Shop> implements IShopService {
+public class ShopServiceImpl extends ServiceImpl<ShopMapper, KzShop> implements IShopService {
 
 
     @Autowired
@@ -31,11 +32,13 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper,Shop> implements ISh
      */
     @Override
     public PageInfo<ShopVo> queryShopList(ShopVo shopVo,Integer pageNo,Integer pageSize) {
-        PageHelper.startPage(pageNo,pageSize);
-        Shop shop = new Shop();
+        Page page = PageHelper.startPage(pageNo,pageSize);
+        KzShop shop = new KzShop();
         BeanUtils.copyProperties(shopVo,shop);
         List<ShopVo> shops = shopMapper.queryShopList(shop);
-        return new PageInfo<ShopVo>(shops);
+        PageInfo pageInfo =  new PageInfo<ShopVo>(shops);
+        pageInfo.setTotal(page.getTotal());
+        return pageInfo;
     }
 
     /***
@@ -44,7 +47,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper,Shop> implements ISh
      * @return
      */
     @Override
-    public Boolean insertShop(Shop shop) {
+    public Boolean insertShop(KzShop shop) {
         Boolean flag = false;
         shop.setId(UUID.randomUUID().toString().replace("-",""));
         int reuslt = shopMapper.insertShop(shop);
@@ -61,7 +64,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper,Shop> implements ISh
      * @return
      */
     @Override
-    public Boolean updateShop(Shop shop) {
+    public Boolean updateShop(KzShop shop) {
         Boolean flag = false;
         if(shop.getId() != null && !shop.getId().equals("")){
             int result =  shopMapper.updateShop(shop);

@@ -19,9 +19,10 @@
                 and br.letter = #{parentId}
             </if>
             <if test="kId != null and kId != '' ">
-                ca.category_id = #{kId}
+                and ca.category_id = #{kId}
             </if>
         </where>
+        group by bid
         ORDER BY update_time DESC,create_time DESC
     </select>
 

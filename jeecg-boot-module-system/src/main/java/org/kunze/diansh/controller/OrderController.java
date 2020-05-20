@@ -1,6 +1,7 @@
 package org.kunze.diansh.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.PageInfo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -13,11 +14,14 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.util.EmptyUtils;
 import org.jeecg.common.util.OrderCodeUtils;
 import org.kunze.diansh.controller.bo.OrderBo;
+import org.kunze.diansh.controller.vo.OrderVo;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -30,8 +34,6 @@ public class OrderController {
     private IOrderService orderService;
 
 
-//    @RequestParam("aid") String aid, @RequestParam("cids") String cids,
-//    @RequestParam("shopId")  String shopId,@RequestParam("userID")  String userID
     /**
      * 创建订单
      *  aid 地址id
@@ -68,8 +70,6 @@ public class OrderController {
         if(null != order){
             orderResult.success("创建成功！");
             orderResult.setResult(order);
-            //创建订单成功后加入队列
-            OrderComsumer.queue.put(order);
         }else{
             orderResult.error500("创建失败！");
         }
@@ -147,6 +147,21 @@ public class OrderController {
             }
         }
         return result;
+    }
 
+
+    @ApiOperation("后台管理系统查询订单")
+    @AutoLog("后台管理系统查询订单")
+    @GetMapping(value = "/selectOrder")
+    public Result<PageInfo<OrderVo>> selectOrder(@RequestParam(name = "orderId",required = false) String orderId,
+                                                 @RequestParam(name = "status",required = false) String status,
+                                                 @RequestParam(name = "shopId") String shopId,
+                                                 @RequestParam(name = "pageNo") Integer pageNo,
+                                                 @RequestParam(name = "pageSize") Integer pageSize){
+        Result<PageInfo<OrderVo>> result = new Result<PageInfo<OrderVo>>();
+        PageInfo<OrderVo> orderVoPageInfo = orderService.selectOrder(shopId,status,orderId,pageNo,pageSize);
+        result.setResult(orderVoPageInfo);
+        result.setSuccess(true);
+        return result;
     }
 }

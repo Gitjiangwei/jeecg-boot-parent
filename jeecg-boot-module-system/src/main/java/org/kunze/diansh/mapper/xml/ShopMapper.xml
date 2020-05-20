@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.kunze.diansh.mapper.ShopMapper">
-    <select id="selectByKey" resultType="org.kunze.diansh.entity.Shop">
+    <select id="selectByKey" resultType="org.kunze.diansh.entity.KzShop">
         select id,shop_name,create_time,status,shop_address,image
         from kz_shop
         where id = #{shopId} and status = '0'
@@ -62,4 +62,211 @@
         </trim>
         where id = #{id}
     </update>
+
+
+    <select id="selectStoreLeaderboard" resultType="Map">
+        SELECT shop.id,shop.shop_name as 'shopName',SUM(ord.payment) as 'payment' FROM kz_shop shop
+        LEFT JOIN kz_order ord ON shop.id = ord.shop_id AND ord.`status` = '5'
+        <if test="choiceTime == 1">
+           AND to_days(ord.end_time) = to_days(now())
+        </if>
+        <if test="choiceTime == 2">
+            AND YEARWEEK(date_format(ord.end_time,'%Y-%m-%d' )) = YEARWEEK(now())
+        </if>
+        <if test="choiceTime == 3">
+            AND DATE_FORMAT(ord.end_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m')
+        </if>
+        <if test="choiceTime == 4">
+            AND YEAR(ord.end_time)= YEAR(NOW())
+        </if>
+        GROUP BY shop.id
+        ORDER BY payment DESC
+        <if test="more == 1">
+            limit 7
+        </if>
+    </select>
+
+
+    <select id="selectStoreByShop" resultType="org.kunze.diansh.entity.modelData.MonthMenuModel">
+        SELECT
+            sum( CASE WHEN MONTH ( ord.end_time )=1 THEN ord.payment   ELSE 0 END ) AS january,
+            sum( CASE WHEN MONTH ( ord.end_time )=2 THEN ord.payment   ELSE 0 END ) AS february,
+            sum( CASE WHEN MONTH ( ord.end_time )=3 THEN ord.payment   ELSE 0 END ) AS march,
+            sum( CASE WHEN MONTH ( ord.end_time )=4 THEN ord.payment   ELSE 0 END ) AS april,
+            sum( CASE WHEN MONTH ( ord.end_time )=5 THEN ord.payment   ELSE 0 END ) AS may,
+            sum( CASE WHEN MONTH ( ord.end_time )=6 THEN ord.payment   ELSE 0 END ) AS june,
+            sum( CASE WHEN MONTH ( ord.end_time )=7 THEN ord.payment   ELSE 0 END ) AS july,
+            sum( CASE WHEN MONTH ( ord.end_time )=8 THEN ord.payment   ELSE 0 END ) AS august,
+            sum( CASE WHEN MONTH ( ord.end_time )=9 THEN ord.payment   ELSE 0 END ) AS september,
+            sum( CASE WHEN MONTH ( ord.end_time )=10 THEN ord.payment   ELSE 0 END ) AS october,
+            sum( CASE WHEN MONTH ( ord.end_time )=11 THEN ord.payment   ELSE 0 END ) AS november,
+            sum( CASE WHEN MONTH ( ord.end_time )=12 THEN ord.payment   ELSE 0 END ) AS december
+         FROM kz_shop shop
+         LEFT JOIN kz_order ord ON shop.id = ord.shop_id AND ord.`status` = '5'
+         <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="year != null and year != ''">
+              and   YEAR ( ord.end_time ) = #{year}
+            </if>
+            <if test="shopId != null and shopId != ''">
+                AND shop.id = #{shopId}
+            </if>
+         </trim>
+    </select>
+
+
+    <select id="selectOrderLeader" resultType="Map">
+        SELECT count(todays.order_id) as 'todaysOrder',count(total.order_id) as 'totalOrder' FROM kz_order o
+        LEFT JOIN (
+        SELECT order_id
+         FROM kz_order
+        WHERE `status` = '5'
+        and to_days(end_time) = to_days(now())
+        ) todays ON o.order_id = todays.order_id
+        LEFT JOIN (
+        SELECT order_id
+         FROM kz_order
+        WHERE `status` = '5'
+        ) total ON o.order_id = total.order_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="shopId != null and shopId != ''">
+                 o.shop_id = #{shopId}
+            </if>
+        </trim>
+    </select>
+
+
+    <select id="selectOrderLeaders" resultType="Map">
+            select a.click_date as 'clickDate',ifnull(b.count,0) as 'counts'
+            from (
+                SELECT curdate() as click_date
+                union all
+                SELECT date_sub(curdate(), interval 1 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 2 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 3 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 4 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 5 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 6 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 7 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 8 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 9 day) as click_date
+                union all
+                SELECT date_sub(curdate(), interval 10 day) as click_date
+            ) a left join (
+                  select date(end_time) as datetime, count(*) as count
+                  from kz_order WHERE  `status` = '5'
+                  <if test="shopId != null and shopId != ''">
+                    AND  shop_id = #{shopId}
+                  </if>
+                  group by date(end_time)
+            ) b on a.click_date = b.datetime
+            ORDER BY date(clickDate) DESC
+    </select>
+
+    <select id="selectSales" resultType="org.kunze.diansh.entity.modelData.SalesModel">
+        SELECT total.total,lastWeek.lastWeek,`week`.`week`,today.today,yestToday.yestToday FROM
+        (
+            SELECT IFNULL(SUM(o.payment),0) as 'total' FROM kz_order o
+            where o.`status` = '5'
+            <if test="shopId != null and shopId != ''">
+                AND o.shop_id = #{shopId}
+            </if>
+        ) total,
+        (
+            SELECT IFNULL(SUM(o.payment),0) as 'lastWeek'  FROM kz_order o
+            WHERE o.`status` = '5' AND YEARWEEK(date_format(o.end_time,'%Y-%m-%d')) =YEARWEEK(now())-1
+            <if test="shopId != null and shopId != ''">
+                AND o.shop_id = #{shopId}
+            </if>
+        ) lastWeek,
+        (
+            SELECT IFNULL(SUM(o.payment),0) as 'week' FROM kz_order o
+            WHERE o.`status` = '5' AND YEARWEEK(date_format(o.end_time,'%Y-%m-%d')) =YEARWEEK(now())
+            <if test="shopId != null and shopId != ''">
+                AND o.shop_id = #{shopId}
+            </if>
+        ) `week`,
+        (
+            SELECT IFNULL(SUM(o.payment),0) as 'today'  FROM kz_order o
+            WHERE o.`status` = '5' AND to_days(o.end_time) = to_days(now())
+            <if test="shopId != null and shopId != ''">
+                AND o.shop_id = #{shopId}
+            </if>
+        ) today,
+        (
+            SELECT IFNULL(SUM(o.payment),0) as 'yestToday' FROM kz_order o
+            WHERE o.`status` = '5' AND TO_DAYS(NOW( ) ) - TO_DAYS(o.end_time) &lt;= 1
+            <if test="shopId != null and shopId != ''">
+               AND o.shop_id = #{shopId}
+            </if>
+        ) yestToday
+    </select>
+
+    <select id="selectMonthMoney" resultType="String">
+        SELECT IFNULL(SUM(payment),0) FROM kz_order o WHERE shop_id = #{shopId} AND `status`= '5' AND
+        DATE_FORMAT(o.end_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m')
+    </select>
+
+    <select id="selectTotalSpuNum" resultType="String">
+        SELECT COUNT(1) FROM kz_spu spu WHERE spu.shop_id = #{shopId} AND spu.is_flag = '0'
+    </select>
+
+    <select id="selectTotalOrder" resultType="String">
+        SELECT COUNT(1) FROM kz_order o WHERE shop_id = #{shopId} AND (`status`='3' OR `status` = '4' OR `status` = '5')
+    </select>
+
+
+    <select id="selectOrderstatistics" resultType="Map">
+        SELECT pending,completed FROM (
+        SELECT COUNT(1) AS 'pending' FROM kz_order o WHERE o.`status` = '2' AND o.shop_id = #{shopId}
+        ) o1,
+        (
+        SELECT COUNT(1) AS 'completed' FROM kz_order o WHERE o.`status` = '5' AND o.shop_id = #{shopId}
+        ) o2
+
+    </select>
+
+    <select id="selectWarehouseStatistics" resultType="Map">
+        SELECT notsheif,stock FROM (
+        SELECT COUNT(1) AS 'notsheif' FROM kz_spu spu WHERE spu.saleable = '0' AND spu.shop_id = #{shopId}
+        ) notsheif,
+        (
+        SELECT COUNT(1) AS 'stock' FROM kz_spu spu
+        LEFT JOIN kz_sku sku ON spu.id = sku.spu_id
+        LEFT JOIN kz_stock stock ON sku.id = stock.sku_id
+        WHERE stock.stock &lt;=10 AND spu.shop_id = #{shopId}
+        ) stock
+    </select>
+
+    <select id="selectSevenDeal" resultType="Map">
+        select a.click_date as 'clickDate',IFNULL(b.count,0) as 'count'
+        from (
+            SELECT DATE_FORMAT(curdate(),'%m-%d') as click_date
+            union all
+            SELECT DATE_FORMAT(date_sub(curdate(), interval 1 day),'%m-%d') as click_date
+            union all
+            SELECT DATE_FORMAT(date_sub(curdate(), interval 2 day),'%m-%d') as click_date
+            union all
+            SELECT DATE_FORMAT(date_sub(curdate(), interval 3 day),'%m-%d') as click_date
+            union all
+            SELECT DATE_FORMAT(date_sub(curdate(), interval 4 day),'%m-%d') as click_date
+            union all
+            SELECT DATE_FORMAT(date_sub(curdate(), interval 5 day),'%m-%d') as click_date
+            union all
+            SELECT DATE_FORMAT(date_sub(curdate(), interval 6 day),'%m-%d') as click_date
+        ) a left join (
+          select DATE_FORMAT(end_time,'%m-%d') as datetime, count(*) as count
+          from kz_order WHERE `status` = '5' AND shop_id = #{shopId}
+          group by date(end_time)
+
+        ) b on a.click_date = b.datetime
+        ORDER BY  a.click_date desc
+    </select>
 </mapper>

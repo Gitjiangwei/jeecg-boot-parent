@@ -45,7 +45,7 @@ public class IntimidateServiceImpl implements IIntimidateService {
         //4、根据订单id来获取详细订单中商品信息
         List<OrderDetail> orderDetails = orderMapper.selectOrderDetailById(orderId);
         //5、根据订单信息中的超市id查询超市信息
-        Shop shop = shopMapper.selectByKey(order.getShopId());
+        KzShop shop = shopMapper.selectByKey(order.getShopId());
 
         //6、添加配送信息
         DistributionVo distributionVo = new DistributionVo();
@@ -57,7 +57,13 @@ public class IntimidateServiceImpl implements IIntimidateService {
         }
         String call = address.getConsignee()+sex;
         distributionVo.setCall(call);
-        distributionVo.setContact(address.getTelphone()==null?"":address.getTelphone());
+        String tel = address.getTelphone()==null?"":address.getTelphone();
+        if(!tel.equals("")) {
+            tel = tel.substring(0, 3) + "****" + tel.substring(7, tel.length());
+            distributionVo.setContact(tel);
+        }else {
+            distributionVo.setContact(tel);
+        }
         if(order.getPickUp().equals("2")){
             //6.1、根据pickUp来判断是商家配送还是自提
             salesTicketVo.setPickUp("商家配送");
@@ -85,7 +91,7 @@ public class IntimidateServiceImpl implements IIntimidateService {
             BigDecimal spuNum = new BigDecimal(num);
             BigDecimal totalPrice = priceOne.multiply(spuNum);
             totalNum = totalNum.add(spuNum);
-            Commodity commodity = new Commodity(title,price,num,totalPrice.toString());
+            Commodity commodity = new Commodity(title,price,num+"*"+price,totalPrice.toString());
             commodities.add(commodity);
         }
         salesTicketVo.setCommodityList((ArrayList<Commodity>)commodities);

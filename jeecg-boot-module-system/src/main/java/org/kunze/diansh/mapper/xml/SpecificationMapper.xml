@@ -27,7 +27,7 @@
         where category_id = #{categoryId}
     </update>
 
-    <update id="delSpecifications">
+<!--    <update id="delSpecifications">
 
         update kz_specification set is_flag = "1",update_name = #{updateName}
         where category_id in
@@ -36,5 +36,12 @@
         </foreach>
 
 
-    </update>
+    </update>-->
+    <delete id="delSpecifications">
+        delete from kz_specification
+        where category_id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>

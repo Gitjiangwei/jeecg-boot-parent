@@ -1,16 +1,23 @@
 package org.kunze.diansh.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.modules.system.entity.SysPosition;
 import org.kunze.diansh.controller.vo.ShopVo;
-import org.kunze.diansh.entity.Shop;
+import org.kunze.diansh.entity.KzShop;
 import org.kunze.diansh.service.IShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Api(tags = "超市管理")
 @RestController
@@ -35,10 +42,26 @@ public class ShopController {
     }
 
 
+    @AutoLog(value = "超市表-分页列表查询")
+    @ApiOperation(value = "超市表-分页列表查询", notes = "超市表-分页列表查询")
+    @GetMapping(value = "/list")
+    public Result<IPage<KzShop>> queryShList(KzShop shop,
+                                             @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                                             @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+                                             HttpServletRequest req) {
+        Result<IPage<KzShop>> result = new Result<IPage<KzShop>>();
+        QueryWrapper<KzShop> queryWrapper = QueryGenerator.initQueryWrapper(shop, req.getParameterMap());
+        Page<KzShop> page = new Page<KzShop>(pageNo, pageSize);
+        IPage<KzShop> pageList = shopService.page(page,queryWrapper);
+        result.setSuccess(true);
+        result.setResult(pageList);
+        return result;
+    }
+
     @ApiOperation("添加超市信息")
     @AutoLog("添加超市信息")
     @PostMapping(value = "/insertShop")
-    public Result<T> insertShop(@RequestBody Shop shop){
+    public Result<T> insertShop(@RequestBody KzShop shop){
         Result<T> result = new Result<T>();
         Boolean resultOk = shopService.insertShop(shop);
         if(resultOk){
@@ -53,7 +76,7 @@ public class ShopController {
     @ApiOperation("修改超市信息")
     @AutoLog("修改超市信息")
     @PostMapping(value = "updateShop")
-    public Result<T> updateShop(@RequestBody Shop shop) {
+    public Result<T> updateShop(@RequestBody KzShop shop) {
         Result<T> result = new Result<T>();
         if (shop.getId() == null || shop.getId().equals("")) {
             result.error500("参数丢失！");

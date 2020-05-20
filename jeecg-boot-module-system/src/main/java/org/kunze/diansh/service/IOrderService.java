@@ -1,8 +1,10 @@
 package org.kunze.diansh.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.bo.OrderBo;
+import org.kunze.diansh.controller.vo.OrderVo;
 import org.kunze.diansh.entity.Order;
 
 import java.util.List;
@@ -55,4 +57,14 @@ public interface IOrderService extends IService<Order> {
      */
     String updateOrderStatus(String status,String orderId);
 
+
+
+    /***
+     * 后台管理系统查询订单数据
+     * @param shopId
+     * @param status
+     * @param orderId
+     * @return
+     */
+    PageInfo<OrderVo> selectOrder(String shopId, String status, String orderId,Integer pageNo,Integer pageSize);
 }
