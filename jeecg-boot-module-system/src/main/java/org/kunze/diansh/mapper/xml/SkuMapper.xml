@@ -68,6 +68,12 @@ WHERE
 AND sku.spu_id = #{id}
     </select>
 
+    <!--查询商品基本信息 通过skuid-->
+    <select id="querySkuInfoById"  resultType="org.kunze.diansh.entity.Sku">
+        select id,spu_id,title,images,price,indexes,own_spec,`enable`,create_time,last_update_time,shop_id,update_name
+        from kz_sku where `enable`=1 and id = #{id}
+    </select>
+
     <select id="querySkuBySpuId" resultType="org.kunze.diansh.entity.Sku">
       select id,sku.spu_id,title,images,new_price,
     CASE sku.is_features

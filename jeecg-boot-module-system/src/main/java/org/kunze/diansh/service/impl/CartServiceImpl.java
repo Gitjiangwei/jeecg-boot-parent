@@ -91,7 +91,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
             //不存在
             cart.setUserId("456789");
 
-            Sku sku = skuMapper.querySkuById(skuId);
+            Sku sku = skuMapper.querySkuInfoById(skuId);
             cart.setImage(StringUtils.isBlank(sku.getImages())?"":sku.getImages().split(",")[0]);
             cart.setCartPrice(sku.getPrice());//商品价格
             cart.setTitile(sku.getTitle()); //标题

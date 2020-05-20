@@ -29,4 +29,12 @@ public interface NewCategoryMapper extends BaseMapper<Category> {
      */
     List<Category> qryByIds(@Param("cateLists") List<String> categoryIds);
 
+
+    /**
+     * 根据分类名称 模糊查询相关分类
+     * @param name
+     * @return
+     */
+    List<Category> qryCategoryByName(@Param("name")String name);
+
 }

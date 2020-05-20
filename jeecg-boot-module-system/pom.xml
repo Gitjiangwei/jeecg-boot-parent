@@ -11,6 +11,14 @@
         <version>2.1.4</version>
     </parent>
 
+    <url>
+        https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=11_1
+    </url>
+    <properties>
+        <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
+    </properties>
+
     <repositories>
         <repository>
             <id>aliyun</id>
@@ -41,14 +49,66 @@
             <version>0.0.20131108.vaadin1</version>
             <scope>compile</scope>
         </dependency>
+        <!--
+ https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.3</version>
+        </dependency>
+
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+    <licenses>
+        <license>
+            <name>The BSD 3-Clause License</name>
+            <url>https://opensource.org/licenses/BSD-3-Clause</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url/>
+        <connection/>
+        <developerConnection/>
+    </scm>
+    <developers>
+        <developer>
+            <name>wxpay</name>
+            <email/>
+            <url>
+                https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=11_1
+            </url>
+        </developer>
+    </developers>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>oss</id>
+                    <url>
+                        https://oss.sonatype.org/content/repositories/snapshots/
+                    </url>
+                </snapshotRepository>
+                <repository>
+                    <id>oss</id>
+                    <url>
+                        https://oss.sonatype.org/service/local/staging/deploy/maven2/
+                    </url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

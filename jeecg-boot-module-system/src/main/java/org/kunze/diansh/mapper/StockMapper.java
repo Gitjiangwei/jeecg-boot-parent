@@ -12,4 +12,10 @@ public interface StockMapper extends BaseMapper<Stock> {
     int saveStock(@Param("stocks") List<Stock> stocks);
 
     int updateStock(@Param("StockList")List<Stock> stockList);
+
+    //查询库存数量 使用悲观锁
+    int selectStockLock(@Param("skuId")String skuId);
+
+    //减库存
+    int updateStockNum(@Param("skuNum")Integer skuNum,@Param("skuId")String skuId);
 }

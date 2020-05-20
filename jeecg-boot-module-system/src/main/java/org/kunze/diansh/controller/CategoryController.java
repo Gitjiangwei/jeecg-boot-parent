@@ -136,4 +136,21 @@ public class CategoryController {
         }
         return result;
     }
+
+
+
+    @ApiOperation("模糊查询分类")
+    @AutoLog("模糊查询分类")
+    @PostMapping(value = "/qryCategoryByName")
+    public Result<List<Category>> qryCategoryByName(@RequestParam(name = "name") String name){
+        Result<List<Category>> result = new Result<List<Category>>();
+        if(null != name && !"".equals(name)){
+            List<Category> list = categoryService.qryCategoryByName(name);
+            result.setSuccess(true);
+            result.setResult(list);
+        }else{
+            result.error500("名字不能为空！");
+        }
+        return result;
+    }
 }

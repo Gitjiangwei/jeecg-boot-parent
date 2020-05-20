@@ -38,7 +38,9 @@
 
     <!-- 查询某个超市当天的订单数量   -->
     <select id="selectShopOrderNum" parameterType="java.lang.String" resultType="java.lang.Integer">
-        select count(1) from kz_order o,kz_shop s where o.shop_id = s.id and o.create_time = TO_DAYS(NOW())
+        select count(1) from kz_order o
+        LEFT JOIN kz_shop s ON o.shop_id = s.id
+        where  to_days(o.create_time) = to_days(now())
         and shop_id = #{shopId}
     </select>
 
@@ -55,6 +57,13 @@
         order by `status` asc
     </select>
 
+    <!-- 查询订单数据 根据订单ID   -->
+    <select id="selectOrderById" resultType="org.kunze.diansh.entity.Order">
+        select order_id,shop_id,address_id,amount_payment,payment,pick_up,post_free,`status`,create_time,update_time,
+        payment_time,consign_time,end_time,close_time,shipping_name,shipping_code,user_id,buyer_message,buyer_nick,buyer_rete
+        from kz_order where user_id = #{userID} and shop_id = #{shopID} and order_id = #{orderId}
+    </select>
+
     <!-- 根据订单id查询订单详细信息   -->
     <select id="selectOrderDetailById" resultType="org.kunze.diansh.entity.OrderDetail">
         select id,order_id,sku_id,num,title,own_spec,price,image from kz_order_detail
@@ -63,7 +72,14 @@
 
 
     <update id="updateOrderStatus" >
-        update kz_order set status = #{orderStatus},payment_time = NOW()
+        update kz_order
+        <trim prefix="set" suffixOverrides=",">
+            status = #{orderStatus},
+            <if test="orderStatus == 2">
+                payment_time = NOW(),
+            </if>
+            update_time = NOW()
+        </trim>
         where order_id = #{orderId}
     </update>
 

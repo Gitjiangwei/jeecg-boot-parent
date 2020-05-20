@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -55,11 +56,13 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
      */
     @Override
     public PageInfo<SpuModel> qrySpuList(SpuVo spuVo,Integer pageNo,Integer pageSize) {
-        PageHelper.startPage(pageNo,pageSize);
+        Page page = PageHelper.startPage(pageNo,pageSize);
         Spu spu = new Spu();
         BeanUtils.copyProperties(spuVo,spu);
         List<SpuModel> spuModelList  = spuMapper.qrySpuList(spu);
-        return new PageInfo<SpuModel>(spuModelList);
+        PageInfo pageInfo = new PageInfo<SpuModel>(spuModelList);
+        pageInfo.setTotal(page.getTotal());
+        return pageInfo;
     }
 
     /**
@@ -72,7 +75,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
      */
     @Override
     public PageInfo<SpuBo> qrySpuLists(SpuVo spuVo, Integer pageNo, Integer pageSize) {
-        PageHelper.startPage(pageNo,pageSize);
+        Page page = PageHelper.startPage(pageNo,pageSize);
         Spu spu = new Spu();
         BeanUtils.copyProperties(spuVo,spu);
         List<Spu> spuModelList  = spuMapper.qrySpuLists(spu);
@@ -82,7 +85,9 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             BeanUtils.copyProperties(item,spuBo);
             spuBos.add(spuBo);
         }
-        return new PageInfo<SpuBo>(spuBos);
+        PageInfo pageInfo = new PageInfo<SpuBo>(spuBos);
+        pageInfo.setTotal(page.getTotal());
+        return pageInfo;
     }
 
     /**

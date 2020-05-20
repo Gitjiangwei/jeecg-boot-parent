@@ -1,8 +1,11 @@
 package org.jeecg.common.util;
 
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 生成订单编号工具类
@@ -10,6 +13,23 @@ import java.util.Date;
 public class OrderCodeUtils {
 
     private static final int todayNum = 6;
+
+
+
+    /**
+     * 计算订单的在队列中的生命周期
+     * @param createTime 订单创建时间
+     * @return 取消时间
+     */
+    public static Date createCancelTime(Date createTime){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(createTime);
+        //HOUR_OF_DAY 时
+        //MINUTE 分
+        //SECOND 秒
+        cal.add(Calendar.SECOND,30);//设置取消时间为15分钟后
+        return cal.getTime();
+    }
 
     /**
      * 订单编号规范

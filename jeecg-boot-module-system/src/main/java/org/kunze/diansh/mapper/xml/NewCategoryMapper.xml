@@ -113,4 +113,9 @@
         </foreach>
 
     </select>
+
+    <!-- 根据分类名称 模糊查询相关分类   -->
+    <select id="qryCategoryByName" resultType="org.kunze.diansh.entity.Category">
+        SELECT id,name,image,parent_id,is_parent,sort,index,is_flag FROM kz_category WHERE NAME LIKE '%#{name}%'
+    </select>
 </mapper>

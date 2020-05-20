@@ -186,5 +186,12 @@ logging:
 cas:
   prefixUrl: http://cas.example.org:8443/cas
 address_max: 10
+#微信支付
+WeChatPay:
+  wxapp:
+    appid: wx6d414da3d992f3d4
+    mch_id: 1591431581
+    apiKey: gqyky9uZ4KLoA1OGxwrgY0kbi9PVCu5s
+    appSecret: 05fba7f7a91f94072b4b637f5b500877
 
 

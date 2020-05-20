@@ -40,6 +40,15 @@ public interface OrderMapper extends BaseMapper<Order> {
     List<Order> selectOrderByStatus(@Param("status") String status,@Param("userID") String userID,@Param("shopID") String shopID);
 
     /**
+     * 查询订单数据 根据订单ID
+     * @param orderId 订单id
+     * @param userID 用户id
+     * @param shopID 店铺id
+     * @return 订单数据
+     */
+    Order selectOrderById(@Param("orderId") String orderId, @Param("userID") String userID,@Param("shopID") String shopID);
+
+    /**
      * 根据订单id查询订单详细数据
      * @param orderId 订单id
      * @return

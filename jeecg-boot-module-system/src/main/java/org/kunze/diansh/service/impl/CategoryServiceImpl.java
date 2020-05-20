@@ -125,4 +125,20 @@ public class CategoryServiceImpl extends ServiceImpl<NewCategoryMapper,Category>
         return isflag;
     }
 
+    /**
+     * 根据分类名称 模糊查询相关分类
+     * @param name 分类名称
+     * @return
+     */
+    @Override
+    public List<Category> qryCategoryByName(String name) {
+        List<Category> list = new ArrayList<Category>();
+        try{
+            list = newCategoryMapper.qryCategoryByName(name);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

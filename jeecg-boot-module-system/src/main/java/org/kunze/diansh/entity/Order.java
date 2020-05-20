@@ -51,10 +51,6 @@ public class Order implements Serializable,Delayed {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(createTime);
-        cal.add(Calendar.MINUTE,2);
-        this.cancelTime = cal.getTime(); //设置取消时间为15分钟后
     }
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")

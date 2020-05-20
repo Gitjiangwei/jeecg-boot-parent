@@ -24,4 +24,14 @@
             #{stock.skuId}
         </foreach>
     </update>
+
+    <!--查询库存数量 使用悲观锁-->
+    <select id="selectStockLock">
+        SELECT STOCK FROM KZ_STOCK WHERE SKU_ID = #{skuId} FOR UPDATE
+    </select>
+
+    <!-- 减库存 -->
+    <update id="updateStockNum">
+        UPDATE KZ_STOCK SET STOCK = STOCK-#{skuNum} WHERE SKU_ID = #{skuId}
+    </update>
 </mapper>

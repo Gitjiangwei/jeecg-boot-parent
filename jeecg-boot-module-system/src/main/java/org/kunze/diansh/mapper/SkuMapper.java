@@ -14,6 +14,9 @@ public interface SkuMapper extends BaseMapper<Sku> {
 
     Sku querySkuById(@Param("id") String skuId);
 
+    //查询商品的基本信息 通过skuid
+    Sku querySkuInfoById(@Param("id") String skuId);
+
     /**
      * 根据SpuId查询SKU
      * @param spuId

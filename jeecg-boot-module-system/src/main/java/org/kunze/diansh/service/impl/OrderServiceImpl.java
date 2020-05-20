@@ -2,6 +2,7 @@ package org.kunze.diansh.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.jeecg.common.util.EmptyUtils;
 import org.jeecg.common.util.OrderCodeUtils;
 import org.jeecg.modules.message.mapper.SysUserShopMapper;
 import org.jeecg.modules.message.websocket.WebSocket;
@@ -48,14 +49,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @param cids 购物车集合
      * @param shopId 店铺id
      * @param userID 用户id
+     * @param pick_up 配送方式 1.自提 2.商家配送
      */
     @Override
     @Transactional
-    public OrderBo createOrder(String aid, List cids, String shopId, String userID) {
+    public Order createOrder(String aid, List cids, String shopId, String userID,String pick_up) {
         //当前时间
         Date date = new Date();
         //根据aid查找相关的地址信息
-        Address address = addressMapper.selectAddressByID(aid);
+        //Address address = addressMapper.selectAddressByID(aid);
 
         //根据cids获取购买的物品的信息
         List<Cart> cartList = cartService.selectCartByCids(cids,userID);
@@ -83,9 +85,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setOrderId(OrderCodeUtils.orderCode(shop.getShopName(),orderNum.toString()));
         order.setShopId(shopId); //店铺id
         order.setUserID(userID); //用户id
-
-        order.setAddressId(aid); //地址
+        order.setPickUp(pick_up); //配送方式
+        order.setAddressId(EmptyUtils.isEmpty(aid)?"":aid); //地址
         order.setCreateTime(date);//创建时间
+        order.setCancelTime(OrderCodeUtils.createCancelTime(date)); //取消时间 订单的生命周期
         order.setUpdateTime(date);//更新时间
         order.setAmountPayment(totalPrice.toString()); //应付金额
         order.setPayment("0"); //实付金额
@@ -114,11 +117,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 new Exception("创建订单失败！插入订单时出现未知错误");
             }
         }
-        OrderBo result = new OrderBo();
-        result.setAddress(address);
-        result.setOrder(order);
-        result.setOdList(odList);
-        return result;
+        return order;
     }
 
     /**
@@ -140,6 +139,26 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             }
         }
         return orders;
+    }
+
+    /**
+     * 根据订单ID查询订单数据
+     * @param orderId 订单id
+     * @param userID 用户id
+     * @param shopID 店铺id
+     * @return 订单数据
+     */
+    @Override
+    public Order selectOrderById(String orderId, String userID, String shopID) {
+        Order order = orderMapper.selectOrderById(orderId,userID,shopID);
+        //取消时间
+        order.setCancelTime(OrderCodeUtils.createCancelTime(order.getCreateTime()));
+
+        //商品详细信息集合
+        List<OrderDetail> odlist = orderMapper.selectOrderDetailById(order.getOrderId());
+        order.setOdList(odlist);
+        order.setAmountPayment(this.countOrderPayment(odlist));
+        return order;
     }
 
     /***
@@ -172,6 +191,40 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             flag = "OK";
         }
         return flag;
+    }
+
+    /**
+     * 订单支付后修改状态
+     * @param status
+     * @param orderId
+     * @return
+     */
+    @Override
+    public String updateOrderStatus(String status,String orderId) {
+        String flag = "error";
+        int isSuccess = orderMapper.updateOrderStatus(status,orderId);
+        if(isSuccess>0){
+            flag = "ok";
+        }
+        return flag;
+    }
+
+
+    /**
+     * 计算商品总价格
+     * @param odList
+     * @return
+     */
+    private String countOrderPayment(List<OrderDetail> odList){
+        Integer totalPrice = 0;
+        //计算订单总价
+        for (OrderDetail od:odList) {
+            BigDecimal unitPrice = new BigDecimal(od.getPrice());
+            BigDecimal num = new BigDecimal(od.getNum());
+            BigDecimal price = unitPrice.multiply(num);
+            totalPrice = totalPrice+price.intValue();
+        }
+        return totalPrice.toString();
     }
 
 

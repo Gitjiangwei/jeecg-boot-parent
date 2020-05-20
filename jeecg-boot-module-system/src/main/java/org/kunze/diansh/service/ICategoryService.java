@@ -50,4 +50,10 @@ public interface ICategoryService extends IService<Category> {
     Boolean deleteCategory(String id);
 
 
+    /**
+     * 根据分类名称 模糊查询相关分类
+     * @param name 分类名称
+     * @return 查询到的数据
+     */
+    List<Category> qryCategoryByName(String name);
 }

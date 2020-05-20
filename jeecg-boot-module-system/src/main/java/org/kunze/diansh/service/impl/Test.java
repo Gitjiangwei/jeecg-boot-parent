@@ -4,22 +4,35 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.JSONObjectCodec;
+import org.jeecg.OrderComsumer;
 import org.kunze.diansh.controller.bo.SpuBo;
+import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.mapper.SkuMapper;
 import org.kunze.diansh.mapper.SpuMapper;
+import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Field;
+import java.sql.Array;
 import java.util.*;
+import java.util.concurrent.DelayQueue;
+
+import static java.lang.System.out;
 
 @Component
 public class Test {
 
     @Autowired
     private static SpuServiceImpl spuService;
+
+    @Autowired
+    private static IOrderService iOrderService;
 
     @Autowired
     private static SpuMapper spuMapper;
@@ -29,43 +42,50 @@ public class Test {
 
     public static void main(String[] args) {
 
-        JSONObject json = JSONObject.parseObject(getJson());
+//        Order order = new Order();
+//        order.setCreateTime(new Date());
+//        System.out.println("预计取消时间"+ order.getCancelTime().toString());
+//        OrderComsumer.queue.put(order);
 
-        JSONArray jsonArray = json.getJSONArray("data");
+        iOrderService.updateOrderStatus("6","202005191005497106122000001");
 
 
-        Integer spuFlag = 1000;
-        for(int i=0;i<jsonArray.size();i++){
-            JSONObject object = jsonArray.getJSONObject(i);
-            Spu spu = new Spu();
-            spuFlag++;
-            spu.setId(spuFlag.toString());
-            spu.setTitle(object.get("name").toString());
-            spu.setImage(object.get("main_image").toString());
-            spu.setCid3("877");
-            spu.setCid2("872");
-            spu.setCid1("871");
-            int rows = spuMapper.saveSpu(spu);
-            List<Sku> skuList = new ArrayList<Sku>();
-            if(rows != 0){
-
-                Sku s = new Sku();
-                s.setId(UUID.randomUUID().toString().replace("-",""));
-                s.setSpuId(spu.getId());
-                s.setTitle(object.get("name").toString());
-                s.setImages(object.get("main_image").toString());
-                s.setPrice("1000");
-                skuList.add(s);
-                skuMapper.saveSku(skuList);
-            }
-        }
+//        JSONObject json = JSONObject.parseObject(getJson());
+//
+//        JSONArray jsonArray = json.getJSONArray("data");
+//
+//
+//        Integer spuFlag = 1000;
+//        for(int i=0;i<jsonArray.size();i++){
+//            JSONObject object = jsonArray.getJSONObject(i);
+//            Spu spu = new Spu();
+//            spuFlag++;
+//            spu.setId(spuFlag.toString());
+//            spu.setTitle(object.get("name").toString());
+//            spu.setImage(object.get("main_image").toString());
+//            spu.setCid3("877");
+//            spu.setCid2("872");
+//            spu.setCid1("871");
+//            int rows = spuMapper.saveSpu(spu);
+//            List<Sku> skuList = new ArrayList<Sku>();
+//            if(rows != 0){
+//
+//                Sku s = new Sku();
+//                s.setId(UUID.randomUUID().toString().replace("-",""));
+//                s.setSpuId(spu.getId());
+//                s.setTitle(object.get("name").toString());
+//                s.setImages(object.get("main_image").toString());
+//                s.setPrice("1000");
+//                skuList.add(s);
+//                skuMapper.saveSku(skuList);
+//            }
+//        }
 
         //spuService.insertSku(skuList);
 
         String sql = "insert into kz_spu(id,title,sub_title,cid1,cid2,cid3,brand_id,create_time,last_update_time,update_name,images,image)\n" +
                 "        values (#{id},#{title},#{subTitle},#{cid1},#{cid2},#{cid3},#{brandId},NOW(),NOW(),#{updateName},#{images},#{image})";
     }
-
 
 
     public static String getJson() {

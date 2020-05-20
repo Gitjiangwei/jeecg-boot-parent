@@ -7,19 +7,19 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
+import org.jeecg.OrderComsumer;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.util.OrderCodeUtils;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.controller.vo.BeSimilarSpuVo;
 import org.kunze.diansh.controller.vo.SpuBrandVo;
 import org.kunze.diansh.controller.vo.SpuDetailVo;
 import org.kunze.diansh.controller.vo.SpuVo;
-import org.kunze.diansh.entity.Goods;
-import org.kunze.diansh.entity.Sku;
-import org.kunze.diansh.entity.Spu;
-import org.kunze.diansh.entity.SpuDetail;
+import org.kunze.diansh.entity.*;
 import org.kunze.diansh.entity.modelData.SpuModel;
 import org.kunze.diansh.esRepository.GoodsRepository;
+import org.kunze.diansh.mapper.OrderMapper;
 import org.kunze.diansh.mapper.SkuMapper;
 import org.kunze.diansh.mapper.SpuMapper;
 import org.kunze.diansh.service.ISpuService;
@@ -28,7 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -234,41 +236,58 @@ public class SpuController {
     @Autowired
     private SkuMapper skuMapper;
 
+    @Autowired
+    private OrderMapper orderMapper;
+
+
     @GetMapping(value = "/testInsert")
     public void testInsert(){
-        JSONObject json = JSONObject.parseObject(getJson());
 
-        JSONArray jsonArray = json.getJSONArray("data");
+        Order o = new Order();
+        o.setCreateTime(new Date());
+        o.setCancelTime(OrderCodeUtils.createCancelTime(o.getCreateTime()));
+        o.setOrderId("123456");
+        System.out.println("预计取消时间"+ o.getCancelTime().toString());
+        OrderComsumer.queue.put(o);
+
+        //OrderComsumer.removeToOrderDelayQueue(o.getOrderId());
+        //System.out.println("目前队列中有"+OrderComsumer.queue.size()+"个订单！");
+        //orderMapper.updateOrderStatus("6","202005191005497106122000001");
 
 
-        Integer spuFlag = 1000;
-        for(int i=0;i<jsonArray.size();i++){
-            JSONObject object = jsonArray.getJSONObject(i);
-            Spu spu = new Spu();
-            spuFlag++;
-            spu.setId(spuFlag.toString());
-            spu.setTitle(object.get("name").toString());
-            spu.setImage(object.get("main_image").toString());
-            spu.setCid3("877");
-            spu.setCid2("872");
-            spu.setCid1("871");
-            spu.setBrandId("9637");
-            int rows = spuMapper.saveSpu(spu);
-            List<Sku> skuList = new ArrayList<Sku>();
-            if(rows != 0){
-
-                Sku s = new Sku();
-                s.setId(UUID.randomUUID().toString().replace("-",""));
-                s.setSpuId(spu.getId());
-                s.setTitle(object.get("name").toString());
-                s.setImages(object.get("main_image").toString());
-                s.setPrice("1000");
-                s.setNewPrice("2000");
-                s.setEnable("1");
-                skuList.add(s);
-                skuMapper.saveSku(skuList);
-            }
-        }
+//        JSONObject json = JSONObject.parseObject(getJson());
+//
+//        JSONArray jsonArray = json.getJSONArray("data");
+//
+//
+//        Integer spuFlag = 1000;
+//        for(int i=0;i<jsonArray.size();i++){
+//            JSONObject object = jsonArray.getJSONObject(i);
+//            Spu spu = new Spu();
+//            spuFlag++;
+//            spu.setId(spuFlag.toString());
+//            spu.setTitle(object.get("name").toString());
+//            spu.setImage(object.get("main_image").toString());
+//            spu.setCid3("877");
+//            spu.setCid2("872");
+//            spu.setCid1("871");
+//            spu.setBrandId("9637");
+//            int rows = spuMapper.saveSpu(spu);
+//            List<Sku> skuList = new ArrayList<Sku>();
+//            if(rows != 0){
+//
+//                Sku s = new Sku();
+//                s.setId(UUID.randomUUID().toString().replace("-",""));
+//                s.setSpuId(spu.getId());
+//                s.setTitle(object.get("name").toString());
+//                s.setImages(object.get("main_image").toString());
+//                s.setPrice("1000");
+//                s.setNewPrice("2000");
+//                s.setEnable("1");
+//                skuList.add(s);
+//                skuMapper.saveSku(skuList);
+//            }
+//        }
     }
 
     public static String getJson() {
