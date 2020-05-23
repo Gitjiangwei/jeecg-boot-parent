@@ -11,11 +11,15 @@ import org.jeecg.common.util.OrderCodeUtils;
 import org.jeecg.modules.message.mapper.SysUserShopMapper;
 import org.jeecg.modules.message.websocket.WebSocket;
 import org.kunze.diansh.controller.bo.OrderBo;
+import org.kunze.diansh.controller.vo.DistributionVo;
+import org.kunze.diansh.controller.vo.OrderDetailVo;
+import org.kunze.diansh.controller.vo.OrderSpuVo;
 import org.kunze.diansh.controller.vo.OrderVo;
 import org.kunze.diansh.entity.*;
 import org.kunze.diansh.entity.modelData.OrderModel;
 import org.kunze.diansh.mapper.AddressMapper;
 import org.kunze.diansh.mapper.OrderMapper;
+import org.kunze.diansh.mapper.OrderRecordMapper;
 import org.kunze.diansh.mapper.ShopMapper;
 import org.kunze.diansh.pust.Demo;
 import org.kunze.diansh.service.IOrderService;
@@ -25,10 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
@@ -50,6 +51,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     private SysUserShopMapper sysUserShopMapper;
+
+    @Autowired
+    private OrderRecordMapper orderRecordMapper;
 
     /**
      * 创建订单
@@ -179,6 +183,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         String flag = "error";
         //1、修改订单状态为【已支付】
         int orderStatus = orderMapper.updateOrderStatus("2",orderId);
+        orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"用户下单"));
         if(orderStatus > 0){
             //获取订单信息
             Order order = orderMapper.selectById(orderId);
@@ -186,6 +191,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 return flag;
             }
             List<String> stringList = sysUserShopMapper.selectByIds(order.getShopId());
+
             JSONObject obj = new JSONObject();
             if(stringList.size()>0 && stringList.size() == 1){
                 //通过WebScoket进行发送
@@ -220,6 +226,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public String updateOrderStatus(String status,String orderId) {
         String flag = "error";
         int isSuccess = orderMapper.updateOrderStatus(status,orderId);
+        if(status.equals("3")){
+            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"商家接单"));
+        }else if(status.equals("4")){
+            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"配货完成，开始配送"));
+        }else if(status.equals("5")){
+            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"用户收到商品，订单完成"));
+        }else {
+            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"异常订单，订单关闭"));
+        }
         if(isSuccess>0){
             flag = "ok";
         }
@@ -284,6 +299,105 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             PageInfo pageInfo = new PageInfo<OrderVo>(orderVos);
             pageInfo.setTotal(page.getTotal());
             return pageInfo;
+        }
+    }
+
+    /***
+     * 查询订单详情
+     * @param orderId
+     * @return
+     */
+    @Override
+    public OrderDetailVo selectOrderDetail(String orderId) {
+        if(!EmptyUtils.isEmpty(orderId)){
+            OrderDetailVo orderDetailVo = new OrderDetailVo();
+            //1、根据订单ID查询到订单信息
+            Order order = orderMapper.selectById(orderId);
+            //2、根据订单信息中pickUp来判断是自提还是商家配送
+            //3、根据订单信息中的地址id获取用户地址查询配送地址
+            Address address = addressMapper.selectAddressByID(order.getAddressId());
+            //4、根据订单id来获取详细订单中商品信息
+            List<OrderDetail> orderDetails = orderMapper.selectOrderDetailById(orderId);
+            //6、添加配送信息
+            DistributionVo distributionVo = new DistributionVo();
+            String sex = "";
+            if(address.getConsigneeSex()== 0){
+                sex = "先生";
+            }else if(address.getConsigneeSex() == 1){
+                sex = "女士";
+            }
+            String call = address.getConsignee()+sex;
+            distributionVo.setCall(call);
+            String tel = address.getTelphone()==null?"":address.getTelphone();
+            distributionVo.setContact(tel);
+            if(order.getPickUp().equals("2")){
+                //6.1、根据pickUp来判断是商家配送还是自提
+                String addres = address.getProvince()+address.getCity()+address.getCounty()+address.getStreet();
+                distributionVo.setShippingAddress(addres);
+            }else {
+                distributionVo.setShippingAddress("自提");
+            }
+            orderDetailVo.setDistributionVo(distributionVo);
+            List<OrderSpuVo> orderSpuVos = new ArrayList<>();
+            BigDecimal totalNum = new BigDecimal("0"); //商品总数
+            for (int i =0;i<orderDetails.size();i++){
+                //商品名称
+                String title = orderDetails.get(i).getTitle();
+                //商品单价
+                String price = orderDetails.get(i).getPrice().toString();
+                BigDecimal prices = new BigDecimal(price);
+                price = prices.multiply(new BigDecimal("0.01")).toString();
+                //商品数量
+                String num = orderDetails.get(i).getNum().toString();
+                //商品金额
+                BigDecimal priceOne = new BigDecimal(price);
+                BigDecimal spuNum = new BigDecimal(num);
+                BigDecimal totalPrice = priceOne.multiply(spuNum);
+                totalNum = totalNum.add(spuNum);
+                OrderSpuVo orderSpuVo = new OrderSpuVo();
+                orderSpuVo.setImage(orderDetails.get(i).getImage());
+                orderSpuVo.setSpuName(title);
+                String ownSpec = orderDetails.get(i).getOwnSpec()==null?"":orderDetails.get(i).getOwnSpec();
+                if(!ownSpec.equals("")){
+                    ownSpec = ownSpec.substring(1,ownSpec.length()-1);
+                }
+                orderSpuVo.setOwenSpan(ownSpec);
+                orderSpuVo.setSpuNum(num);
+                orderSpuVo.setUnitPrice(price);
+                orderSpuVo.setUnitPriceTotle(totalPrice.toString());
+                orderSpuVos.add(orderSpuVo);
+            }
+            orderDetailVo.setOrderSpuVos(orderSpuVos);
+            //8、填充订单其它信息
+            orderDetailVo.setOrderId(orderId);//商品ID
+            orderDetailVo.setBuyerMessage(order.getBuyerMessage()==null?"买家没有留言呦！":order.getBuyerMessage()); //买家留言
+            orderDetailVo.setCreateTime(order.getPaymentTime()); //下单时间
+            orderDetailVo.setPostFree(order.getPostFee()==null?"0":order.getPostFee());//配送费
+            orderDetailVo.setSaleNum(totalNum.toString());//商品总数
+            BigDecimal amout = new BigDecimal(order.getAmountPayment());
+            amout = amout.multiply(new BigDecimal("0.01"));
+            orderDetailVo.setSaleSum(amout.toString()); //商品总金额
+            BigDecimal payAmout = new BigDecimal(order.getPayment());
+            payAmout = payAmout.multiply(new BigDecimal("0.01"));
+            orderDetailVo.setPractical(payAmout.toString());//实付金额
+            return orderDetailVo;
+        }else {
+            return null;
+        }
+    }
+
+    /***
+     * 查询订单记录
+     * @param orderId
+     * @return
+     */
+    @Override
+    public List<Map<String, String>> queryOrderRecord(String orderId) {
+        if(orderId==null || orderId.equals("")){
+            return null;
+        }else {
+            List<Map<String,String>> mapList = orderRecordMapper.queryOrderRecord(orderId);
+            return mapList;
         }
     }
 

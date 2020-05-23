@@ -5,14 +5,17 @@ import org.kunze.diansh.controller.vo.SalesTicketVo;
 import org.kunze.diansh.entity.*;
 import org.kunze.diansh.mapper.AddressMapper;
 import org.kunze.diansh.mapper.OrderMapper;
+import org.kunze.diansh.mapper.OrderRecordMapper;
 import org.kunze.diansh.mapper.ShopMapper;
 import org.kunze.diansh.service.IIntimidateService;
+import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class IntimidateServiceImpl implements IIntimidateService {
@@ -25,7 +28,13 @@ public class IntimidateServiceImpl implements IIntimidateService {
     private AddressMapper addressMapper;
 
     @Autowired
+    private IOrderService orderService;
+
+    @Autowired
     private ShopMapper shopMapper;
+
+    @Autowired
+    private OrderRecordMapper orderRecordMapper;
     /***
      * 根据订单ID获取打印小票的数据
      * @param orderId 订单id
@@ -100,12 +109,14 @@ public class IntimidateServiceImpl implements IIntimidateService {
         salesTicketVo.setShopName(shop.getShopName()); //超市名称
         salesTicketVo.setShopAddress(shop.getShopAddress()); //超市地址
         salesTicketVo.setSaleNum(totalNum.toString());//商品总数
+        salesTicketVo.setBuyerMessage(order.getBuyerMessage()==null?"":order.getBuyerMessage());
         BigDecimal amout = new BigDecimal(order.getAmountPayment());
         amout = amout.multiply(new BigDecimal("0.01"));
         salesTicketVo.setSaleSum(amout.toString()); //应付金额
         BigDecimal payAmout = new BigDecimal(order.getPayment());
         payAmout = payAmout.multiply(new BigDecimal("0.01"));
         salesTicketVo.setPractical(payAmout.toString());//实付金额
+        orderService.updateOrderStatus("3", orderId);
         return salesTicketVo;
     }
 }

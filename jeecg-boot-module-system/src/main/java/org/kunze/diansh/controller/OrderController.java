@@ -14,6 +14,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.util.EmptyUtils;
 import org.jeecg.common.util.OrderCodeUtils;
 import org.kunze.diansh.controller.bo.OrderBo;
+import org.kunze.diansh.controller.vo.OrderDetailVo;
 import org.kunze.diansh.controller.vo.OrderVo;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.service.IOrderService;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Api(tags = "订单")
@@ -161,6 +163,45 @@ public class OrderController {
         Result<PageInfo<OrderVo>> result = new Result<PageInfo<OrderVo>>();
         PageInfo<OrderVo> orderVoPageInfo = orderService.selectOrder(shopId,status,orderId,pageNo,pageSize);
         result.setResult(orderVoPageInfo);
+        result.setSuccess(true);
+        return result;
+    }
+
+    @ApiOperation("后台管理系统查询详情")
+    @AutoLog("后台管理系统查询订单详情")
+    @GetMapping(value = "/selectOrderDetail")
+    public Result<OrderDetailVo> selectOrderDetail(@RequestParam(name = "orderId") String orderId){
+        Result<OrderDetailVo> result = new Result<OrderDetailVo>();
+        OrderDetailVo orderDetailVo = orderService.selectOrderDetail(orderId);
+        result.setResult(orderDetailVo);
+        result.setSuccess(true);
+        return result;
+    }
+
+    @ApiOperation("修改订单状态")
+    @AutoLog("修改订单状态")
+    @PostMapping(value = "/updateStatus")
+    public Result<T> updatesOrderStatus(@RequestBody String orderStatus){
+        Result<T> result = new Result<T>();
+        JSONObject jsonObject = JSONObject.parseObject(orderStatus);
+        String status = jsonObject.getString("status");
+        String orderId = jsonObject.getString("orderId");
+        String resultOk = orderService.updateOrderStatus(status,orderId);
+        if(resultOk.equals("ok")){
+            result.success("ok");
+        }else {
+            result.error500("error");
+        }
+        return result;
+    }
+
+
+    @ApiOperation("商家查看订单记录")
+    @GetMapping(value = "/queryOrderRecord")
+    public Result<List<Map<String,String>>> queryOrderRecord(@RequestParam(name = "orderId") String orderId){
+        Result<List<Map<String,String>>> result = new Result<List<Map<String,String>>>();
+        List<Map<String,String>> mapList = orderService.queryOrderRecord(orderId);
+        result.setResult(mapList);
         result.setSuccess(true);
         return result;
     }

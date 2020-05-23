@@ -36,4 +36,10 @@ public class SalesTicketVo implements Serializable {
 
     //取货方式 1、自提 2、配送
     private String pickUp;
+
+    /**买家留言*/
+    private String buyerMessage;
+
+    /**配送费*/
+    private String postFree;
 }

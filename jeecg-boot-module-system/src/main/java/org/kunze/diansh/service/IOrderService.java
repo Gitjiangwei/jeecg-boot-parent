@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.bo.OrderBo;
+import org.kunze.diansh.controller.vo.OrderDetailVo;
 import org.kunze.diansh.controller.vo.OrderVo;
 import org.kunze.diansh.entity.Order;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface IOrderService extends IService<Order> {
@@ -67,4 +69,19 @@ public interface IOrderService extends IService<Order> {
      * @return
      */
     PageInfo<OrderVo> selectOrder(String shopId, String status, String orderId,Integer pageNo,Integer pageSize);
+
+
+    /***
+     * 查询订单详情
+     * @param orderId
+     * @return
+     */
+    OrderDetailVo selectOrderDetail(String orderId);
+
+    /***
+     * 查询订单记录
+     * @param orderId
+     * @return
+     */
+    List<Map<String,String>> queryOrderRecord(String orderId);
 }
