@@ -3,11 +3,11 @@
 <mapper namespace="org.kunze.diansh.mapper.SkuMapper">
 
     <insert id="saveSku">
-        insert into kz_sku(id,spu_id,title,images,new_price,price,indexes,own_spec,enable,create_time,last_update_time,update_name)
+        insert into kz_sku(id,spu_id,title,images,new_price,price,indexes,own_spec,create_time,last_update_time,update_name,shop_id)
         values
         <foreach collection="skuList" item="item" separator=",">
             (#{item.id},#{item.spuId},#{item.title},#{item.images},#{item.newPrice},#{item.price},#{item.indexes},#{item.ownSpec},
-            #{item.enable},NOW(),NOW(),#{item.updateName})
+            NOW(),NOW(),#{item.updateName},#{item.shopId})
         </foreach>
     </insert>
 

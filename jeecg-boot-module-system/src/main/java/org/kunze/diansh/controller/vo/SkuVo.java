@@ -30,4 +30,9 @@ public class SkuVo implements Serializable {
 
     //库存
     private String stock;
+
+    /**
+     * 超市Id
+     * */
+    private String shopId;
 }

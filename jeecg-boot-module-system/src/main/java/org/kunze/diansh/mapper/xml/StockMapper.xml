@@ -6,7 +6,7 @@
         insert into kz_stock(sku_id,stock)
         values
         <foreach collection="stocks" item="item" separator=",">
-            (#{item.skuId},#{item.stock}),
+            (#{item.skuId},#{item.stock})
         </foreach>
     </insert>
 

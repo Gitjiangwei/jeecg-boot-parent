@@ -171,8 +171,8 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
                 stockList.add(stock);
 
             }
-            int resultSku = skuMapper.updateSku(skuList);
-            int resultStock = stockMapper.updateStock(stockList);
+            int resultSku = skuMapper.saveSku(skuList);
+            int resultStock = stockMapper.saveStock(stockList);
             if(resultSpuDetail > 0 && resultSku > 0 && resultStock > 0){
                 flag = true;
             }
