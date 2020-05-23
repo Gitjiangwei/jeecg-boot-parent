@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeecg.OrderComsumer;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.WxPayAPI.WXPayUtil;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.entity.properties.WeChatPayProperties;
@@ -17,6 +18,7 @@ import org.kunze.diansh.service.IWXPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -137,7 +139,7 @@ public class WXPayController {
 
                     String out_trade_no = (String) packageParams.get("out_trade_no");
                     //更新订单状态为【已支付】
-                    iOrderService.updateOrderStatus("out_trade_no");
+                    iOrderService.updateOrderStatus(out_trade_no);
                     //从队列中删除订单
                     OrderComsumer.removeToOrderDelayQueue(out_trade_no);
                     //更新商品库存
@@ -182,6 +184,22 @@ public class WXPayController {
     }
 
 
+    @ApiOperation("获取openID")
+    @AutoLog("获取openID")
+    @PostMapping(value = "/getOpenId")
+    public Result getOpenId(@RequestParam(name = "js_code") String js_code){
+        Result result = new Result();
+        Map<String,Object> map = iwxPayService.getOpenId(js_code);
+        if (EmptyUtils.isEmpty(map)) {
+            return result.error500("向微信请求数据时出现错误！");
+        }
+        String openId = (String) map.get("openid");
+        if (EmptyUtils.isEmpty(openId)) {
+            return result.error500("获取openId失败！");
+        }
 
+        result.setResult(map);
+        return result;
+    }
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.util.DateUtils;
 import org.jeecg.common.util.HttpRequest;
 import org.jeecg.common.util.MD5Util;
 import org.kunze.diansh.WxPayAPI.WXPay;
@@ -18,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 
 import static java.lang.System.out;
@@ -106,11 +109,18 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
      * 小程序支付统一下单
      */
     private Map<String,String> xcxUnifieldOrder(String orderNum,String tradeType, double payAmount,String openid) throws Exception{
+        Instant now = Instant.now();
+        Date nowDate = Date.from(now);
+        // 支付有限时间为10分钟
+        now = now.plusSeconds(70);
+        Date endDate = Date.from(now);
         //封装参数
         SortedMap<String,String> paramMap = new TreeMap<String,String>();
         paramMap.put("appid", weChatPayProperties.getWxAppAppId());
         paramMap.put("mch_id", weChatPayProperties.getMchId());
         paramMap.put("nonce_str", WXPayUtil.generateNonceStr());
+        paramMap.put("time_start", DateUtils.date2Str(nowDate,new SimpleDateFormat("yyyyMMddHHmmss")));
+        paramMap.put("time_expire", DateUtils.date2Str(endDate,new SimpleDateFormat("yyyyMMddHHmmss")));
         paramMap.put("body", "TEST ORDER");
         paramMap.put("out_trade_no", orderNum);
         paramMap.put("total_fee", "1");
@@ -209,6 +219,7 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
 
 
     // 获取openID
+    @Override
     public Map<String, Object> getOpenId(String code) {
         Map<String, Object> map = null;
         Map<String, String> params = new HashMap<String, String>();

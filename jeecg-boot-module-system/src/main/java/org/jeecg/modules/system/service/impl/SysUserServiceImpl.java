@@ -1,12 +1,10 @@
 package org.jeecg.modules.system.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.constant.CacheConstant;
@@ -27,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -379,6 +376,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		//3. 删除用户角色关系
 		line += sysUserRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().in(SysUserRole::getUserId, userIds));
 		return line != 0;
+	}
+
+	@Override
+	public SysUser selectSysUserById(String id){
+		return userMapper.selectSysUserById(id);
+	}
+
+	/**
+	 * 插入微信小程序用户信息
+	 * @param openId
+	 * @param sessionKey
+	 * @return
+	 */
+	@Override
+	public Boolean insertWxAppAppInfo(String openId, String sessionKey){
+		int flag = userMapper.insertWxAppAppInfo(openId,sessionKey);
+		if (flag>0){
+			return true;
+		}
+		return false;
 	}
 
 }

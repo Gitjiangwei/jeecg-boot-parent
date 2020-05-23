@@ -5,8 +5,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.exception.JeecgBootException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.DefaultStringRedisConnection;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -140,7 +143,7 @@ public class RedisUtil {
 	 * 递增
 	 * 
 	 * @param key 键
-	 * @param by  要增加几(大于0)
+	 * @param delta  要增加几(大于0)
 	 * @return
 	 */
 	public long incr(String key, long delta) {
@@ -154,7 +157,7 @@ public class RedisUtil {
 	 * 递减
 	 * 
 	 * @param key 键
-	 * @param by  要减少几(小于0)
+	 * @param delta  要减少几(小于0)
 	 * @return
 	 */
 	public long decr(String key, long delta) {
@@ -464,7 +467,6 @@ public class RedisUtil {
 	 * 
 	 * @param key   键
 	 * @param value 值
-	 * @param time  时间(秒)
 	 * @return
 	 */
 	public boolean lSet(String key, Object value) {
@@ -500,10 +502,9 @@ public class RedisUtil {
 
 	/**
 	 * 将list放入缓存
-	 * 
+	 *
 	 * @param key   键
 	 * @param value 值
-	 * @param time  时间(秒)
 	 * @return
 	 */
 	public boolean lSet(String key, List<Object> value) {
@@ -570,6 +571,81 @@ public class RedisUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
+		}
+	}
+
+	/**
+	 *
+	 * @Title: set
+	 * @Description: 写入缓存并指定库
+	 * @param key
+	 * @param value 为对象时flag_json必须为true
+	 * @param db    缓存的数据库
+	 * @param flag_json  是否将value值转为json
+	 * @param timeOut  时效（秒）   永久传null
+	 * @return boolean
+	 */
+	public boolean set(final String key, Object value,int db,boolean flag_json,Long timeOut) {
+		boolean result = false;
+		try {
+			RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
+			DefaultStringRedisConnection stringRedisConnection = new DefaultStringRedisConnection(redisConnection);
+			stringRedisConnection.select(db);
+			if(flag_json){
+				stringRedisConnection.set(key,JSONObject.toJSONString(value));
+			}else{
+				stringRedisConnection.set(key, value.toString());
+			}
+			if(timeOut != null && timeOut != 0){
+				stringRedisConnection.expire(key, timeOut);
+			}
+			stringRedisConnection.close();
+			result = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
+	 *
+	 * @Title: get
+	 * @Description: 读取指定db的缓存
+	 * @param key
+	 * @param db
+	 * @return Object
+	 */
+	public Object get(final String key,int db) {
+		Object result = null;
+		try {
+			RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
+			DefaultStringRedisConnection stringRedisConnection = new DefaultStringRedisConnection(redisConnection);
+			stringRedisConnection.select(db);
+			result = stringRedisConnection.get(key);
+			stringRedisConnection.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
+	 * 删除指定db的key
+	 *
+	 * @param key
+	 * @param db
+	 */
+	public void remove(final String key ,int db) {
+		try {
+			RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
+			DefaultStringRedisConnection stringRedisConnection = new DefaultStringRedisConnection(redisConnection);
+			stringRedisConnection.select(db);
+			if(stringRedisConnection.exists(key)){
+				stringRedisConnection.del(key);
+			}
+			stringRedisConnection.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

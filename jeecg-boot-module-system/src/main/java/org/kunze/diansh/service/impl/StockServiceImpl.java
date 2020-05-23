@@ -38,7 +38,7 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock> implements
             }
             for (OrderDetail od:odList) {
                 //剩余的库存数量
-                int stockNum = stockMapper.selectStockLock(od.getSkuId());
+                Integer stockNum = stockMapper.selectStockLock(od.getSkuId());
                 if(stockNum == 0){
                     //库存数量为0
                     continue;
@@ -47,6 +47,7 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock> implements
                 stockMapper.updateStockNum(od.getNum(),od.getSkuId());
             }
         }catch (Exception e){
+            e.printStackTrace();
             //手动抛出异常 事务回滚！
             throw new RuntimeException();
         }

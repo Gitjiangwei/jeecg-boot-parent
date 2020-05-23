@@ -26,7 +26,7 @@
     </update>
 
     <!--查询库存数量 使用悲观锁-->
-    <select id="selectStockLock">
+    <select id="selectStockLock" resultType="java.lang.Integer" parameterType="java.lang.String">
         SELECT STOCK FROM KZ_STOCK WHERE SKU_ID = #{skuId} FOR UPDATE
     </select>
 

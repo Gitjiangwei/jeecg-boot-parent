@@ -27,7 +27,7 @@ public class OrderCodeUtils {
         //HOUR_OF_DAY 时
         //MINUTE 分
         //SECOND 秒
-        cal.add(Calendar.SECOND,30);//设置取消时间为15分钟后
+        cal.add(Calendar.SECOND,100);//设置取消时间为15分钟后
         return cal.getTime();
     }
 

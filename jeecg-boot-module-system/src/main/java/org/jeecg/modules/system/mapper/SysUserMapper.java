@@ -130,4 +130,18 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 */
 	int deleteLogicDeleted(@Param("userIds") String userIds);
 
+	/**
+	 * 插入小程序用户信息
+	 * @param openId
+	 * @param sessionKey
+	 * @return 受影响的行数
+	 */
+	int insertWxAppAppInfo(@Param("openId") String openId,@Param("sessionKey") String sessionKey);
+
+	/**
+	 * 根据用户id查询用户信息
+	 * @param id 用户id
+	 * @return 用户对象
+	 */
+	SysUser selectSysUserById(@Param("id") String id);
 }

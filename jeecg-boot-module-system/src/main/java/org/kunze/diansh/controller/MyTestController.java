@@ -1,55 +1,49 @@
-package org.kunze.diansh.service.impl;
+package org.kunze.diansh.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.JSONObjectCodec;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.jeecg.OrderComsumer;
-import org.kunze.diansh.controller.bo.SpuBo;
+import org.jeecg.common.util.DateUtils;
+import org.jeecg.common.util.OrderCodeUtils;
 import org.kunze.diansh.entity.Order;
-import org.kunze.diansh.entity.Sku;
-import org.kunze.diansh.entity.Spu;
+import org.kunze.diansh.mapper.OrderMapper;
 import org.kunze.diansh.mapper.SkuMapper;
 import org.kunze.diansh.mapper.SpuMapper;
-import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.Message;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.*;
-import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.Field;
-import java.sql.Array;
-import java.util.*;
-import java.util.concurrent.DelayQueue;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 
-import static java.lang.System.out;
-
-@Component
-public class Test {
-
-    @Autowired
-    private static SpuServiceImpl spuService;
-
-    @Autowired
-    private static IOrderService iOrderService;
-
-    @Autowired
-    private static SpuMapper spuMapper;
-
-    @Autowired
-    private static SkuMapper skuMapper;
-
-    public static void main(String[] args) {
+@Slf4j
+@RestController
+@RequestMapping(value = "/kunze/mytest")
+public class MyTestController {
 
 
+    @GetMapping(value = "/testInsert")
+    public void testInsert() {
 
-//        Order order = new Order();
-//        order.setCreateTime(new Date());
-//        System.out.println("预计取消时间"+ order.getCancelTime().toString());
-//        OrderComsumer.queue.put(order);
+        Instant now = Instant.now();
+        Date nowDate = Date.from(now);
 
-        //iOrderService.updateOrderStatus("6","202005191005497106122000001");
+       String str = DateUtils.date2Str(nowDate,new SimpleDateFormat("yyyyMMddHHmmss"));
+       System.out.println(str);
+
+//        Order o = new Order();
+//        o.setCreateTime(new Date());
+//        o.setCancelTime(OrderCodeUtils.createCancelTime(o.getCreateTime()));
+//        o.setOrderId("123456");
+//        System.out.println("预计取消时间"+ o.getCancelTime().toString());
+//        OrderComsumer.queue.put(o);
+
+        //OrderComsumer.removeToOrderDelayQueue(o.getOrderId());
+        //System.out.println("目前队列中有"+OrderComsumer.queue.size()+"个订单！");
+        //orderMapper.updateOrderStatus("6","202005191005497106122000001");
 
 
 //        JSONObject json = JSONObject.parseObject(getJson());
@@ -68,6 +62,7 @@ public class Test {
 //            spu.setCid3("877");
 //            spu.setCid2("872");
 //            spu.setCid1("871");
+//            spu.setBrandId("9637");
 //            int rows = spuMapper.saveSpu(spu);
 //            List<Sku> skuList = new ArrayList<Sku>();
 //            if(rows != 0){
@@ -78,17 +73,13 @@ public class Test {
 //                s.setTitle(object.get("name").toString());
 //                s.setImages(object.get("main_image").toString());
 //                s.setPrice("1000");
+//                s.setNewPrice("2000");
+//                s.setEnable("1");
 //                skuList.add(s);
 //                skuMapper.saveSku(skuList);
 //            }
 //        }
-
-        //spuService.insertSku(skuList);
-
-        String sql = "insert into kz_spu(id,title,sub_title,cid1,cid2,cid3,brand_id,create_time,last_update_time,update_name,images,image)\n" +
-                "        values (#{id},#{title},#{subTitle},#{cid1},#{cid2},#{cid3},#{brandId},NOW(),NOW(),#{updateName},#{images},#{image})";
     }
-
 
     public static String getJson() {
         String jsonStr = "";
@@ -110,5 +101,4 @@ public class Test {
             return null;
         }
     }
-
 }

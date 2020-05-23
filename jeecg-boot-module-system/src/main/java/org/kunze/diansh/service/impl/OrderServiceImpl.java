@@ -1,5 +1,6 @@
 package org.kunze.diansh.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.common.util.EmptyUtils;
@@ -21,6 +22,7 @@ import org.kunze.diansh.mapper.AddressMapper;
 import org.kunze.diansh.mapper.OrderMapper;
 import org.kunze.diansh.mapper.OrderRecordMapper;
 import org.kunze.diansh.mapper.ShopMapper;
+import org.kunze.diansh.mapper.SkuMapper;
 import org.kunze.diansh.pust.Demo;
 import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +31,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.*;
 
 @Service
@@ -39,9 +46,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     private OrderMapper orderMapper;
-
-    @Autowired
-    CartServiceImpl cartService = new CartServiceImpl();
 
     @Autowired
     private ShopMapper shopMapper;
@@ -55,6 +59,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private OrderRecordMapper orderRecordMapper;
 
+    @Autowired
+    private SkuMapper skuMapper;
+
     /**
      * 创建订单
      * @param aid 地址id
@@ -65,22 +72,23 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     @Override
     @Transactional
-    public Order createOrder(String aid, List cids, String shopId, String userID,String pick_up) {
+    public Order createOrder(String aid, JSONArray cids, String shopId, String userID,String pick_up) {
         //当前时间
         Date date = new Date();
         //根据aid查找相关的地址信息
         //Address address = addressMapper.selectAddressByID(aid);
 
         //根据cids获取购买的物品的信息
-        List<Cart> cartList = cartService.selectCartByCids(cids,userID);
+        List<Sku> cartList = this.selectSkuList(cids);
+
 
         //总价格
         Integer totalPrice = 0;
 
         //计算订单总价
-        for (Cart c:cartList) {
-            BigDecimal unitPrice = new BigDecimal(c.getCartPrice());
-            BigDecimal num = new BigDecimal(c.getCartNum());
+        for (Sku s:cartList) {
+            BigDecimal unitPrice = new BigDecimal(s.getPrice());
+            BigDecimal num = new BigDecimal(s.getNum());
             BigDecimal price = unitPrice.multiply(num);
             totalPrice = totalPrice+price.intValue();
         }
@@ -113,16 +121,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
 
         List<OrderDetail> odList = new ArrayList<OrderDetail>();
-        for (Cart cart:cartList) {
+        for (Sku sku:cartList) {
             OrderDetail od = new OrderDetail();
             od.setId(UUID.randomUUID().toString().replace("-",""));
             od.setOrderId(order.getOrderId());
-            od.setSkuId(cart.getSkuid());
-            od.setNum(cart.getCartNum());
-            od.setTitle(cart.getTitile());
-            od.setOwnSpec(cart.getOwnSpec());
-            od.setPrice(Integer.parseInt(cart.getCartPrice()));
-            od.setImage(cart.getImage());
+            od.setSkuId(sku.getId());
+            od.setNum(sku.getNum());
+            od.setTitle(sku.getTitle());
+            od.setOwnSpec(sku.getOwnSpec());
+            od.setPrice(Integer.parseInt(sku.getPrice()));
+            od.setImage(sku.getImages());
             Integer odRows = orderMapper.insertOrderDetail(od);
             odList.add(od);
             if (rows != 1){
@@ -257,6 +265,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             totalPrice = totalPrice+price.intValue();
         }
         return totalPrice.toString();
+    }
+
+    /**
+     * 查询选中商品的详细数据
+     * @return
+     */
+    private List<Sku> selectSkuList(JSONArray cids){
+        List<Sku> skuList = new ArrayList<>();
+        for(int i=0;i<cids.size();i++){
+            JSONObject obj = cids.getJSONObject(i);
+            Sku sku = skuMapper.querySkuInfoById(obj.getString("skuId"));
+            sku.setNum(obj.getInteger("num"));
+            skuList.add(sku);
+        }
+        return skuList;
     }
 
     /***

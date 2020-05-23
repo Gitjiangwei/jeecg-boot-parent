@@ -144,4 +144,20 @@
 		DELETE FROM sys_user WHERE del_flag = "1" AND id IN (${userIds})
 	</delete>
 
+	<!-- 插入微信小程序用户信息 -->
+	<insert id="insertWxAppAppInfo" parameterType="java.lang.String">
+		INSERT INTO SYS_USER(ID,SESSION_KEY,CREATE_TIME)
+		VALUES(#{openId},'#{sessionKey}',NOW())
+	</insert>
+
+	<!-- 根据用户id查询用户基本信息 -->
+	<select id="selectSysUserById" resultType="java.lang.String" parameterType="org.jeecg.modules.system.entity.SysUser">
+		SELECT * FROM SYS_USER WHERE ID = #{id}
+	</select>
+
+	<!-- 删除微信小程序用户信息 -->
+	<delete id="deleteWxAppAppInfo" parameterType="java.lang.String">
+		DELETE FROM SYS_USER WHERE ID = #{id}
+	</delete>
+
 </mapper>

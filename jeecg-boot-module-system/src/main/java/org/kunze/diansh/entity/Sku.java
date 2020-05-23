@@ -55,4 +55,7 @@ public class Sku implements Serializable {
     //是否为特卖
     private String isFeatures;
 
+    //购买时的商品数量 只用于业务逻辑处理（计算订单价格）
+    private Integer num;
+
 }

@@ -171,4 +171,10 @@ public class SysUser implements Serializable {
     @Dict(dictTable = "sys_depart", dicText = "depart_name", dicCode = "id")
     private String departIds;
 
+    /**
+     * session_key
+     * 用户保存小程序端口密钥
+     */
+    private String sessionKey;
+
 }

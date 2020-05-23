@@ -30,7 +30,7 @@ public class ShopController {
 
     @ApiOperation("查询所有超市信息")
     @AutoLog("查询所有超市")
-    @GetMapping(value = "/queryShops")
+    @PostMapping(value = "/queryShops")
     public Result<PageInfo<ShopVo>> queryShopList(ShopVo shopVo,
                                                   @RequestParam(name = "pageNo") Integer pageNo,
                                                   @RequestParam(name = "pageSize") Integer pageSize){

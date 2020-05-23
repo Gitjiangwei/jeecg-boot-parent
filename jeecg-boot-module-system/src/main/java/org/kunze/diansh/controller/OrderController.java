@@ -1,9 +1,11 @@
 package org.kunze.diansh.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageInfo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import io.micrometer.core.instrument.util.JsonUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +57,7 @@ public class OrderController {
         String shopId = params.get("shopId").toString();
         String aid = params.get("aid").toString();
         String pick_up = params.get("pick_up").toString();
-        List<String> cids = params.getJSONArray("cids").toJavaList(String.class);
+        JSONArray cids = params.getJSONArray("cids");
 
         if(EmptyUtils.isEmpty(cids)){
             return orderResult.error500("cids参数丢失！");
@@ -72,6 +75,8 @@ public class OrderController {
         if(null != order){
             orderResult.success("创建成功！");
             orderResult.setResult(order);
+            //创建订单成功后加入队列
+            OrderComsumer.queue.put(order);
         }else{
             orderResult.error500("创建失败！");
         }

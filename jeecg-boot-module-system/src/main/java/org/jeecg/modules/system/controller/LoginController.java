@@ -26,6 +26,7 @@ import org.jeecg.modules.system.service.ISysDepartService;
 import org.jeecg.modules.system.service.ISysLogService;
 import org.jeecg.modules.system.service.ISysUserService;
 import org.jeecg.modules.system.util.RandImageUtil;
+import org.kunze.diansh.service.IWXPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,6 +55,8 @@ public class LoginController {
     private ISysDepartService sysDepartService;
     @Autowired
     private ISysUserShopService sysUserShopService;
+    @Autowired
+    private IWXPayService iwxPayService;
 
     private static final String BASE_CHECK_CODES = "qwertyuiplkjhgfdsazxcvbnmQWERTYUPLKJHGFDSAZXCVBNM1234567890";
 
@@ -490,6 +493,36 @@ public class LoginController {
         result.setSuccess(true);
         result.setCode(200);
         sysBaseAPI.addLog("用户名: " + username + ",登录成功[移动端]！", CommonConstant.LOG_TYPE_1, null);
+        return result;
+    }
+
+    /**
+     * 微信小程序登录
+     * @param js_code code
+     * @return
+     */
+    @RequestMapping(value = "/wxAppAppLogin", method = RequestMethod.POST)
+    public Result wxAppAppLogin(@RequestParam("code") String js_code){
+        Result result = new Result();
+        Map<String,Object> map = iwxPayService.getOpenId(js_code);
+        if (EmptyUtils.isEmpty(map)) {
+            return result.error500("向微信请求数据时出现错误！");
+        }
+        String openId = (String) map.get("openid");
+        if (EmptyUtils.isEmpty(openId)) {
+            return result.error500("获取openId失败！");
+        }
+        String sessionKey = map.get("session_key").toString();
+        // 根据返回的user实体类，判断用户是否是新用户，不是的话，更新最新登录时间，是的话，将用户信息存到数据库
+        SysUser user = sysUserService.selectSysUserById(openId);
+        if(EmptyUtils.isEmpty(user)){
+            // 添加到数据库
+            Boolean flag = sysUserService.insertWxAppAppInfo(openId,sessionKey);
+            if(!flag){
+                return result.error500("error!");
+            }
+        }
+        result.setResult(openId);
         return result;
     }
 

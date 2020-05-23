@@ -57,14 +57,14 @@ public class OrderComsumer extends Thread implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("*************** 启动轮询订单监听 *******************");
         OrderComsumer oc = new OrderComsumer();
-        for(int i=0; i < 1;i++ ){
-            Order o = new Order();
-            o.setOrderId("123456");
-            o.setCreateTime(new Date());
-            o.setCancelTime(OrderCodeUtils.createCancelTime(o.getCreateTime()));
-            System.out.println("预计取消时间"+ o.getCancelTime().toString());
-            oc.queue.put(o);
-        }
+//        for(int i=0; i < 1;i++ ){
+//            Order o = new Order();
+//            o.setOrderId("123456");
+//            o.setCreateTime(new Date());
+//            o.setCancelTime(OrderCodeUtils.createCancelTime(o.getCreateTime()));
+//            System.out.println("预计取消时间"+ o.getCancelTime().toString());
+//            oc.queue.put(o);
+//        }
         //启动线程
         oc.start();
     }

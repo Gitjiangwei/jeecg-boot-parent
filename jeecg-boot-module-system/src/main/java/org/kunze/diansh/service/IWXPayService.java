@@ -15,4 +15,6 @@ public interface IWXPayService  extends IService<Order> {
     //查询微信订单状态
     Result qryWxOrderStatus(String outTradeNo);
 
+    //获取openId
+    Map<String, Object> getOpenId(String js_code);
 }

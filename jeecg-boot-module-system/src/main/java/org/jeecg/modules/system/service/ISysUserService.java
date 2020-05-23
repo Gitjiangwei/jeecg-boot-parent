@@ -214,4 +214,18 @@ public interface ISysUserService extends IService<SysUser> {
 	 */
 	boolean removeLogicDeleted(List<String> userIds);
 
+	/**
+	 * 根据用户id查询用户信息
+	 * @param id 用户id
+	 * @return 用户对象
+	 */
+	SysUser selectSysUserById(String id);
+
+	/**
+	 *插入微信小程序用户信息
+	 * @param openId
+	 * @param sessionKey
+	 * @return 是否插入成功
+	 */
+	Boolean insertWxAppAppInfo(String openId,String sessionKey);
 }

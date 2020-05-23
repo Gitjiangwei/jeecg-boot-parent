@@ -1,5 +1,6 @@
 package org.kunze.diansh.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
@@ -22,7 +23,7 @@ public interface IOrderService extends IService<Order> {
      * @param userID 用户id
      * @param pick_up 配送方式 1.自提 2.商家配送
      */
-    Order createOrder(String aid, List cids, String shopId, String userID,String pick_up);
+    Order createOrder(String aid, JSONArray cids, String shopId, String userID, String pick_up);
 
     /**
      * 根据订单状态查询订单数据
