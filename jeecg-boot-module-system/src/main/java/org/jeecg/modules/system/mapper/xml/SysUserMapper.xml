@@ -147,11 +147,11 @@
 	<!-- 插入微信小程序用户信息 -->
 	<insert id="insertWxAppAppInfo" parameterType="java.lang.String">
 		INSERT INTO SYS_USER(ID,SESSION_KEY,CREATE_TIME)
-		VALUES(#{openId},'#{sessionKey}',NOW())
+		VALUES(#{openId},#{sessionKey},NOW())
 	</insert>
 
 	<!-- 根据用户id查询用户基本信息 -->
-	<select id="selectSysUserById" resultType="java.lang.String" parameterType="org.jeecg.modules.system.entity.SysUser">
+	<select id="selectSysUserById" parameterType="java.lang.String" resultType="org.jeecg.modules.system.entity.SysUser">
 		SELECT * FROM SYS_USER WHERE ID = #{id}
 	</select>
 

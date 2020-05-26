@@ -96,9 +96,9 @@ spring:
         connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
       datasource:
         master:
-          url: jdbc:mysql://127.0.0.1:3306/jeecg-boot?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false
+          url: jdbc:mysql://127.0.0.1:3306/kunze?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false
           username: root
-          password: root
+          password: 'honghongdaojia'
           driver-class-name: com.mysql.jdbc.Driver
           # 多数据源配置
           #multi-datasource1:
@@ -117,7 +117,7 @@ spring:
         max-wait: -1ms  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
         min-idle: 0     #最小等待连接中的数量,设 0 为没有限制
       shutdown-timeout: 100ms
-    password: ''
+    password: 'honghongdaojia'
     port: 6379
 #mybatis plus 设置
 mybatis-plus:
@@ -179,3 +179,10 @@ cas:
 logging:
   level:
     org.jeecg.modules.system.mapper : debug
+#微信支付
+WeChatPay:
+  wxapp:
+    appid: wx6d414da3d992f3d4
+    mch_id: 1591431581
+    apiKey: gqyky9uZ4KLoA1OGxwrgY0kbi9PVCu5s
+    appSecret: 05fba7f7a91f94072b4b637f5b500877

@@ -61,4 +61,5 @@ public interface SpuMapper extends BaseMapper<Spu> {
      * @return
      */
     List<CategorySpuVo> selectCategorySpu(@Param("spuList") List<String> spus);
+
 }
