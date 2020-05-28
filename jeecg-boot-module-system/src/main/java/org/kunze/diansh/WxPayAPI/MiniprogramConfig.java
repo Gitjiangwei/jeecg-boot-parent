@@ -1,6 +1,7 @@
 package org.kunze.diansh.WxPayAPI;
 
-import cn.hutool.core.io.resource.ClassPathResource;
+import org.apache.commons.io.FileUtils;
+import org.springframework.core.io.ClassPathResource;
 import org.apache.commons.io.IOUtils;
 import org.kunze.diansh.entity.properties.WeChatPayProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,14 @@ public class MiniprogramConfig extends WXPayConfig {
 
     public MiniprogramConfig() throws Exception {
 
+        InputStream in = MiniprogramConfig.class.getResourceAsStream(File.separator+"cert"+File.separator+"apiclient_cert.p12");
+        File tempFile = File.createTempFile("apiclient_cert",".p12");
+        FileUtils.copyInputStreamToFile(in,tempFile);
+
         //获取证书
-        File file = new ClassPathResource("classpath:"+File.separator+"cert"+File.separator+"apiclient_cert.p12").getFile();
-        InputStream certStream = new FileInputStream(file);
+        //File classPathResource = new ClassPathResource("classpath:"+File.separator+"cert"+File.separator+"apiclient_cert.p12").getFile();
+
+        InputStream certStream = new FileInputStream(tempFile);
         this.certData = IOUtils.toByteArray(certStream);
         certStream.close();
     }
