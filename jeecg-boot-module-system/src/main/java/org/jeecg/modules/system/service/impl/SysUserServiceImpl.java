@@ -398,4 +398,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		return false;
 	}
 
+	/**
+	 * 插入android用户信息
+	 * @param phone 电话号
+	 * @return
+	 */
+	@Override
+	public SysUser insertAndroidUserInfo(String phone) {
+		SysUser user = null;
+		String id = UUID.randomUUID().toString().replace("-","");
+		int flag = userMapper.insertWxAppAppInfo(id,phone);
+		if (flag>0){
+			user = userMapper.selectSysUserById(id);
+			return user;
+		}
+		return user;
+	}
+
 }

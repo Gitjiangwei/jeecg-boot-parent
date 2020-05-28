@@ -8,6 +8,7 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.util.DateUtils;
 import org.jeecg.common.util.HttpRequest;
 import org.jeecg.common.util.MD5Util;
+import org.kunze.diansh.WxPayAPI.MiniprogramConfig;
 import org.kunze.diansh.WxPayAPI.WXPay;
 import org.kunze.diansh.WxPayAPI.WXPayConstants;
 import org.kunze.diansh.WxPayAPI.WXPayUtil;
@@ -33,6 +34,19 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
 
     @Autowired
     private OrderMapper orderMapper;
+
+    private MiniprogramConfig config;
+    private WXPay wxpay;
+
+    public WXPayServiceImpl(){
+        try {
+            config = MiniprogramConfig.getInstance();
+            wxpay = new WXPay(config);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("微信配置初始化错误", e);
+        }
+    }
 
 
     /**
@@ -216,6 +230,35 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
     }
 
 
+
+    /**
+     * 退款
+     *
+     * @param orderNo 商户订单id
+     * @param amount  金额
+     * @return 返回map（已做过签名验证），具体数据参见微信退款API
+     */
+    public Map<String, String> doRefund(String orderNo, Integer amount) throws Exception {
+        HashMap<String, String> data = new HashMap<>();
+
+        data.put("appid", weChatPayProperties.getWxAppAppId());
+        data.put("mch_id", weChatPayProperties.getMchId());
+        data.put("nonce_str", WXPayUtil.generateNonceStr());
+        data.put("out_trade_no", orderNo);
+        data.put("out_refund_no", orderNo);
+        data.put("total_fee", amount.toString());
+        data.put("refund_fee", amount.toString());
+        data.put("sign", WXPayUtil.generateSignature(data,weChatPayProperties.getApiKey()));
+
+        try {
+            Map<String, String> r = wxpay.refund(data);
+            System.out.println(r);
+            return r;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
     // 获取openID

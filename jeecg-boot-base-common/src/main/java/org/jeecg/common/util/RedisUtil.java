@@ -629,6 +629,27 @@ public class RedisUtil {
 		return result;
 	}
 
+
+	/**
+	 * 判断key指定redis中的key是否存在
+	 *
+	 * @param key 键
+	 * @return true 存在 false不存在
+	 */
+	public boolean hasKey(final String key,int db) {
+		Boolean flag = true;
+		try {
+			RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
+			DefaultStringRedisConnection stringRedisConnection = new DefaultStringRedisConnection(redisConnection);
+			stringRedisConnection.select(db);
+			flag = stringRedisConnection.exists(key);
+			stringRedisConnection.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			flag = false;
+		}
+		return flag;
+	}
 	/**
 	 * 删除指定db的key
 	 *

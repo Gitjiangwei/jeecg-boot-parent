@@ -526,4 +526,77 @@ public class LoginController {
         return result;
     }
 
+    //Todo 此安卓登录方法为简单的逻辑模拟 正式需要修改为短信验证码登录
+    /**
+     * 安卓登录
+     * @param jsonObject
+     * @return
+     */
+    @RequestMapping(value = "/androidLogin",method = RequestMethod.POST)
+    public Result androidLogin(@RequestBody JSONObject jsonObject){
+        Result resultMap = new Result();
+        String phone = jsonObject.getString("phone");
+        String code = jsonObject.getString("code");
+
+
+        if (EmptyUtils.isEmpty(phone)){
+            return resultMap.error500("手机号丢失！");
+        }
+        if (!redisUtil.hasKey(code,1)){
+            resultMap.error500("验证码错误！");
+            return resultMap;
+        }
+        Object obj = redisUtil.get(code,1);
+        if(!obj.toString().equals(phone)){
+            resultMap.error500("手机号错误！");
+            return resultMap;
+        }
+
+
+
+        SysUser sysUser = sysUserService.getUserByPhone(phone);
+        //用户已存在直接返回
+        if(EmptyUtils.isNotEmpty(sysUser)){
+            resultMap.setResult(sysUser);
+            return resultMap;
+        }else {
+            //用户不存在则添加到数据库
+            SysUser user = sysUserService.insertAndroidUserInfo(phone);
+            if(EmptyUtils.isNotEmpty(user)){
+                resultMap.setResult(user);
+                return resultMap;
+            }else {
+                resultMap.error500("写入数据库时出现错误！");
+            }
+        }
+        return resultMap;
+    }
+
+
+    /**
+     * 生成随机验证码
+     * @return
+     */
+    @RequestMapping(value = "/getRandomCode",method = RequestMethod.POST)
+    public Result getCharAndNumr(String phone) {
+        Result result = new Result();
+        if(EmptyUtils.isEmpty(phone)){
+            return result.error("手机号参数丢失！");
+        }
+        Random random = new Random();
+        StringBuffer valSb = new StringBuffer();
+        String charStr = "0123456789";
+        int charLength = charStr.length();
+        for (int i = 0; i < 6; i++) {
+            int index = random.nextInt(charLength);
+            valSb.append(charStr.charAt(index));
+        }
+        //写入到指定redis
+        redisUtil.set(valSb.toString(),phone,1,false, (long) 60);
+        result.setResult(valSb.toString());
+        return result;
+    }
+
+
+
 }

@@ -160,4 +160,10 @@
 		DELETE FROM SYS_USER WHERE ID = #{id}
 	</delete>
 
+	<!-- 插入android用户信息 -->
+	<insert id="insertAndroidUserInfo" parameterType="java.lang.String">
+		INSERT INTO SYS_USER(ID,PHONE,CREATE_TIME,DEL_FLAG)
+		VALUES(#{id},#{phone},NOW(),0)
+	</insert>
+
 </mapper>

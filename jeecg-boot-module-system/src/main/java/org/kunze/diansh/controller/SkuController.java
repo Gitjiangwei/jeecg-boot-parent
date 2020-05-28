@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -27,12 +28,11 @@ public class SkuController {
         if (EmptyUtils.isEmpty(spuId)){
             return result.error500("参数丢失！");
         }
-        List<Sku> skuList = skuService.querySkuBySpuId(spuId);
-        if (EmptyUtils.isNotEmpty(skuList)){
-            result.setResult(skuList);
+        List<Map<String,Object>> skuInfo = skuService.selectSkuInfoBySpuId(spuId);
+        if (EmptyUtils.isNotEmpty(skuInfo)){
+            result.setResult(skuInfo);
             return result;
         }
-
         return result;
     }
 }

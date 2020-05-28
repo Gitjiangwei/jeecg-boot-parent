@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.entity.Sku;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SkuMapper extends BaseMapper<Sku> {
 
@@ -23,4 +24,11 @@ public interface SkuMapper extends BaseMapper<Sku> {
      * @return
      */
     List<Sku> querySkuBySpuId(@Param("spuId") String spuId);
+
+    /**
+     * 查询商品展示的详细信息 通过spuId
+     * @param spuId
+     * @return
+     */
+    List<Map<String,Object>> selectSkuInfoBySpuId(@Param("spuId") String spuId);
 }

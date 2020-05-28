@@ -228,4 +228,11 @@ public interface ISysUserService extends IService<SysUser> {
 	 * @return 是否插入成功
 	 */
 	Boolean insertWxAppAppInfo(String openId,String sessionKey);
+
+	/**
+	 * 插入android用户信息
+	 * @param phone 电话号
+	 * @return
+	 */
+	SysUser insertAndroidUserInfo(String phone);
 }

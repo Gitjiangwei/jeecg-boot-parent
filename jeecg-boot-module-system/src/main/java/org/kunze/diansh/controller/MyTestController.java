@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeecg.OrderComsumer;
 import org.jeecg.common.util.DateUtils;
 import org.jeecg.common.util.OrderCodeUtils;
+import org.kunze.diansh.WxPayAPI.MiniprogramConfig;
+import org.kunze.diansh.WxPayAPI.WXPay;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.mapper.OrderMapper;
 import org.kunze.diansh.mapper.SkuMapper;
@@ -25,6 +27,20 @@ import java.util.Date;
 public class MyTestController {
 
 
+    private MiniprogramConfig miniprogramConfig;
+    private WXPay wxPay;
+
+    @Autowired
+    public MyTestController(){
+        try {
+            miniprogramConfig = MiniprogramConfig.getInstance();
+            wxPay = new WXPay(miniprogramConfig);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("微信配置初始化错误", e);
+        }
+    }
+
     @GetMapping(value = "/testInsert")
     public void testInsert() {
 
@@ -33,6 +49,8 @@ public class MyTestController {
 
        String str = DateUtils.date2Str(nowDate,new SimpleDateFormat("yyyyMMddHHmmss"));
        System.out.println(str);
+
+
 
 //        Order o = new Order();
 //        o.setCreateTime(new Date());

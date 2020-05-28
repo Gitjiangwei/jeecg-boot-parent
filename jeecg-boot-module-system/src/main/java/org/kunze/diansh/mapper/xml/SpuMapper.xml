@@ -145,6 +145,11 @@
         GROUP BY spu.id
         ORDER BY new_price
     </select>
+
+    <select id="selectSpuTitleLike">
+        SELECT ID,TITLE FROM KZ_SPU WHERE TITLE LIKE '%#{title}%' AND SHOP_ID = 1 LIMIT 10
+    </select>
+
 </mapper>
 
 

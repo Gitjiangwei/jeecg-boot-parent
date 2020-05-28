@@ -94,4 +94,32 @@ AND sku.spu_id = #{id}
         LEFT JOIN kz_spu_features feat ON sku.id = feat.sku_id
         where `enable`=1 and sku.spu_id = #{spuId}
     </select>
+
+    <!-- 查询商品展示的详细信息 通过spuId -->
+    <select id="selectSkuInfoBySpuId" parameterType="java.lang.String" resultType="java.util.HashMap">
+        SELECT
+        SKU.ID,
+        SKU.SPU_ID,
+        SKU.TITLE,
+        SKU.IMAGES,
+        SKU.INDEXES,
+        SKU.OWN_SPEC,
+        SKU.NEW_PRICE,
+        KSD.PACKING_LIST,
+        KSD.AFTER_SERVICE,
+        KSD.DESCRIPTION,
+        KS.STOCK,
+        SPU.CID1,
+        SPU.CID2,
+        SPU.CID3
+        FROM
+        KZ_SKU SKU
+        LEFT JOIN KZ_SPU SPU ON SKU.SPU_ID = SPU.ID
+        LEFT JOIN KZ_SPU_DETAIL KSD ON SPU.ID = KSD.SPU_ID
+        LEFT JOIN KZ_STOCK KS ON SKU.ID = KS.SKU_ID
+        WHERE
+        `ENABLE` = 1
+        AND SKU.SPU_ID = #{spuId}
+    </select>
+
 </mapper>

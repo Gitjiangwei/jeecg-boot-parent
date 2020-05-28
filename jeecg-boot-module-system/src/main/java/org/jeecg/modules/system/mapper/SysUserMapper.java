@@ -144,4 +144,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 * @return 用户对象
 	 */
 	SysUser selectSysUserById(@Param("id") String id);
+
+	int insertAndroidUserInfo(@Param("id")String id,@Param("phone")String phone);
 }
