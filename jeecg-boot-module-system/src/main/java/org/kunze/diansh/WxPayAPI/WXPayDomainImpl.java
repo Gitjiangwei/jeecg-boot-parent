@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WXPayDomainImpl implements IWXPayDomain {
-    private WXPayDomainImpl(){}
+    public WXPayDomainImpl(){}
     private static class WxpayDomainHolder{
         private static IWXPayDomain holder = new WXPayDomainImpl();
     }

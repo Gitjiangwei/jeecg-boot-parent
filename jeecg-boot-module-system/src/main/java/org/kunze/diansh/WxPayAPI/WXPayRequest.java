@@ -15,6 +15,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -27,6 +29,7 @@ import java.security.SecureRandom;
 import static org.kunze.diansh.WxPayAPI.WXPayConstants.USER_AGENT;
 
 public class WXPayRequest {
+    @Autowired
     private WXPayConfig config;
     public WXPayRequest(WXPayConfig config) throws Exception{
 

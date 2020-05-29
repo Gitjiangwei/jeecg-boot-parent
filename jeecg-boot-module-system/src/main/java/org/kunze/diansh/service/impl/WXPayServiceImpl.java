@@ -38,6 +38,7 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
     private MiniprogramConfig config;
     private WXPay wxpay;
 
+    @Autowired
     public WXPayServiceImpl(){
         try {
             config = MiniprogramConfig.getInstance();
@@ -232,13 +233,12 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
 
 
     /**
-     * 退款
-     *
+     * 微信小程序退款
      * @param orderNo 商户订单id
      * @param amount  金额
      * @return 返回map（已做过签名验证），具体数据参见微信退款API
      */
-    public Map<String, String> doRefund(String orderNo, Integer amount) throws Exception {
+    public Map<String, String> doRefund(String orderNo, Integer amount) {
         HashMap<String, String> data = new HashMap<>();
 
         data.put("appid", weChatPayProperties.getWxAppAppId());
@@ -248,7 +248,12 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
         data.put("out_refund_no", orderNo);
         data.put("total_fee", amount.toString());
         data.put("refund_fee", amount.toString());
-        data.put("sign", WXPayUtil.generateSignature(data,weChatPayProperties.getApiKey()));
+        try{
+            data.put("sign", WXPayUtil.generateSignature(data,weChatPayProperties.getApiKey()));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 
         try {
             Map<String, String> r = wxpay.refund(data);

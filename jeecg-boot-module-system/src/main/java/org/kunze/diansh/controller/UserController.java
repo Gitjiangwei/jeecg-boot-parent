@@ -15,6 +15,7 @@ import org.kunze.diansh.service.IAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -161,6 +162,17 @@ public class UserController {
             return false;
         }
         return true;
+    }
+
+
+    @ApiOperation("获取省市区")
+    @AutoLog("获取省市区")
+    @GetMapping(value = "/getRegionInfo")
+    public Result<Collection> getRegionInfo(){
+        Result<Collection> result = new Result<Collection>();
+        Collection collection= addressService.selectRegionInfo();
+        result.setResult(collection);
+        return result;
     }
 
 }

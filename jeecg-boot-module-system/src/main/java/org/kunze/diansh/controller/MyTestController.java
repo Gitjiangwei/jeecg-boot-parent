@@ -2,6 +2,8 @@ package org.kunze.diansh.controller;
 
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.jeecg.OrderComsumer;
 import org.jeecg.common.util.DateUtils;
 import org.jeecg.common.util.OrderCodeUtils;
@@ -27,19 +29,42 @@ import java.util.Date;
 public class MyTestController {
 
 
+
+    public static void main(String[] args) {
+
+
+        //InputStream in = MiniprogramConfig.class.getResourceAsStream("/cert/apiclient_cert.p12");
+        InputStream in = MiniprogramConfig.class.getResourceAsStream(File.separator+"cert"+File.separator+"apiclient_cert.p12");
+        System.out.println("1111111");
+        try {
+            byte[] certData;
+            File tempFile = File.createTempFile("apiclient_cert",".p12");
+            FileUtils.copyInputStreamToFile(in,tempFile);
+
+            //获取证书
+            //File classPathResource = new ClassPathResource("classpath:"+File.separator+"cert"+File.separator+"apiclient_cert.p12").getFile();
+
+            InputStream certStream = new FileInputStream(tempFile);
+            certData = IOUtils.toByteArray(certStream);
+            certStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private MiniprogramConfig miniprogramConfig;
     private WXPay wxPay;
 
-    @Autowired
-    public MyTestController(){
-        try {
-            miniprogramConfig = MiniprogramConfig.getInstance();
-            wxPay = new WXPay(miniprogramConfig);
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("微信配置初始化错误", e);
-        }
-    }
+//    @Autowired
+//    public MyTestController(){
+//        try {
+//            miniprogramConfig = MiniprogramConfig.getInstance();
+//            wxPay = new WXPay(miniprogramConfig);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            log.error("微信配置初始化错误", e);
+//        }
+//    }
 
     @GetMapping(value = "/testInsert")
     public void testInsert() {

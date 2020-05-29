@@ -1,17 +1,20 @@
 package org.kunze.diansh.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.exception.AddressException;
-import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.TreeUtil;
 import org.kunze.diansh.entity.Address;
+import org.kunze.diansh.entity.Region;
 import org.kunze.diansh.mapper.AddressMapper;
+import org.kunze.diansh.mapper.DegionMapper;
 import org.kunze.diansh.service.IAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +23,9 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
 
     @Autowired
     private AddressMapper addressMapper;
+
+    @Autowired
+    private DegionMapper degionMapper;
 
     @Value("${address_max}")
     private Integer addressMaxSizi;
@@ -116,5 +122,18 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
         if(rows != 1){
             throw new AddressException("[2]设置默认地址失败!更新时出现未知错误，请联系管理员！");
         }
+    }
+
+    /**
+     * 查询省市区全部信息
+     * 用Tree格式返回
+     * @return
+     */
+
+    public Collection selectRegionInfo(){
+        QueryWrapper<Region> queryWrapper = new QueryWrapper<>();
+        List<Region> regionList = degionMapper.selectList(queryWrapper);
+        Collection collection = TreeUtil.toTree(regionList,"id","pid","children", Region.class);
+        return collection;
     }
 }

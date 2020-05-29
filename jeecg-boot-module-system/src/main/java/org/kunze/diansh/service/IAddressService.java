@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.common.exception.AddressException;
 import org.kunze.diansh.entity.Address;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface IAddressService extends IService<Address> {
@@ -42,4 +43,11 @@ public interface IAddressService extends IService<Address> {
      * @return 受影响的行数
      */
     void updateDefaultByID(String id,String userID) throws AddressException;
+
+    /**
+     * 查询省市区全部信息
+     * 用Tree格式返回
+     * @return
+     */
+    Collection selectRegionInfo();
 }

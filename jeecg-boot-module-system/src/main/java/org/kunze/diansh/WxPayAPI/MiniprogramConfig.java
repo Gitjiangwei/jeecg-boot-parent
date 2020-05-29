@@ -5,16 +5,24 @@ import org.springframework.core.io.ClassPathResource;
 import org.apache.commons.io.IOUtils;
 import org.kunze.diansh.entity.properties.WeChatPayProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+@Component
 public class MiniprogramConfig extends WXPayConfig {
 
+
+    private static WeChatPayProperties weChatPayProperties;
+
     @Autowired
-    private WeChatPayProperties weChatPayProperties;
+    public void setWeChatPayProperties(WeChatPayProperties weChatPayProperties) {
+        MiniprogramConfig.weChatPayProperties = weChatPayProperties;
+    }
 
     private static MiniprogramConfig INSTANCE;
 
@@ -22,7 +30,7 @@ public class MiniprogramConfig extends WXPayConfig {
 
     public MiniprogramConfig() throws Exception {
 
-        InputStream in = MiniprogramConfig.class.getResourceAsStream(File.separator+"cert"+File.separator+"apiclient_cert.p12");
+        InputStream in = MiniprogramConfig.class.getResourceAsStream("/cert/apiclient_cert.p12");
         File tempFile = File.createTempFile("apiclient_cert",".p12");
         FileUtils.copyInputStreamToFile(in,tempFile);
 
@@ -67,6 +75,7 @@ public class MiniprogramConfig extends WXPayConfig {
 
     @Override
     IWXPayDomain getWXPayDomain() {
-        return null;
+        WXPayDomainImpl iwxPayDomain = new WXPayDomainImpl();
+        return iwxPayDomain;
     }
 }

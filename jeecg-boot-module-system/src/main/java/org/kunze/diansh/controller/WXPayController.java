@@ -202,4 +202,19 @@ public class WXPayController {
         return result;
     }
 
+    @ApiOperation("微信小程序退款")
+    @AutoLog("微信小程序退款")
+    @PostMapping(value = "/doRefund")
+    public Result doRefund(@RequestParam(name = "orderNo")String orderNo,@RequestParam(name = "amount")Integer amount){
+        Result result = new Result();
+        Map<String, String> map = new HashMap<>();
+        try {
+            map = iwxPayService.doRefund(orderNo,amount);
+        }catch (Exception e){
+
+        }
+        result.setResult(map);
+        return result;
+    }
+
 }

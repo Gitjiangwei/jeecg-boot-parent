@@ -17,4 +17,12 @@ public interface IWXPayService  extends IService<Order> {
 
     //获取openId
     Map<String, Object> getOpenId(String js_code);
+
+    /**
+     * 微信小程序退款
+     * @param orderNo 商户订单id
+     * @param amount  金额
+     * @return 返回map（已做过签名验证），具体数据参见微信退款API
+     */
+    Map<String, String> doRefund(String orderNo, Integer amount);
 }
