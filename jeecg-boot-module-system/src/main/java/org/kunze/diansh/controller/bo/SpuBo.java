@@ -35,6 +35,8 @@ public class SpuBo implements Serializable {
 
     private String shopId; //超市Id
 
+    private String saleable;// 是否上架
+
     private SpuDetail spuDetail;
 
     private List<SkuVo> skuVos;
