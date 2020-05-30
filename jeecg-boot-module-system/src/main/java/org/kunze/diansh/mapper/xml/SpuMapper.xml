@@ -146,8 +146,13 @@
         ORDER BY new_price
     </select>
 
-    <select id="selectSpuTitleLike">
-        SELECT ID,TITLE FROM KZ_SPU WHERE TITLE LIKE '%#{title}%' AND SHOP_ID = 1 LIMIT 10
+    <select id="selectSpuTitleLike" resultType="org.kunze.diansh.controller.vo.BeSimilarSpuVo">
+        select sku.id as 'skuId',spu.id as 'spuId',spu.title as 'spuTitle',spu.image as 'image',
+        sku.new_price as 'spuNewPrice',sku.price as 'spuPrice' from kz_spu spu
+        LEFT JOIN kz_sku sku ON spu.id = sku.spu_id
+		where spu.title LIKE CONCAT('%',#{key},'%') and spu.shop_id = #{shopId}
+		GROUP BY spu.id
+        ORDER BY new_price,price
     </select>
 
 </mapper>

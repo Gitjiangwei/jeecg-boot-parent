@@ -99,7 +99,7 @@
                 and  o.order_id = #{orderId}
             </if>
             <if test="status != null and status != ''">
-                and status = #{status}
+                and o.status = #{status}
             </if>
         </trim>
         order by o.create_time desc

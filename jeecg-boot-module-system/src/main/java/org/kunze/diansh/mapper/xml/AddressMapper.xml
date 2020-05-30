@@ -44,9 +44,10 @@
         update kz_address set is_default = 0 where user_id = #{userID}
     </update>
 
-    <delete id="deleteAddress">
-        delete from kz_address where id = #{id}
-    </delete>
+    <update id="deleteAddress">
+        update kz_address set status = 1
+        where id = #{id}
+    </update>
 
     <!-- 统计某个用户的收货地址的数量 -->
     <select id="countByUid" resultType="java.lang.Integer">

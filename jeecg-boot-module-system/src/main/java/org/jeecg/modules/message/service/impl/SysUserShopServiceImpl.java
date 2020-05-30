@@ -43,9 +43,14 @@ public class SysUserShopServiceImpl extends ServiceImpl<SysUserShopMapper,SysUse
     public Boolean updateSysUserShop(SysUserShop sysUserShop) {
         Boolean flag = false;
         if(sysUserShop.getUserId()!=null && !sysUserShop.getUserId().equals("")){
-            int result = sysUserShopMapper.updateSysUserShop(sysUserShop);
-            if(result > 0){
-                flag = true;
+            String shopId = sysUserShopMapper.selectByUserId(sysUserShop.getUserId());
+            if(shopId!=null) {
+                int result = sysUserShopMapper.updateSysUserShop(sysUserShop);
+                if (result > 0) {
+                    flag = true;
+                }
+            }else {
+                flag = this.saveSysUserShop(sysUserShop);
             }
         }
         return flag;

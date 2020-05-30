@@ -62,4 +62,13 @@ public interface SpuMapper extends BaseMapper<Spu> {
      */
     List<CategorySpuVo> selectCategorySpu(@Param("spuList") List<String> spus);
 
+
+    /***
+     * 首页全文检索
+     * @param key
+     * @param shopId
+     * @return
+     */
+    List<BeSimilarSpuVo> selectSpuTitleLike(@Param("key") String key,@Param("shopId") String shopId);
+
 }

@@ -2,7 +2,9 @@ package org.kunze.diansh.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -18,6 +20,8 @@ import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.kunze.diansh.controller.bo.SpuBo;
+import org.kunze.diansh.controller.vo.BeSimilarSpuVo;
+import org.kunze.diansh.controller.vo.ShopVo;
 import org.kunze.diansh.entity.*;
 import org.kunze.diansh.esRepository.GoodsRepository;
 import org.kunze.diansh.mapper.*;
@@ -203,6 +207,21 @@ public class IndexServiceImpl implements IndexService {
         pageInfo.setPages((int) (pageInfo.getTotal()+request.getSize()/request.getSize()));*/
         return new SearchResult(goodsAggregatedPage.getTotalElements(),goodsAggregatedPage.getTotalPages(),goodsAggregatedPage.getContent(),
                 categories,brandList,specs);
+    }
+
+    /***
+     * 数据库中全文检索
+     * @param key
+     * @param shopId
+     * @return
+     */
+    @Override
+    public PageInfo<BeSimilarSpuVo> selectSpuTitleLike(String key, String shopId, Integer pageNo, Integer pageSize) {
+        Page page = PageHelper.startPage(pageNo,pageSize);
+        List<BeSimilarSpuVo> beSimilarSpuVoList = spuMapper.selectSpuTitleLike(key,shopId);
+        PageInfo pageInfo =  new PageInfo<BeSimilarSpuVo>(beSimilarSpuVoList);
+        pageInfo.setTotal(page.getTotal());
+        return pageInfo;
     }
 
     // 解析品牌聚合结果
