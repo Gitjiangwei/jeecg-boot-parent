@@ -75,7 +75,10 @@ public class CommonController {
 	public Result<?> upload(HttpServletRequest request, HttpServletResponse response) {
 		Result<?> result = new Result<>();
 		String savePath = "";
-		String bizPath = request.getParameter("biz");
+		Date d = new Date();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String date = simpleDateFormat.format(d);
+		String bizPath = date+ File.separator +request.getParameter("biz");
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		MultipartFile file = multipartRequest.getFile("file");// 获取上传文件对象
 		if(oConvertUtils.isEmpty(bizPath)){
