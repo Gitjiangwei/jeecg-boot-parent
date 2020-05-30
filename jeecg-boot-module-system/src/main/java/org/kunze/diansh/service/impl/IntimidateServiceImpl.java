@@ -41,7 +41,7 @@ public class IntimidateServiceImpl implements IIntimidateService {
      * @return
      */
     @Override
-    public SalesTicketVo selectSales(String orderId) {
+    public SalesTicketVo selectSales(String orderId,String status) {
         if(orderId == null || orderId.equals("")){
             return null;
         }
@@ -116,7 +116,9 @@ public class IntimidateServiceImpl implements IIntimidateService {
         BigDecimal payAmout = new BigDecimal(order.getPayment());
         payAmout = payAmout.multiply(new BigDecimal("0.01"));
         salesTicketVo.setPractical(payAmout.toString());//实付金额
-        orderService.updateOrderStatus("3", orderId);
+        if(status.equals("2")) {
+            orderService.updateOrderStatus("3", orderId);
+        }
         return salesTicketVo;
     }
 }

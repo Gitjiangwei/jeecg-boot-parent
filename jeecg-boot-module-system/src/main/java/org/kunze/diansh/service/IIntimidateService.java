@@ -9,6 +9,6 @@ public interface IIntimidateService {
      * @param orderId 订单id
      * @return
      */
-    SalesTicketVo selectSales(String orderId);
+    SalesTicketVo selectSales(String orderId,String status);
 
 }

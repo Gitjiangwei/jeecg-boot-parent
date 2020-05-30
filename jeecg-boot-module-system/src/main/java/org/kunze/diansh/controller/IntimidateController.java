@@ -89,10 +89,11 @@ public class IntimidateController {
         Result<SalesTicketVo> result = new Result<SalesTicketVo>();
         JSONObject jsonObject = JSONObject.parseObject(orderId);
         orderId = jsonObject.get("orderId").toString();
+        String status = jsonObject.get("status")==null?"":jsonObject.get("status").toString();
         if(orderId == null || orderId.equals("")){
             result.error500("参数丢失！");
         }else {
-            SalesTicketVo salesTicketVo = intimidateService.selectSales(orderId);
+            SalesTicketVo salesTicketVo = intimidateService.selectSales(orderId,status);
             result.setSuccess(true);
             result.setResult(salesTicketVo);
         }
