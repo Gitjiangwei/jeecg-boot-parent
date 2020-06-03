@@ -6,6 +6,7 @@ import com.aliyuncs.exceptions.ClientException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.checkerframework.checker.units.qual.A;
@@ -496,6 +497,56 @@ public class LoginController {
         return result;
     }
 
+
+    /**
+     * 微信小程序用户登录信息
+     *
+     * @param result
+     * @return
+     */
+    private Result<JSONObject> WxAppUserInfo(SysUser sysUser, Result<JSONObject> result) {
+        String syspassword = sysUser.getPassword();
+        String username = sysUser.getUsername();
+        // 生成token
+        String token = JwtUtil.sign(username, syspassword);
+        // 设置token缓存有效时间
+        redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
+        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME * 2 / 500);
+
+        // 获取用户部门信息
+        JSONObject obj = new JSONObject();
+
+        obj.put("token", token);
+        obj.put("userid", sysUser.getId());
+        result.setResult(obj);
+        result.success("登录成功");
+        return result;
+    }
+    /**
+     * 安卓用户登录信息
+     *
+     * @param result
+     * @return
+     */
+    private Result<JSONObject> androidUserInfo(SysUser sysUser, Result<JSONObject> result) {
+        String syspassword = sysUser.getPassword();
+        String username = sysUser.getUsername();
+        // 生成token
+        String token = JwtUtil.sign(username, syspassword);
+        // 设置token缓存有效时间
+        redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
+        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME * 2 / 500);
+
+        // 获取用户部门信息
+        JSONObject obj = new JSONObject();
+
+        obj.put("token", token);
+        obj.put("userInfo", sysUser);
+        result.setResult(obj);
+        result.success("登录成功");
+        return result;
+    }
+
     /**
      * 微信小程序登录
      * @param js_code code
@@ -512,17 +563,26 @@ public class LoginController {
         if (EmptyUtils.isEmpty(openId)) {
             return result.error500("获取openId失败！");
         }
-        String sessionKey = map.get("session_key").toString();
         // 根据返回的user实体类，判断用户是否是新用户，不是的话，更新最新登录时间，是的话，将用户信息存到数据库
         SysUser user = sysUserService.selectSysUserById(openId);
         if(EmptyUtils.isEmpty(user)){
+            //第一次登录时生成一个随机用户名
+            String username = RandomStringUtils.randomAlphanumeric(8);
+            SysUser sysUser = new SysUser();
+            sysUser.setId(openId);
+            sysUser.setUsername(username);
+            sysUser.setPassword(openId);
             // 添加到数据库
-            Boolean flag = sysUserService.insertWxAppAppInfo(openId,sessionKey);
+            Boolean flag = sysUserService.insertWxAppInfo(sysUser);
             if(!flag){
                 return result.error500("error!");
+            }else{
+                //记录登录信息
+                WxAppUserInfo(sysUser,result);
+                return result;
             }
         }
-        result.setResult(openId);
+        WxAppUserInfo(user,result);
         return result;
     }
 
@@ -557,14 +617,12 @@ public class LoginController {
         SysUser sysUser = sysUserService.getUserByPhone(phone);
         //用户已存在直接返回
         if(EmptyUtils.isNotEmpty(sysUser)){
-            resultMap.setResult(sysUser);
-            return resultMap;
+            androidUserInfo(sysUser,resultMap);
         }else {
             //用户不存在则添加到数据库
             SysUser user = sysUserService.insertAndroidUserInfo(phone);
             if(EmptyUtils.isNotEmpty(user)){
-                resultMap.setResult(user);
-                return resultMap;
+                androidUserInfo(user,resultMap);
             }else {
                 resultMap.error500("写入数据库时出现错误！");
             }

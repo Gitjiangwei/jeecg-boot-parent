@@ -424,5 +424,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
     }
 
+    /***
+     * 查询订单数据
+     * @param orderId
+     * @return
+     */
+    @Override
+    public Order selectById(String orderId){
+        Order order = new Order();
+        order.setOrderId(orderId);
+        return orderMapper.selectById(order);
+    }
+
 
 }

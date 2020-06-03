@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.exception.AddressException;
@@ -44,12 +45,12 @@ public class UserController {
         }
         //获取登录对象
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-//        if(null == sysUser){
-//            //验证是否登录
-//            resultList.setSuccess(false);
-//            resultList.setMessage("未登录，请登录后添加地址！");
-//            return resultList;
-//        }
+        if(null == sysUser){
+            //验证是否登录
+            resultList.setSuccess(false);
+            resultList.setMessage("未登录，请登录后添加地址！");
+            return resultList;
+        }
         try {
             addressService.insertAddress(addressObject);
         } catch (AddressException e) {

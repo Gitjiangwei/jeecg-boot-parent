@@ -122,6 +122,7 @@ public class WXPayController {
                 packageParams.put(key, v);
             }
 
+
             //判断签名是否正确
             if (WXPayUtil.isSignatureValid(packageParams, weChatPayProperties.getApiKey())) {
 
@@ -136,14 +137,20 @@ public class WXPayController {
                     /**
                      * 业务处理
                      */
-
-                    String out_trade_no = (String) packageParams.get("out_trade_no");
-                    //更新订单状态为【已支付】
-                    iOrderService.updateOrderStatus(out_trade_no);
-                    //从队列中删除订单
-                    OrderComsumer.removeToOrderDelayQueue(out_trade_no);
-                    //更新商品库存
-                    iStockService.updateStockNum(out_trade_no);
+//                    String out_trade_no = (String) packageParams.get("out_trade_no");
+//
+//                    Order order = iOrderService.selectById(out_trade_no);
+//                    //如果订单状态不等于1 说明已经处理过了
+//                    if("1".equals(order.getStatus())){
+//                        synchronized (Order.class){
+//                            //更新订单状态为【已支付】
+//                            iOrderService.updateOrderStatus(out_trade_no);
+//                            //从队列中删除订单
+//                            OrderComsumer.removeToOrderDelayQueue(out_trade_no);
+//                            //更新商品库存
+//                            iStockService.updateStockNum(out_trade_no);
+//                        }
+//                    }
                 } else {
 
                     requestMap.put("return_code", "FAIL");

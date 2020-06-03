@@ -4,7 +4,9 @@ import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.jeecg.OrderComsumer;
+import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.util.DateUtils;
 import org.jeecg.common.util.OrderCodeUtils;
 import org.kunze.diansh.WxPayAPI.MiniprogramConfig;
@@ -32,24 +34,11 @@ public class MyTestController {
 
     public static void main(String[] args) {
 
+        String str = RandomStringUtils.randomAlphanumeric(8);
 
-        //InputStream in = MiniprogramConfig.class.getResourceAsStream("/cert/apiclient_cert.p12");
-        InputStream in = MiniprogramConfig.class.getResourceAsStream(File.separator+"cert"+File.separator+"apiclient_cert.p12");
-        System.out.println("1111111");
-        try {
-            byte[] certData;
-            File tempFile = File.createTempFile("apiclient_cert",".p12");
-            FileUtils.copyInputStreamToFile(in,tempFile);
-
-            //获取证书
-            //File classPathResource = new ClassPathResource("classpath:"+File.separator+"cert"+File.separator+"apiclient_cert.p12").getFile();
-
-            InputStream certStream = new FileInputStream(tempFile);
-            certData = IOUtils.toByteArray(certStream);
-            certStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String sign = JwtUtil.sign("13041127335","13041127335");
+        System.out.println(str);
+        System.out.println("sign:"+sign);
     }
 
     private MiniprogramConfig miniprogramConfig;

@@ -145,9 +145,9 @@
 	</delete>
 
 	<!-- 插入微信小程序用户信息 -->
-	<insert id="insertWxAppAppInfo" parameterType="java.lang.String">
-		INSERT INTO SYS_USER(ID,SESSION_KEY,CREATE_TIME)
-		VALUES(#{openId},#{sessionKey},NOW())
+	<insert id="insertWxAppInfo" parameterType="org.jeecg.modules.system.entity.SysUser">
+		INSERT INTO SYS_USER(ID,USERNAME,PASSWORD,DEL_FLAG,STATUS,CREATE_TIME)
+		VALUES(#{user.id},#{user.username},#{user.password},0,1,NOW())
 	</insert>
 
 	<!-- 根据用户id查询用户基本信息 -->
@@ -161,9 +161,9 @@
 	</delete>
 
 	<!-- 插入android用户信息 -->
-	<insert id="insertAndroidUserInfo" parameterType="java.lang.String">
-		INSERT INTO SYS_USER(ID,PHONE,CREATE_TIME,DEL_FLAG)
-		VALUES(#{id},#{phone},NOW(),0)
+	<insert id="insertAndroidUserInfo" parameterType="org.jeecg.modules.system.entity.SysUser">
+		INSERT INTO SYS_USER(ID,USERNAME,PASSWORD,PHONE,DEL_FLAG,STATUS,CREATE_TIME)
+		VALUES(#{user.id},#{user.username},#{user.password},#{user.phone},0,1,NOW())
 	</insert>
 
 </mapper>

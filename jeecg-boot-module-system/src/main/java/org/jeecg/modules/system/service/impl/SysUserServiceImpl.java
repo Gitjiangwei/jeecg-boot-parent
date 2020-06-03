@@ -385,13 +385,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 	/**
 	 * 插入微信小程序用户信息
-	 * @param openId
-	 * @param sessionKey
 	 * @return
 	 */
 	@Override
-	public Boolean insertWxAppAppInfo(String openId, String sessionKey){
-		int flag = userMapper.insertWxAppAppInfo(openId,sessionKey);
+	public Boolean insertWxAppInfo(SysUser sysUser){
+		int flag = userMapper.insertWxAppInfo(sysUser);
 		if (flag>0){
 			return true;
 		}
@@ -406,10 +404,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	@Override
 	public SysUser insertAndroidUserInfo(String phone) {
 		SysUser user = null;
-		String id = UUID.randomUUID().toString().replace("-","");
-		int flag = userMapper.insertWxAppAppInfo(id,phone);
+		SysUser sysUser = new SysUser();
+		sysUser.setId(UUID.randomUUID().toString().replace("-",""));
+		sysUser.setUsername(phone);
+		sysUser.setPassword(phone);
+		sysUser.setPhone(phone);
+		int flag = userMapper.insertAndroidUserInfo(sysUser);
 		if (flag>0){
-			user = userMapper.selectSysUserById(id);
+			user = userMapper.selectSysUserById(sysUser.getId());
 			return user;
 		}
 		return user;

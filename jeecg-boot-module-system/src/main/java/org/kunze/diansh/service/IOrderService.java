@@ -85,4 +85,11 @@ public interface IOrderService extends IService<Order> {
      * @return
      */
     List<Map<String,String>> queryOrderRecord(String orderId);
+
+    /***
+     * 查询订单数据
+     * @param orderId
+     * @return
+     */
+    Order selectById(String orderId);
 }

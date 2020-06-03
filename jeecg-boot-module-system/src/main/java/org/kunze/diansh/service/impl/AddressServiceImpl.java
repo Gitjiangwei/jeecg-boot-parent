@@ -7,7 +7,7 @@ import org.jeecg.common.util.TreeUtil;
 import org.kunze.diansh.entity.Address;
 import org.kunze.diansh.entity.Region;
 import org.kunze.diansh.mapper.AddressMapper;
-import org.kunze.diansh.mapper.DegionMapper;
+import org.kunze.diansh.mapper.RegionMapper;
 import org.kunze.diansh.service.IAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,7 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
     private AddressMapper addressMapper;
 
     @Autowired
-    private DegionMapper degionMapper;
+    private RegionMapper regionMapper;
 
     @Value("${address_max}")
     private Integer addressMaxSizi;
@@ -132,7 +132,7 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
 
     public Collection selectRegionInfo(){
         QueryWrapper<Region> queryWrapper = new QueryWrapper<>();
-        List<Region> regionList = degionMapper.selectList(queryWrapper);
+        List<Region> regionList = regionMapper.selectList(queryWrapper);
         Collection collection = TreeUtil.toTree(regionList,"id","pid","children", Region.class);
         return collection;
     }

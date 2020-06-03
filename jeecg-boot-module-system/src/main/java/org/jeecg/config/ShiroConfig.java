@@ -70,8 +70,14 @@ public class ShiroConfig {
 		//cas验证登录
 		filterChainDefinitionMap.put("/cas/client/validateLogin", "anon");
 		// 配置不会被拦截的链接 顺序判断
-		filterChainDefinitionMap.put("/kunze/**", "anon"); //登录验证码接口排除
-		//filterChainDefinitionMap.put("/sys/**", "anon"); //登录验证码接口排除
+//		filterChainDefinitionMap.put("/kunze/**", "anon"); //登录验证码接口排除
+		filterChainDefinitionMap.put("/kunze/spu/**","anon"); //首页商品
+		filterChainDefinitionMap.put("/kunze/features/**","anon"); //首页商品特卖
+		filterChainDefinitionMap.put("/kunze/wheel/homeWheelList","anon");//首页轮播图查询
+		filterChainDefinitionMap.put("/kunze/category/qryList","anon");//商品分类查询
+		filterChainDefinitionMap.put("/sys/wxAppAppLogin","anon");//微信小程序登录
+		filterChainDefinitionMap.put("/sys/androidLogin","anon");//安卓登录
+		filterChainDefinitionMap.put("/sys/getRandomCode","anon");//安卓验证码
 		filterChainDefinitionMap.put("/sys/getCheckCode", "anon"); //登录验证码接口排除
 		filterChainDefinitionMap.put("/sys/randomImage/**", "anon"); //登录验证码接口排除
 		filterChainDefinitionMap.put("/sys/login", "anon"); //登录接口排除

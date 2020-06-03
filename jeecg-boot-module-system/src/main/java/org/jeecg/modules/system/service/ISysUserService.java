@@ -223,11 +223,9 @@ public interface ISysUserService extends IService<SysUser> {
 
 	/**
 	 *插入微信小程序用户信息
-	 * @param openId
-	 * @param sessionKey
 	 * @return 是否插入成功
 	 */
-	Boolean insertWxAppAppInfo(String openId,String sessionKey);
+	Boolean insertWxAppInfo(SysUser sysUser);
 
 	/**
 	 * 插入android用户信息

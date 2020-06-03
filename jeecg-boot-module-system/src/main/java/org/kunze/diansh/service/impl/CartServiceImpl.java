@@ -18,6 +18,7 @@ import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
         //获取用户信息
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
 
-        String key = KEY_PREFIX + "456789";
+        String key = KEY_PREFIX + sysUser.getId();
         if(!redisTemplate.hasKey(key)){
             return null;
         }
@@ -74,7 +75,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
         //登录用户对象
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         //String userKey = KEY_PREFIX + sysUser.getId();
-        String userKey = KEY_PREFIX+"456789";
+        String userKey = KEY_PREFIX+sysUser.getId();
         BoundHashOperations<String,Object,Object> hashOps = this.redisTemplate.boundHashOps(userKey);
 
         String skuId = cart.getSkuid(); //商品id
@@ -89,7 +90,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
             cart.setCartNum(cart.getCartNum() + num);
         }else{
             //不存在
-            cart.setUserId("456789");
+            cart.setUserId(sysUser.getId());
 
             Sku sku = skuMapper.querySkuInfoById(skuId);
             cart.setImage(StringUtils.isBlank(sku.getImages())?"":sku.getImages().split(",")[0]);
@@ -110,7 +111,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
     public void updateCart(List<Cart> cartList) {
         //登录用户对象
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        String key = KEY_PREFIX+"456789";
+        String key = KEY_PREFIX+sysUser.getId();
         BoundHashOperations<String,Object,Object> hashOps = this.redisTemplate.boundHashOps(key);
 
         for (Cart c:cartList) {
@@ -133,7 +134,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
     public void deleteCart(List skuId) {
         //登录用户对象
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-        String key = KEY_PREFIX+"456789";
+        String key = KEY_PREFIX+sysUser.getId();
         BoundHashOperations<String,Object,Object> hashOps = this.redisTemplate.boundHashOps(key);
         for (Object sid:skuId) {
             //从Redis中删除

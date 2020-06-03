@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jeecg.OrderComsumer;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.util.DateUtils;
 import org.jeecg.common.util.HttpRequest;
@@ -15,6 +16,7 @@ import org.kunze.diansh.WxPayAPI.WXPayUtil;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.entity.properties.WeChatPayProperties;
 import org.kunze.diansh.mapper.OrderMapper;
+import org.kunze.diansh.service.IStockService;
 import org.kunze.diansh.service.IWXPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,9 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
 
     @Autowired
     private OrderMapper orderMapper;
+
+    @Autowired
+    private IStockService iStockService;
 
     private MiniprogramConfig config;
     private WXPay wxpay;
@@ -182,6 +187,18 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
                     return Result.error((String) map.get("return_msg"));
                 }
                 if ("SUCCESS".equals(map.get("trade_state"))) {
+
+                    //支付成功 开始业务处理
+                    Order order = orderMapper.selectById(outTradeNo);
+                    //订单状态为未支付才开始业务处理
+                    if("1".equals(order.getStatus().toString())){
+                        //更新订单状态为【已支付】
+                        orderMapper.updateOrderStatus("2",outTradeNo);
+                        //从队列中删除订单
+                        OrderComsumer.removeToOrderDelayQueue(outTradeNo);
+                        //更新商品库存
+                        iStockService.updateStockNum(outTradeNo);
+                    }
 
                     return Result.ok("支付成功");
                 } else if ("CLOSED".equals(map.get("trade_state"))) {

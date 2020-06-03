@@ -132,11 +132,9 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
 	/**
 	 * 插入小程序用户信息
-	 * @param openId
-	 * @param sessionKey
 	 * @return 受影响的行数
 	 */
-	int insertWxAppAppInfo(@Param("openId") String openId,@Param("sessionKey") String sessionKey);
+	int insertWxAppInfo(@Param("user") SysUser sysUser);
 
 	/**
 	 * 根据用户id查询用户信息
@@ -145,5 +143,10 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 */
 	SysUser selectSysUserById(@Param("id") String id);
 
-	int insertAndroidUserInfo(@Param("id")String id,@Param("phone")String phone);
+	/**
+	 * 插入安卓用户信息
+	 * @param sysUser
+	 * @return
+	 */
+	int insertAndroidUserInfo(@Param("user") SysUser sysUser);
 }
