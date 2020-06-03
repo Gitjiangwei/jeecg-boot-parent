@@ -20,4 +20,19 @@ public interface WheelMapper extends BaseMapper<Wheel> {
                      @Param("updateName") String updateName,
                      @Param("list") List<String> isFlagWheels);
 
+    /***
+     * 后台查询轮播图信息
+     * @param wheel
+     * @return
+     */
+    List<Wheel> qeryWheelbackstage(Wheel wheel);
+
+
+    /**
+     * 根据轮播图id查询超市id
+     * @param id
+     * @return
+     */
+    List<String> selectByShopId(@Param("id") String id);
+
 }

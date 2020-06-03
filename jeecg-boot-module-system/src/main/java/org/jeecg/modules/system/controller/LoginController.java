@@ -364,7 +364,6 @@ public class LoginController {
         }
         //获取超市信息
         String shopId = sysUserShopService.selectByUserId(sysUser.getId());
-        log.info("**************************************"+shopId);
         obj.put("shopId",shopId);
         obj.put("token", token);
         obj.put("userInfo", sysUser);

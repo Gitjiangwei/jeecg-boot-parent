@@ -1,10 +1,12 @@
 package org.kunze.diansh.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
+import org.kunze.diansh.controller.bo.WheelBo;
 import org.kunze.diansh.controller.vo.WheelVo;
 import org.kunze.diansh.entity.Wheel;
 import org.kunze.diansh.mapper.WheelMapper;
@@ -26,17 +28,28 @@ public class WheelServiceImpl extends ServiceImpl<WheelMapper, Wheel> implements
 
     /***
      * 添加轮播图片
-     * @param wheelVo
+     * @param wheelBo
      * @return
      */
     @Override
-    public Boolean saveWheel(WheelVo wheelVo) {
+    public Boolean saveWheel(WheelBo wheelBo) {
         Boolean isFlag = false;
-        if(wheelVo.getWheelPort()==null||wheelVo.getWheelPort().equals("")){
+        if(wheelBo.getWheelPort()==null||wheelBo.getWheelPort().equals("")){
             return false;
         }
+        if(wheelBo.getIsFlag().equals("true")){
+            wheelBo.setIsFlag("0");
+        }else {
+            wheelBo.setIsFlag("1");
+        }
         Wheel wheel = new Wheel();
-        BeanUtils.copyProperties(wheelVo,wheel);
+        BeanUtils.copyProperties(wheelBo,wheel);
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        if (sysUser != null) {
+            wheel.setUpdateName(sysUser.getRealname());
+        } else {
+            wheel.setUpdateName("");
+        }
         wheel.setWheelId(UUID.randomUUID().toString().replace("-",""));
         int result = wheelMapper.saveWheel(wheel);
         if(result > 0){
@@ -67,15 +80,20 @@ public class WheelServiceImpl extends ServiceImpl<WheelMapper, Wheel> implements
 
     /***
      * 修改轮播图片
-     * @param wheelVo
+     * @param wheelBo
      * @return
      */
     @Override
-    public Boolean updateWheel(WheelVo wheelVo) {
+    public Boolean updateWheel(WheelBo wheelBo) {
         Boolean isFlag = false;
-        if(wheelVo.getWheelId()!=null && !wheelVo.getWheelId().equals("")){
+        if(wheelBo.getWheelId()!=null && !wheelBo.getWheelId().equals("")){
             Wheel wheel = new Wheel();
-            BeanUtils.copyProperties(wheelVo,wheel);
+            if(wheelBo.getIsFlag().equals("true")){
+                wheelBo.setIsFlag("0");
+            }else {
+                wheelBo.setIsFlag("1");
+            }
+            BeanUtils.copyProperties(wheelBo,wheel);
             LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
             if (sysUser != null) {
                 wheel.setUpdateName(sysUser.getRealname());
@@ -177,5 +195,37 @@ public class WheelServiceImpl extends ServiceImpl<WheelMapper, Wheel> implements
             }
         }
         return isflag;
+    }
+
+    /***
+     * 后台查询轮播图
+     * @param wheelBo
+     * @return
+     */
+    @Override
+    public PageInfo<Wheel> qeryWheelbackstage(WheelBo wheelBo, Integer pageNo, Integer pageSize) {
+        Page page = PageHelper.startPage(pageNo,pageSize);
+        Wheel wheel = new Wheel();
+        BeanUtils.copyProperties(wheelBo,wheel);
+        List<Wheel> wheels = wheelMapper.qeryWheelbackstage(wheel);
+        PageInfo<Wheel> pageInfo = new PageInfo<Wheel>(wheels);
+        pageInfo.setTotal(page.getTotal());
+        return pageInfo;
+    }
+
+    /**
+     * 根据轮播图id查询超市id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public List<String> selectByShopId(String id) {
+        if(id == null || id.equals("")){
+            return null;
+        }else {
+            List<String> stringList = wheelMapper.selectByShopId(id);
+            return stringList;
+        }
     }
 }

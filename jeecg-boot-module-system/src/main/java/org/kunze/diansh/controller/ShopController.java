@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Api(tags = "超市管理")
 @RestController
@@ -45,18 +46,32 @@ public class ShopController {
     @AutoLog(value = "超市表-分页列表查询")
     @ApiOperation(value = "超市表-分页列表查询", notes = "超市表-分页列表查询")
     @GetMapping(value = "/list")
-    public Result<IPage<KzShop>> queryShList(KzShop shop,
+    public Result<PageInfo<ShopVo>> queryShList(ShopVo shop,
                                              @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-                                             @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
-                                             HttpServletRequest req) {
-        Result<IPage<KzShop>> result = new Result<IPage<KzShop>>();
+                                             @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+/*        Result<IPage<KzShop>> result = new Result<IPage<KzShop>>();
         QueryWrapper<KzShop> queryWrapper = QueryGenerator.initQueryWrapper(shop, req.getParameterMap());
         Page<KzShop> page = new Page<KzShop>(pageNo, pageSize);
         IPage<KzShop> pageList = shopService.page(page,queryWrapper);
         result.setSuccess(true);
-        result.setResult(pageList);
+        result.setResult(pageList);*/
+        Result<PageInfo<ShopVo>> result = new Result<PageInfo<ShopVo>>();
+        PageInfo<ShopVo> shopVoPageInfo = shopService.queryShopList(shop,pageNo,pageSize);
+        result.setSuccess(true);
+        result.setResult(shopVoPageInfo);
         return result;
     }
+
+
+    @GetMapping(value = "/lists")
+    public Result<List<ShopVo>> queryShopLists(){
+        Result<List<ShopVo>> result = new Result<List<ShopVo>>();
+        List<ShopVo> shopVoList = shopService.queryShopLists();
+        result.setResult(shopVoList);
+        result.setSuccess(true);
+        return result;
+    }
+
 
     @ApiOperation("添加超市信息")
     @AutoLog("添加超市信息")

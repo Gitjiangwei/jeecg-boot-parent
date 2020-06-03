@@ -41,6 +41,12 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, KzShop> implements 
         return pageInfo;
     }
 
+    @Override
+    public List<ShopVo> queryShopLists() {
+        KzShop shop = new KzShop();;
+        return shopMapper.queryShopList(shop);
+    }
+
     /***
      * 添加超市信息
      * @param shop

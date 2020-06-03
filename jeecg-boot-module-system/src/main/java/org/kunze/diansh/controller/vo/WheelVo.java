@@ -20,7 +20,7 @@ public class WheelVo implements Serializable {
     private String wheelPort;
 
     /**轮播图片所跳转的地址*/
-    private String wheelUtl;
+    private String wheelUrl;
 
     /**图片是否启动*/
     private String isFlag;

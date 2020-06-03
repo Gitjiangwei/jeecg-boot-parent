@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import org.kunze.diansh.controller.vo.ShopVo;
 import org.kunze.diansh.entity.KzShop;
 
+import java.util.List;
+
 public interface IShopService extends IService<KzShop> {
 
     /***
@@ -14,6 +16,9 @@ public interface IShopService extends IService<KzShop> {
      */
     PageInfo<ShopVo> queryShopList(ShopVo shopVo,Integer pageNo,Integer pageSize);
 
+
+
+    List<ShopVo> queryShopLists();
 
     /***
      * 添加超市信息

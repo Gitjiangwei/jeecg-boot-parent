@@ -1,5 +1,6 @@
 package org.kunze.diansh.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -7,12 +8,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.kunze.diansh.controller.bo.WheelBo;
 import org.kunze.diansh.controller.vo.WheelVo;
 import org.kunze.diansh.entity.Wheel;
 import org.kunze.diansh.service.IWheelService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -27,14 +31,14 @@ public class WheelController {
     @ApiOperation("添加轮播图片")
     @AutoLog("添加轮播图片")
     @PostMapping(value = "/saveWheel")
-    public Result<T> saveWheel(@RequestBody WheelVo wheelVo){
+    public Result<T> saveWheel(@RequestBody WheelBo wheelBo){
         Result<T> result = new Result<T>();
-        if(wheelVo.getWheelPort()== null || wheelVo.getWheelPort().equals("")){
+        if(wheelBo.getWheelPort()== null || wheelBo.getWheelPort().equals("")){
             result.error500("参数丢失！");
-        }else if(Integer.parseInt(wheelVo.getWheelPort())>3 || Integer.parseInt(wheelVo.getWheelPort()) < 0){
+        }else if(Integer.parseInt(wheelBo.getWheelPort())>3 || Integer.parseInt(wheelBo.getWheelPort()) < 0){
             result.error500("参数被篡改！");
         }else {
-            Boolean resultOk = wheelService.saveWheel(wheelVo);
+            Boolean resultOk = wheelService.saveWheel(wheelBo);
             if(resultOk){
                 result.success("添加成功！");
             }else{
@@ -44,7 +48,7 @@ public class WheelController {
         return result;
     }
 
-    @ApiOperation("管理图片查询轮播图")
+/*    @ApiOperation("管理图片查询轮播图")
     @AutoLog("管理界面查询轮播图")
     @GetMapping(value = "/pageWheelList")
     public Result<PageInfo<Wheel>> queryWheelPage(WheelVo wheelVo,
@@ -55,7 +59,7 @@ public class WheelController {
         result.setSuccess(true);
         result.setResult(wheelPageInfo);
         return result;
-    }
+    }*/
 
     @ApiOperation("首页查询轮播图")
     @AutoLog("首页查询轮播图")
@@ -79,12 +83,12 @@ public class WheelController {
     @ApiOperation("修改轮播图片")
     @AutoLog("修改轮播图")
     @PostMapping(value = "/updateWheel")
-    public Result<T> updateWheel(@RequestBody WheelVo wheelVo){
+    public Result<T> updateWheel(@RequestBody WheelBo wheelBo){
         Result<T> result = new Result<T>();
-        if(wheelVo.getWheelId()==null || wheelVo.getWheelId().equals("")){
+        if(wheelBo.getWheelId()==null || wheelBo.getWheelId().equals("")){
             result.error500("参数丢失！");
         }else {
-            Boolean resultOk = wheelService.updateWheel(wheelVo);
+            Boolean resultOk = wheelService.updateWheel(wheelBo);
             if(resultOk){
                 result.success("修改成功！");
             }else{
@@ -135,15 +139,17 @@ public class WheelController {
     @ApiOperation("首页轮播图展示打开或关闭")
     @AutoLog("首页轮播图展示打开或关闭")
     @PostMapping(value = "/updateIsFlag")
-    public Result<T> updateIsFlag(@RequestParam(name = "isFlag") String isFlag,
-                                  @RequestParam(name = "ids") String ids){
+    public Result<T> updateIsFlag(@RequestBody String enable){
         Result<T> result = new Result<T>();
+        JSONObject jsonObject = JSONObject.parseObject(enable);
+        String isFlag = jsonObject.get("isFlag").toString();
+        String ids = jsonObject.get("ids").toString();
         if (isFlag==null || isFlag.equals("")){
             result.error500("参数丢失！");
         }else if(ids == null || ids.equals("")){
             result.error500("参数丢失！");
         }else{
-            if(!isFlag.equals("0") || !isFlag.equals("1")){
+            if(!isFlag.equals("0") && !isFlag.equals("1")){
                 result.error500("非法参数");
             }else {
                 Boolean resultOk = wheelService.updateIsFlag(isFlag, ids);
@@ -159,4 +165,26 @@ public class WheelController {
         return  result;
     }
 
+
+    @AutoLog("查询轮播图列表")
+    @ApiOperation("后台查询轮播图列表")
+    @GetMapping(value = "/pageWheelList")
+    public Result<PageInfo<Wheel>> qeryWheelbackstage(WheelBo wheelBo,
+                                                      @RequestParam(name = "pageNo") Integer pageNo,
+                                                      @RequestParam(name = "pageSize") Integer pageSize){
+        Result<PageInfo<Wheel>> result = new Result<PageInfo<Wheel>>();
+        PageInfo<Wheel> pageInfo = wheelService.qeryWheelbackstage(wheelBo,pageNo,pageSize);
+        result.setResult(pageInfo);
+        result.setSuccess(true);
+        return result;
+    }
+
+    @GetMapping(value = "/selectByShopId")
+    public Result<List<String>> selectByShopId(@RequestParam(name = "id") String id){
+        Result<List<String>> result = new Result<List<String>>();
+        List<String> stringList = wheelService.selectByShopId(id);
+        result.setSuccess(true);
+        result.setResult(stringList);
+        return result;
+     }
 }

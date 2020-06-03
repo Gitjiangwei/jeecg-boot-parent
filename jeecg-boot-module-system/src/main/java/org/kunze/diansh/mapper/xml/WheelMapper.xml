@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.kunze.diansh.mapper.WheelMapper">
     <insert id="saveWheel">
-        insert INTO kz_wheel(wheel_id,wheel_images,create_time,update_time,update_name,wheel_no,wheel_port,wheel_url,wheel_name,is_flag,wheel_isflag,shop_id)
-        values (#{wheelId},#{wheelImages},NOW(),NOW(),#{updateName},#{wheelNo},#{wheelPort},#{wheelUrl},#{wheelName},#{isFlag},#{wheelIsflag},#{shopId})
+        insert INTO kz_wheel(wheel_id,wheel_images,create_time,update_time,update_name,is_flag,wheel_no,wheel_port,wheel_url,wheel_name,wheel_isflag,shop_id)
+        values (#{wheelId},#{wheelImages},NOW(),NOW(),#{updateName},#{isFlag},#{wheelNo},#{wheelPort},#{wheelUrl},#{wheelName},#{wheelIsflag},#{shopId})
     </insert>
 
     <select id="qeryWheel" resultType="org.kunze.diansh.entity.Wheel">
@@ -81,4 +81,33 @@
             #{item}
         </foreach>
     </update>
+
+
+    <select id="qeryWheelbackstage" resultType="org.kunze.diansh.entity.Wheel">
+        select wheel_id,wheel_images,wheel_no,wheel_url,wheel_name,wheel_port,wheel_isflag,shop.shop_name,wheel.create_time,wheel.update_time,wheel.update_name,wheel.is_flag from kz_wheel wheel
+        LEFT JOIN kz_shop shop ON wheel.shop_id = shop.id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="shopId != null and shopId !='' ">
+                and shop_id = #{shopId}
+            </if>
+            <if test="isFlag != null and isFlag != ''">
+                and is_flag = #{isFlag}
+            </if>
+            <if test="wheelPort != null and wheelPort != ''">
+                and wheel_port = #{wheelPort}
+            </if>
+            <if test="wheelName != null and wheelName != ''">
+                and wheel_name like CONCAT('%',#{wheelName},'%')
+            </if>
+            <if test="wheelIsflag != null and wheelIsflag != ''">
+                and wheel_isflag = #{wheelIsflag}
+            </if>
+        </trim>
+        order by wheel_no,wheel.update_time desc,wheel.create_time desc
+    </select>
+
+
+    <select id="selectByShopId" resultType="String">
+        select shop_id as 'shopId' from kz_wheel where wheel_id = #{id};
+    </select>
 </mapper>

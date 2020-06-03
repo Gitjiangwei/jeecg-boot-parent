@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.poi.ss.formula.functions.T;
+import org.kunze.diansh.controller.bo.WheelBo;
 import org.kunze.diansh.controller.vo.WheelVo;
 import org.kunze.diansh.entity.Wheel;
 
@@ -13,10 +14,10 @@ public interface IWheelService extends IService<Wheel> {
 
     /***
      * 添加轮播图片
-     * @param wheelVo
+     * @param wheelBo
      * @return
      */
-    Boolean saveWheel(WheelVo wheelVo);
+    Boolean saveWheel(WheelBo wheelBo);
 
 
     /***
@@ -28,10 +29,10 @@ public interface IWheelService extends IService<Wheel> {
 
     /***
      * 修改轮播图片
-     * @param wheelVo
+     * @param wheelBo
      * @return
      */
-    Boolean updateWheel(WheelVo wheelVo);
+    Boolean updateWheel(WheelBo wheelBo);
 
 
     /***
@@ -54,4 +55,19 @@ public interface IWheelService extends IService<Wheel> {
      * @return
      */
     Boolean updateIsFlag(String isFlag,String wheelIds);
+
+
+    /***
+     * 后台查询轮播图
+     * @param wheelBo
+     * @return
+     */
+    PageInfo<Wheel> qeryWheelbackstage(WheelBo wheelBo, Integer pageNo, Integer pageSize);
+
+    /**
+     * 根据轮播图id查询超市id
+     * @param id
+     * @return
+     */
+    List<String> selectByShopId(@Param("id") String id);
 }
