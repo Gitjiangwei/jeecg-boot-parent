@@ -1,6 +1,7 @@
 package org.kunze.diansh.controller;
 
 
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.ss.formula.functions.T;
@@ -8,10 +9,12 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.kunze.diansh.controller.bo.SpuFeaturesBo;
 import org.kunze.diansh.controller.vo.SpuFeaturesDetailVo;
+import org.kunze.diansh.controller.vo.SpuFeaturesListVo;
 import org.kunze.diansh.controller.vo.SpuFeaturesVo;
+import org.kunze.diansh.entity.modelData.SpuFeaturesListModel;
 import org.kunze.diansh.service.ISpuFeaturesService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,7 +66,7 @@ public class SpuFeaturesController  {
 
     @ApiOperation("每日特卖商品详情")
     @AutoLog("每日特卖商品详情")
-    @PostMapping(value = "queryFeatsDetail")
+    @PostMapping(value = "/queryFeatsDetail")
     public Result<SpuFeaturesDetailVo> selectFeaturesDetail(@RequestParam(name = "featuresId") String featuresId){
         Result<SpuFeaturesDetailVo> result = new Result<>();
         if(featuresId == null || featuresId.equals("")){
@@ -72,6 +75,24 @@ public class SpuFeaturesController  {
             SpuFeaturesDetailVo spuFeaturesDetailVo = spuFeaturesService.selectFeaturesDetail(featuresId);
             result.setResult(spuFeaturesDetailVo);
             result.setSuccess(true);
+        }
+        return result;
+    }
+
+
+    @ApiOperation("后台查询每日特卖商品")
+    @AutoLog("后台查询每日特卖商品详情")
+    @GetMapping(value = "/selectFeatList")
+    public Result<PageInfo<SpuFeaturesListModel>> selectFeatList(SpuFeaturesListVo spuFeaturesListVo,
+                                                                 @RequestParam(name = "pageNo") Integer pageNo,
+                                                                 @RequestParam(name = "pageSize") Integer pageSize){
+        Result<PageInfo<SpuFeaturesListModel>> result = new Result<PageInfo<SpuFeaturesListModel>>();
+        if(StringUtils.isEmpty(spuFeaturesListVo.getShopId())){
+            result.error500("参数丢失！");
+        }else {
+            PageInfo<SpuFeaturesListModel> pageInfo = spuFeaturesService.selectFeatList(spuFeaturesListVo,pageNo,pageSize);
+            result.setSuccess(true);
+            result.setResult(pageInfo);
         }
         return result;
     }

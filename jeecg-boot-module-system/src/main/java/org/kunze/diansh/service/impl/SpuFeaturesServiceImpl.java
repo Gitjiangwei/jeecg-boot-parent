@@ -1,17 +1,18 @@
 package org.kunze.diansh.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.system.entity.SysUser;
 import org.kunze.diansh.controller.bo.SpuFeaturesBo;
-import org.kunze.diansh.controller.vo.SkuFeaturesVo;
-import org.kunze.diansh.controller.vo.SpuDetailVo;
-import org.kunze.diansh.controller.vo.SpuFeaturesDetailVo;
-import org.kunze.diansh.controller.vo.SpuFeaturesVo;
+import org.kunze.diansh.controller.vo.*;
 import org.kunze.diansh.entity.SpuFeatures;
 import org.kunze.diansh.entity.modelData.SpuFeaturesDetailModel;
 import org.kunze.diansh.entity.modelData.SpuFeaturesIdsModel;
+import org.kunze.diansh.entity.modelData.SpuFeaturesListModel;
 import org.kunze.diansh.entity.modelData.SpuFeaturesModel;
 import org.kunze.diansh.mapper.SpuFeaturesMapper;
 import org.kunze.diansh.service.ISpuFeaturesService;
@@ -19,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -109,6 +111,35 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
         skuFeaturesVo.setFeaturesStock(spuFeaturesIdsModel.getFeaturesStock());
         spuFeaturesDetailVo.setSkuFeaturesVo(skuFeaturesVo);
         return spuFeaturesDetailVo;
+    }
+
+    /***
+     * 后台查询每日特卖商品
+     * @param spuFeaturesVo
+     * @return
+     */
+    @Override
+    public PageInfo<SpuFeaturesListModel> selectFeatList(SpuFeaturesListVo spuFeaturesVo, Integer pageNo, Integer pageSize) {
+        if(spuFeaturesVo.getShopId()==null || spuFeaturesVo.getShopId().equals("")){
+            return null;
+        }else {
+            Page page = PageHelper.startPage(pageNo, pageSize);
+            List<SpuFeaturesListModel> spuFeaturesVoList = spuFeaturesMapper.queryFeatList(spuFeaturesVo);
+            List<SpuFeaturesListModel> spuFeaturesListModelList = new ArrayList<SpuFeaturesListModel>();
+            for(SpuFeaturesListModel item:spuFeaturesVoList){
+                SpuFeaturesListModel spuFeaturesListModel = new SpuFeaturesListModel();
+                BeanUtils.copyProperties(item,spuFeaturesListModel);
+                BigDecimal ordPrice = new BigDecimal(item.getFeaturesPrice());
+                BigDecimal newPrice = ordPrice.divide(new BigDecimal("100")).setScale(2,BigDecimal.ROUND_HALF_UP);
+                spuFeaturesListModel.setFeaturesPrice(newPrice.toString());
+                String ownSpec = item.getOwnSpec().substring(1,item.getOwnSpec().length()-1);
+                spuFeaturesListModel.setOwnSpec(ownSpec);
+                spuFeaturesListModelList.add(spuFeaturesListModel);
+            }
+            PageInfo<SpuFeaturesListModel> pageInfo = new PageInfo<SpuFeaturesListModel>(spuFeaturesListModelList);
+            pageInfo.setTotal(page.getTotal());
+            return pageInfo;
+        }
     }
 
 

@@ -96,4 +96,24 @@
     <select id="selectFeaturesSku" resultType="org.kunze.diansh.controller.vo.SkuFeaturesVo">
         SELECT id as 'skuId',title,price,own_spec from kz_sku where id = #{skuId}
     </select>
+
+
+    <select id="queryFeatList" resultType="org.kunze.diansh.entity.modelData.SpuFeaturesListModel">
+        SELECT feat.features_id,spu.title,sku.own_spec,feat.features_price,feat.features_stock,feat.features_status,
+        CONCAT(date_format(feat.specialstart_time,'%m-%d %k:%i'),' - ',date_format(feat.specialend_time,'%m-%d %k:%i')) specialTime,
+        feat.create_time,feat.create_name,feat.features_weight,feat.remarks,spu.image
+        FROM kz_spu_features feat
+        LEFT JOIN kz_spu spu ON feat.spu_id = spu.id
+        LEFT JOIN kz_sku sku ON feat.sku_id = sku.id
+        <trim prefix="where" prefixOverrides="and">
+            feat.shop_id = #{shopId}
+            <if test="title != null and title != '' ">
+              and spu.title like CONCAT('%',#{title},'%')
+            </if>
+            <if test="status != null and status != '' ">
+              and feat.features_status = #{status}
+            </if>
+        </trim>
+        order by feat.create_time desc
+    </select>
 </mapper>
