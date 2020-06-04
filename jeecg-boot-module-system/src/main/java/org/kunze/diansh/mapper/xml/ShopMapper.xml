@@ -59,6 +59,9 @@
             <if test="idenitiy != null and idenitiy != ''">
                 idenitiy = #{idenitiy},
             </if>
+            <if test="postFree != null and postFree != ''">
+                post_free = #{postFree},
+            </if>
         </trim>
         where id = #{id}
     </update>

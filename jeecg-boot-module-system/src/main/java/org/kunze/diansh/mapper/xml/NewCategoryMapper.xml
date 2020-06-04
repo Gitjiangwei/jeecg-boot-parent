@@ -80,6 +80,9 @@
             <if test="sort != null and sort !='' ">
                 sort = #{sort},
             </if>
+            <if test="image != null and image !=''">
+                image = #{image},
+            </if>
         </trim>
         where id = #{id}
     </update>

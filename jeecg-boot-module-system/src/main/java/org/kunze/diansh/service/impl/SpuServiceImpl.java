@@ -325,12 +325,12 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
                 return null;
             }
             List<String> a = new ArrayList<String>();
-            int mun = 4;
+            int mun = 8;
             for (int i = 0; i < mun; i++) {
-                if (a.size() == 4) {
+                if (a.size() == 8) {
                     break;
                 }
-                if ((i + 1) == mun && a.size() != 4) {
+                if ((i + 1) == mun && a.size() != 8) {
                     mun++;
                 }
                 //获取0至spuId集合总数之间的随机数
