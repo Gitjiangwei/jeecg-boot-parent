@@ -53,4 +53,6 @@ public class WeChatPayProperties implements Serializable {
     //小程序支付回调地址
     public final String WX_PAY_NOTIFY_URL = "http://image.hohodj.com/jeecg-boot/kunze/wechatpay/xcxNotify";
 
+    //小程序退款回调地址
+    public final String WX_PAY_REFUND_URL = "http://image.hohodj.com/jeecg-boot/kunze/wechatpay/refundResult";
 }

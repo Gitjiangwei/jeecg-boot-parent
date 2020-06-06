@@ -72,7 +72,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     @Override
     @Transactional
-    public Order createOrder(String aid, JSONArray cids, String shopId, String userID,String pick_up) {
+    public Order createOrder(String aid, JSONArray cids, String shopId, String userID,String pick_up,String postFree) {
         //当前时间
         Date date = new Date();
         //根据aid查找相关的地址信息
@@ -92,7 +92,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             BigDecimal price = unitPrice.multiply(num);
             totalPrice = totalPrice+price.intValue();
         }
+        BigDecimal pf = new BigDecimal(Integer.parseInt(postFree));
+        //加上配送费 （配送费是以为元单位的 所以除以100）
+        totalPrice = totalPrice + pf.divide(new BigDecimal(100)).intValue();
 
+        //店铺当天的订单数
         Integer orderNum = orderMapper.selectShopOrderNum(shopId);
 
         //订单
@@ -111,6 +115,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setCancelTime(OrderCodeUtils.createCancelTime(date)); //取消时间 订单的生命周期
         order.setUpdateTime(date);//更新时间
         order.setAmountPayment(totalPrice.toString()); //应付金额
+        order.setPostFree(postFree);//配送费
         order.setPayment("0"); //实付金额
         order.setStatus(1); //订单状态 未付款
 
@@ -395,7 +400,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderDetailVo.setOrderId(orderId);//商品ID
             orderDetailVo.setBuyerMessage(order.getBuyerMessage()==null?"买家没有留言呦！":order.getBuyerMessage()); //买家留言
             orderDetailVo.setCreateTime(order.getPaymentTime()); //下单时间
-            orderDetailVo.setPostFree(order.getPostFee()==null?"0":order.getPostFee());//配送费
+            orderDetailVo.setPostFree(order.getPostFree()==null?"0":order.getPostFree());//配送费
             orderDetailVo.setSaleNum(totalNum.toString());//商品总数
             BigDecimal amout = new BigDecimal(order.getAmountPayment());
             amout = amout.multiply(new BigDecimal("0.01"));

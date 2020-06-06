@@ -62,10 +62,10 @@ public interface ISpuService extends IService<Spu> {
 
     /**
      * 根据商品id删除商品信息
-    * @param spuBo
+    * @param spuList
      * @return
      */
-    Boolean deleteSpu(SpuBo spuBo);
+    Boolean deleteSpu(List spuList);
 
     /**
      * 商品详情页查看
@@ -89,4 +89,13 @@ public interface ISpuService extends IService<Spu> {
      * @return
      */
     List<BeSimilarSpuVo> selectCategorySpu(String cid3,String shopId);
+
+    /**
+     * 更新商品上架状态 0下架，1上架
+     * @param saleable 商品状态
+     * @param spuList 商品id集合
+     * @param shopId 店铺id
+     * @return 修改是否成功
+     */
+    Boolean updateSpuSaleable(String saleable,List spuList,String shopId);
 }

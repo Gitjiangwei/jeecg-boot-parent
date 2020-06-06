@@ -8,8 +8,10 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.modules.system.entity.SysUser;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.controller.vo.*;
 import org.kunze.diansh.entity.Sku;
@@ -242,16 +244,16 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
 
     /**
      * 删除商品
-     * @param spuBo
+     * @param spuList
      * @return
      */
     @Override
-    public Boolean deleteSpu(SpuBo spuBo) {
+    public Boolean deleteSpu(List spuList) {
         boolean resultFlag = false;
-        Spu spu = new Spu();
-        BeanUtils.copyProperties(spuBo,spu);
-        int deleteSpuFlag = spuMapper.deleteSpu(spu);
-        if(deleteSpuFlag > 0){
+//        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+//        String userName = sysUser.getUsername()==null?"":sysUser.getUsername();
+        Integer updateNum = spuMapper.deleteSpu("",spuList);
+        if(updateNum>0){
             resultFlag = true;
         }
         return resultFlag;
@@ -319,10 +321,14 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         }
     }
 
+
     private List<String> querySpuId(String cid3,String spuId,String shopId){
             List<String> stringList = spuMapper.selectCid3SpuByIds(cid3, spuId,shopId);
             if(stringList.size()==0){
                 return null;
+            }
+            if (stringList.size()<8){
+                return stringList;
             }
             List<String> a = new ArrayList<String>();
             int mun = 8;
@@ -357,4 +363,21 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         }
         return spuIds;
     }
+
+    /**
+     * 更新商品上架状态 0下架，1上架
+     * @param saleable 商品状态
+     * @param spuList 商品id集合
+     * @param shopId 店铺id
+     * @return 修改是否成功
+     */
+    @Override
+    public Boolean updateSpuSaleable(String saleable,List spuList,String shopId){
+        Integer resultNum = spuMapper.updateSpuSaleable(saleable,spuList,shopId);
+        if(resultNum>0){
+            return true;
+        }
+        return false;
+    }
+
 }

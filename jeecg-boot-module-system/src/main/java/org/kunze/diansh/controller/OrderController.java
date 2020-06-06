@@ -7,6 +7,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.micrometer.core.instrument.util.JsonUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
@@ -51,12 +53,21 @@ public class OrderController {
     @ApiOperation("创建订单")
     @AutoLog("创建订单")
     @PostMapping(value = "/createOrder")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="userID",value = "用户id"),
+            @ApiImplicitParam(name="shopId",value = "店铺id"),
+            @ApiImplicitParam(name="aid",value = "地址id"),
+            @ApiImplicitParam(name="pick_up",value = "配送方式 1自提 2商家配送"),
+            @ApiImplicitParam(name="postFree",value = "配送费 单位（元）"),
+            @ApiImplicitParam(name="cids",value = "购物车商品的集合"),
+    })
     public Result<Order> createOrder(@RequestBody JSONObject params){
         Result<Order> orderResult = new Result<Order>();
         String userID = params.get("userID").toString();
         String shopId = params.get("shopId").toString();
         String aid = params.get("aid").toString();
         String pick_up = params.get("pick_up").toString();
+        String postFree = params.getString("postFree");
         JSONArray cids = params.getJSONArray("cids");
 
         if(EmptyUtils.isEmpty(cids)){
@@ -71,7 +82,7 @@ public class OrderController {
         if(EmptyUtils.isEmpty(pick_up)){
             return orderResult.error500("配送参数丢失！");
         }
-        Order order = orderService.createOrder(aid,cids,shopId,userID,pick_up);
+        Order order = orderService.createOrder(aid,cids,shopId,userID,pick_up,postFree);
         if(null != order){
             orderResult.success("创建成功！");
             orderResult.setResult(order);

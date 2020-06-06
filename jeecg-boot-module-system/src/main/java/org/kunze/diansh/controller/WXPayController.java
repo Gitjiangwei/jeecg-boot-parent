@@ -181,8 +181,76 @@ public class WXPayController {
 
     }
 
+    /**
+     * 微信退款结果通知接口
+     *
+     * @return
+     */
+    @RequestMapping("/refundResult")
+    @ApiOperation("微信退款结果通知接口")
+    public void refundResult(HttpServletRequest request, HttpServletResponse response) {
+        //读取参数
+        InputStream inputStream = null;
+        BufferedReader in = null;
+        BufferedOutputStream out = null;
+        try {
+            StringBuffer sb = new StringBuffer();
+            inputStream = request.getInputStream();
 
-    @ApiOperation("查询微信订单状态")
+            String s;
+            in = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            while ((s = in.readLine()) != null) {
+                sb.append(s);
+            }
+
+            //解析xml成map
+            Map<String, String> resultMap = new HashMap<>(16);
+            resultMap = WXPayUtil.xmlToMap(sb.toString());
+            //处理业务开始
+            Map requestMap = new HashMap(16);
+            if (resultMap != null && resultMap.size() > 0) {
+                //得到退款结果信息
+                Map<String, String> map = WXPayUtil.xmlToMap("");
+                if ("SUCCESS".equals(map.get("refund_status"))) {
+                    /**
+                     * 业务处理
+                     */
+
+                    //通知微信.异步确认成功
+                    requestMap.put("return_code", "SUCCESS");
+                    requestMap.put("return_msg", "OK");
+
+                } else {
+
+                }
+
+            } else {
+
+                requestMap.put("return_code", "FAIL");
+                requestMap.put("return_msg", "报文为空");
+
+            }
+            String xmlParam = WXPayUtil.mapToXml(requestMap);
+            out = new BufferedOutputStream(
+                    response.getOutputStream());
+            out.write(xmlParam.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+
+                in.close();
+                inputStream.close();
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+        @ApiOperation("查询微信订单状态")
     @AutoLog("查询微信订单状态")
     @PostMapping(value = "/qryWxOrderStatus")
     public Result qryWxOrderStatus(String outTradeNo){

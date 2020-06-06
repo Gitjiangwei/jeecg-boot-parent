@@ -3,13 +3,13 @@ package org.kunze.diansh.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.OrderComsumer;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.util.EmptyUtils;
 import org.jeecg.common.util.OrderCodeUtils;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.controller.vo.BeSimilarSpuVo;
@@ -126,10 +126,19 @@ public class SpuController {
     @ApiOperation("删除商品信息")
     @AutoLog("删除商品信息")
     @PostMapping(value = "/deleteSpu")
-    public Result<SpuBo> deleteSpu(@RequestBody SpuBo spuBo){
+    public Result<SpuBo> deleteSpu(@RequestBody JSONArray spuList){
         Result<SpuBo> result = new Result<SpuBo>();
-        Boolean resultFlag = spuService.deleteSpu(spuBo);
-
+        if(EmptyUtils.isEmpty(spuList)){
+            return result.error500("参数不能为空！");
+        }
+        Boolean resultFlag = spuService.deleteSpu(spuList);
+        if (resultFlag){
+            result.setSuccess(true);
+            result.setMessage("删除成功！");
+        }else{
+            result.setSuccess(false);
+            result.setMessage("删除失败！");
+        }
         return result;
     }
 
@@ -225,6 +234,45 @@ public class SpuController {
             result.setResult(beSimilarSpuVoList);
         }
         return result;
+    }
+
+    @ApiOperation("更改商品上架状态（上架or下架）")
+    @AutoLog("更改商品上架状态（上架or下架）")
+    @PostMapping(value = "/updateSpuSaleable")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "saleable",value = "是否上架 0下架/1上架"),
+            @ApiImplicitParam(name = "shopId",value = "店铺id"),
+            @ApiImplicitParam(name = "spuList",value = "商品id集合")
+    })
+    public Result<T> updateSpuSaleable(@RequestBody JSONObject params){
+        Result<T> result = new Result<T>();
+        String saleable = params.getString("saleable");
+        String shopId = params.getString("shopId");
+        List spuList = params.getJSONArray("spuList");
+
+
+        if (EmptyUtils.isEmpty(saleable)){
+            return result.error500("状态参数丢失！");
+        }
+        if (Integer.parseInt(saleable) > 1 || Integer.parseInt(saleable)<0){
+            return result.error500("状态参数非法！");
+        }
+        if (EmptyUtils.isEmpty(spuList)){
+            return result.error500("商品参数丢失！");
+        }
+        if (EmptyUtils.isEmpty(shopId)){
+            return result.error500("店铺参数丢失！");
+        }
+        Boolean flag = spuService.updateSpuSaleable(saleable,spuList,shopId);
+        if(flag){
+            result.setSuccess(true);
+            result.setMessage("上架成功！");
+        }else {
+            result.setSuccess(false);
+            result.setMessage("上架时出现错误，请重试！");
+        }
+        return result;
+
     }
 
 }

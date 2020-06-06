@@ -29,6 +29,7 @@
                 and brand_id = #{brandId}
             </if>
         </trim>
+        GROUP BY spu.id
         ORDER BY spu.last_update_time DESC,spu.create_time DESC
     </select>
 
@@ -78,8 +79,8 @@
     </select>
 
     <insert id="saveSpu">
-        insert into kz_spu(id,title,sub_title,cid1,cid2,cid3,brand_id,create_time,last_update_time,update_name,images,image)
-        values (#{id},#{title},#{subTitle},#{cid1},#{cid2},#{cid3},#{brandId},NOW(),NOW(),#{updateName},#{images},#{image})
+        insert into kz_spu(id,title,sub_title,cid1,cid2,cid3,brand_id,create_time,last_update_time,update_name,images,image,shop_id)
+        values (#{id},#{title},#{subTitle},#{cid1},#{cid2},#{cid3},#{brandId},NOW(),NOW(),#{updateName},#{images},#{image},#{shopId})
     </insert>
 
     <update id="updateSpu" parameterType="org.kunze.diansh.entity.Spu">
@@ -93,16 +94,19 @@
             <if test="brandId != null and brandId != ''">brand_id=#{brandId},</if>
             <if test="isFlag != null and isFlag != ''">is_flag=#{isFlag},</if>
             <if test="lastUpdateTime != null and lastUpdateTime != ''">last_update_time=NOW(),</if>
-            <if test="updateName != null and updateName != ''">update_name=#{updateName}</if>
-            <if test="images != null and images != ''">update_name=#{images}</if>
-            <if test="image != null and images != ''">update_name=#{image}</if>
-            <if test="shopId != null and shopId != ''">shop_id=#{shopId}</if>
+            <if test="updateName != null and updateName != ''">update_name=#{updateName},</if>
+            <if test="images != null and images != ''">update_name=#{images},</if>
+            <if test="image != null and images != ''">update_name=#{image},</if>
+            <if test="shopId != null and shopId != ''">shop_id=#{shopId},</if>
         </trim>
         where id=#{id}
     </update>
 
     <delete id="deleteSpu" parameterType="org.kunze.diansh.entity.Spu">
-        update kz_spu set is_flag = 1,last_update_time=NOW(),update_name = #{spu.updateName} where id = #{spu.id}
+        update kz_spu set is_flag = 1,last_update_time=NOW(),update_name = #{userName} where id in
+        <foreach collection="spuList" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
     </delete>
 
     <select id="querySpuById" resultType="org.kunze.diansh.entity.modelData.SpuModel">
@@ -155,6 +159,12 @@
         ORDER BY new_price,price
     </select>
 
+    <update id="updateSpuSaleable" parameterType="java.lang.String">
+        UPDATE KZ_SPU SPU SET SPU.SALEABLE = #{saleable} WHERE SPU.SHOP_ID = #{shopId} AND SPU.ID IN
+        <foreach collection="spuList" item="item" index="index" open="(" close=")" separator=",">
+              #{item}
+        </foreach>
+    </update>
 </mapper>
 
 

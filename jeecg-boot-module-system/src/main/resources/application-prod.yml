@@ -10,16 +10,16 @@ server:
     mime-types: application/javascript,application/json,application/xml,text/html,text/xml,text/plain,text/css,image/*
 
 management:
- endpoints:
-  web:
-   exposure:
-    include: metrics,httptrace
+  endpoints:
+    web:
+      exposure:
+        include: metrics,httptrace
 
 spring:
   servlet:
-     multipart:
-        max-file-size: 10MB
-        max-request-size: 10MB
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   mail:
     host: smtp.163.com
     username: jeecgos@163.com
@@ -98,7 +98,7 @@ spring:
         master:
           url: jdbc:mysql://127.0.0.1:3306/kunze?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false
           username: root
-          password: 'honghongdaojia'
+          password: honghongdaojia
           driver-class-name: com.mysql.jdbc.Driver
           # 多数据源配置
           #multi-datasource1:
@@ -146,10 +146,10 @@ jeecg :
     webapp: /opt/jeecg-boot/webapp
   #短信秘钥
   sms:
-     accessKeyId: LTAIpW4gUG7xYDNI
-     accessKeySecret: ??
+    accessKeyId: LTAIpW4gUG7xYDNI
+    accessKeySecret: ??
   shiro:
-     excludeUrls: /test/jeecgDemo/demo3,/test/jeecgDemo/redisDemo/**
+    excludeUrls: /test/jeecgDemo/demo3,/test/jeecgDemo/redisDemo/**
   #阿里云oss存储配置
   oss:
     endpoint: oss-cn-beijing.aliyuncs.com

@@ -26,7 +26,7 @@ public interface SpuMapper extends BaseMapper<Spu> {
 
     int updateSpu(Spu spu);
 
-    int deleteSpu(@Param("spu") Spu spu);
+    int deleteSpu(String userName,@Param("spuList")List spuList);
 
     List<SpuModel> querySpuById(@Param("cateId") String cateId,@Param("shopId") String shopId);
 
@@ -70,5 +70,14 @@ public interface SpuMapper extends BaseMapper<Spu> {
      * @return
      */
     List<BeSimilarSpuVo> selectSpuTitleLike(@Param("key") String key,@Param("shopId") String shopId);
+
+    /**
+     * 更新商品上架状态 0下架，1上架
+     * @param saleable 商品状态
+     * @param spuList 商品id
+     * @param shopId 店铺id的集合
+     * @return
+     */
+    Integer updateSpuSaleable(@Param("saleable")String saleable,@Param("spuList")List spuList,@Param("shopId")String shopId);
 
 }

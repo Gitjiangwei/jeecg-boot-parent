@@ -38,7 +38,7 @@ public class Order implements Serializable,Delayed {
     private String pickUp;
 
     //邮费。单位:分。如:20007，表示:200元7分
-    private String postFee;
+    private String postFree;
 
     //订单状态   1.未付款 2.已付款 3.未发货 4.已发货 5.交易成功 6.交易关闭
     private Integer status;

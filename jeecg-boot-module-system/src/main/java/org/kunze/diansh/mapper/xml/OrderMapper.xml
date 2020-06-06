@@ -14,7 +14,7 @@
         #{amountPayment},
         #{payment},
         #{pickUp},
-        #{postFee},
+        #{postFree},
         #{status},
         #{createTime},
         #{updateTime},

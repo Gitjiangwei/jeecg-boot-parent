@@ -39,6 +39,9 @@ public class ShopVo implements Serializable {
      /**身份证号码*/
     private String idenitiy;
 
+    //配送费
+    private String postFree;
+
     /**修改时间*/
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

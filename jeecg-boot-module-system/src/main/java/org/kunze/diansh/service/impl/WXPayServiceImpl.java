@@ -265,17 +265,24 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
         data.put("out_refund_no", orderNo);
         data.put("total_fee", amount.toString());
         data.put("refund_fee", amount.toString());
+        data.put("notify_url",weChatPayProperties.WX_PAY_REFUND_URL);
         try{
             data.put("sign", WXPayUtil.generateSignature(data,weChatPayProperties.getApiKey()));
         }catch (Exception e){
             e.printStackTrace();
+            log.error("调用退款接口失败,订单号:"+orderNo);
         }
-
-
         try {
-            Map<String, String> r = wxpay.refund(data);
-            System.out.println(r);
-            return r;
+            Map<String, String> resultMap = wxpay.refund(data);
+            if(resultMap.get("return_code").equals(WXPayConstants.SUCCESS)&& resultMap.get("result_code").equals(WXPayConstants.SUCCESS)){
+                //退款成功时，在此处更新退款状态
+
+            }else{
+                //退款失败时，记录退款失败信息
+
+            }
+            System.out.println(resultMap);
+            return resultMap;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

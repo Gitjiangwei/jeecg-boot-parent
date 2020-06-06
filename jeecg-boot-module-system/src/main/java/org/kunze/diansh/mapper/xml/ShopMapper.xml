@@ -9,7 +9,7 @@
 
 
     <select id="queryShopList" resultType="org.kunze.diansh.controller.vo.ShopVo">
-        select id,shop_name,create_time,shop_address,image,CONCAT(start_business,'-',end_business) as 'businessHours',person_charge,telphone,idenitiy,update_time
+        select id,shop_name,create_time,shop_address,image,CONCAT(start_business,'-',end_business) as 'businessHours',person_charge,telphone,idenitiy,update_time,post_free
         from kz_shop
         <trim prefix="where" prefixOverrides="and">
             status = '0'
