@@ -11,7 +11,9 @@ import org.kunze.diansh.controller.bo.SpuFeaturesBo;
 import org.kunze.diansh.controller.vo.SpuFeaturesDetailVo;
 import org.kunze.diansh.controller.vo.SpuFeaturesListVo;
 import org.kunze.diansh.controller.vo.SpuFeaturesVo;
+import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.modelData.SpuFeaturesListModel;
+import org.kunze.diansh.service.ISkuService;
 import org.kunze.diansh.service.ISpuFeaturesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -26,6 +28,9 @@ public class SpuFeaturesController  {
 
     @Autowired
     private ISpuFeaturesService spuFeaturesService;
+
+    @Autowired
+    private ISkuService skuService;
 
 
     @AutoLog("添加类型商品")
@@ -94,6 +99,19 @@ public class SpuFeaturesController  {
             result.setSuccess(true);
             result.setResult(pageInfo);
         }
+        return result;
+    }
+
+
+    @ApiOperation("特卖使用·根据商品ID查询商品规格")
+    @GetMapping(value = "/querySku")
+    public Result<PageInfo<Sku>> queryNotFeatSku(@RequestParam(name = "spuId") String spuId,
+                                                 @RequestParam(name = "pageNo") String pageNo,
+                                                 @RequestParam(name = "pageSize",defaultValue = "10") String pageSize){
+        Result<PageInfo<Sku>> result = new Result<PageInfo<Sku>>();
+        PageInfo<Sku> skuList = skuService.queryNotFeatSku(spuId,Integer.valueOf(pageNo),Integer.valueOf(pageSize));
+        result.setResult(skuList);
+        result.setSuccess(true);
         return result;
     }
 }

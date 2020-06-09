@@ -40,6 +40,7 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
     @Override
     public Boolean saveSpuFeatures(SpuFeaturesBo spuFeaturesBo) {
         Boolean isFlag = false;
+        spuFeaturesBo.setFeaturesPrice(new BigDecimal(spuFeaturesBo.getFeaturesPrice()).multiply(new BigDecimal("100")).toString());
         SpuFeatures spuFeatures = new SpuFeatures();
         BeanUtils.copyProperties(spuFeaturesBo,spuFeatures);
         spuFeatures.setFeaturesId(UUID.randomUUID().toString().replace("-",""));

@@ -22,6 +22,7 @@ import org.kunze.diansh.esRepository.GoodsRepository;
 import org.kunze.diansh.mapper.OrderMapper;
 import org.kunze.diansh.mapper.SkuMapper;
 import org.kunze.diansh.mapper.SpuMapper;
+import org.kunze.diansh.service.ISkuService;
 import org.kunze.diansh.service.ISpuService;
 import org.kunze.diansh.service.IndexService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,9 @@ public class SpuController {
 
     @Autowired
     private GoodsRepository goodsRepository;
+
+    @Autowired
+    private ISkuService skuService;
 
     @ApiOperation("商品查询")
     @AutoLog("查询商品")
@@ -275,4 +279,16 @@ public class SpuController {
 
     }
 
+    @ApiOperation("特卖使用·根据商品ID查询商品规格")
+    @AutoLog("根据商品ID查询商品规格")
+    @GetMapping(value = "/spuLists")
+    public Result<PageInfo<Sku>> queryNotFeatSku(@RequestParam(name = "spuId") String spuId,
+                                                 @RequestParam(name = "pageNo") String pageNo,
+                                                 @RequestParam(name = "pageSize",defaultValue = "10") String pageSize){
+        Result<PageInfo<Sku>> result = new Result<PageInfo<Sku>>();
+        PageInfo<Sku> skuList = skuService.queryNotFeatSku(spuId,Integer.valueOf(pageNo),Integer.valueOf(pageSize));
+        result.setResult(skuList);
+        result.setSuccess(true);
+        return result;
+    }
 }

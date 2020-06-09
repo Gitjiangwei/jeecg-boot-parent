@@ -31,4 +31,11 @@ public interface SkuMapper extends BaseMapper<Sku> {
      * @return
      */
     List<Map<String,Object>> selectSkuInfoBySpuId(@Param("spuId") String spuId);
+
+    /***
+     * 查询不是特卖商品的规格
+     * @param spuId
+     * @return
+     */
+    List<Sku> queryNotFeatSku(@Param("spuId") String spuId);
 }

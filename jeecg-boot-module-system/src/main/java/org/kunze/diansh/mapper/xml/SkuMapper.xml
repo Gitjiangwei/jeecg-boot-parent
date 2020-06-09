@@ -29,6 +29,7 @@
             </set>
             where id = #{sku.id}
         </foreach>
+
     </update>
 
     <select id="querySkuById" resultType="org.kunze.diansh.entity.Sku">
@@ -119,4 +120,9 @@ AND sku.spu_id = #{id}
         AND SKU.SPU_ID = #{spuId}
     </select>
 
+
+    <select id="queryNotFeatSku" resultType="org.kunze.diansh.entity.Sku">
+        select id,title,own_spec from kz_sku
+        where is_features = '0' and spu_id = #{spuId}
+    </select>
 </mapper>
