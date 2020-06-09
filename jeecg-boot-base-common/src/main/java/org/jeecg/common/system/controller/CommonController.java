@@ -122,9 +122,11 @@ public class CommonController {
 			}
 			String uuid = UUID.randomUUID().toString().replace("-","");
 			uuid = uuid.substring(0,8);
-			//String orgName = mf.getOriginalFilename();// 获取文件名
-			String orgName = uuid;
-			fileName = orgName.substring(0, orgName.lastIndexOf(".")) + "_" + System.currentTimeMillis() + orgName.substring(orgName.indexOf("."));
+			String orgName = mf.getOriginalFilename();// 获取文件名
+			String suffix = orgName.substring(orgName.lastIndexOf("."));
+			orgName = uuid + suffix;
+			long timeMillis = System.currentTimeMillis();
+			fileName = orgName.substring(0, orgName.lastIndexOf(".")) + String.valueOf(timeMillis).substring(6) + orgName.substring(orgName.indexOf("."));
 			String savePath = file.getPath() + File.separator + fileName;
 			File savefile = new File(savePath);
 			FileCopyUtils.copy(mf.getBytes(), savefile);
