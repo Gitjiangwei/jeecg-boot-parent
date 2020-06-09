@@ -16,6 +16,7 @@ import org.kunze.diansh.WxPayAPI.WXPayUtil;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.entity.properties.WeChatPayProperties;
 import org.kunze.diansh.mapper.OrderMapper;
+import org.kunze.diansh.service.IOrderService;
 import org.kunze.diansh.service.IStockService;
 import org.kunze.diansh.service.IWXPayService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
 
     @Autowired
     private IStockService iStockService;
+
+    @Autowired
+    private IOrderService orderService;
 
     private MiniprogramConfig config;
     private WXPay wxpay;
@@ -100,7 +104,7 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
         }else{
             Map<String,String> resMap = null;
             try {
-                resMap = this.xcxUnifieldOrder(orderId, weChatPayProperties.TRADE_TYPE_JSAPI, payAmount,openId);
+                resMap = this.xcxUnifieldOrder(orderId, weChatPayProperties.TRADE_TYPE_JSAPI, money,openId);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -128,11 +132,11 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
     /**
      * 小程序支付统一下单
      */
-    private Map<String,String> xcxUnifieldOrder(String orderNum,String tradeType, double payAmount,String openid) throws Exception{
+    private Map<String,String> xcxUnifieldOrder(String orderNum,String tradeType, String money,String openid) throws Exception{
         Instant now = Instant.now();
         Date nowDate = Date.from(now);
-        // 支付有限时间为10分钟
-        now = now.plusSeconds(70);
+        // 支付有限时间为14分钟30秒
+        now = now.plusSeconds((60*14)+30);
         Date endDate = Date.from(now);
         //封装参数
         SortedMap<String,String> paramMap = new TreeMap<String,String>();
@@ -143,7 +147,7 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
         paramMap.put("time_expire", DateUtils.date2Str(endDate,new SimpleDateFormat("yyyyMMddHHmmss")));
         paramMap.put("body", "TEST ORDER");
         paramMap.put("out_trade_no", orderNum);
-        paramMap.put("total_fee", "1");
+        paramMap.put("total_fee", money);
         paramMap.put("spbill_create_ip", "127.0.0.1");
         paramMap.put("notify_url", weChatPayProperties.WX_PAY_NOTIFY_URL);
         paramMap.put("trade_type", tradeType);
@@ -255,9 +259,9 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
      * @param amount  金额
      * @return 返回map（已做过签名验证），具体数据参见微信退款API
      */
-    public Map<String, String> doRefund(String orderNo, Integer amount) {
+    public Result doRefund(String orderNo, Integer amount) {
+        Result result = new Result(){};
         HashMap<String, String> data = new HashMap<>();
-
         data.put("appid", weChatPayProperties.getWxAppAppId());
         data.put("mch_id", weChatPayProperties.getMchId());
         data.put("nonce_str", WXPayUtil.generateNonceStr());
@@ -276,13 +280,17 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
             Map<String, String> resultMap = wxpay.refund(data);
             if(resultMap.get("return_code").equals(WXPayConstants.SUCCESS)&& resultMap.get("result_code").equals(WXPayConstants.SUCCESS)){
                 //退款成功时，在此处更新退款状态
-
+                //更新订单状态为已退款
+                orderService.updateOrderStatus("7",resultMap.get("out_trade_no"));
+                result.setSuccess(true);
+                result.setMessage("退款成功！");
             }else{
                 //退款失败时，记录退款失败信息
-
+                result.setSuccess(false);
+                result.setMessage("退款异常！错误原因："+resultMap.get("err_code_des"));
             }
             System.out.println(resultMap);
-            return resultMap;
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

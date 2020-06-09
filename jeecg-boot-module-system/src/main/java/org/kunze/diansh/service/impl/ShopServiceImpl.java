@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -72,6 +73,11 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, KzShop> implements 
     @Override
     public Boolean updateShop(KzShop shop) {
         Boolean flag = false;
+        if (shop.getPostFree() != null){
+            BigDecimal postFree = new BigDecimal(shop.getPostFree());
+            BigDecimal newPostFree = postFree.multiply(new BigDecimal(100));
+            shop.setPostFree(newPostFree.intValue());
+        }
         if(shop.getId() != null && !shop.getId().equals("")){
             int result =  shopMapper.updateShop(shop);
             if(result>0){

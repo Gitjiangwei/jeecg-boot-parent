@@ -92,9 +92,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             BigDecimal price = unitPrice.multiply(num);
             totalPrice = totalPrice+price.intValue();
         }
-        BigDecimal pf = new BigDecimal(Integer.parseInt(postFree));
-        //加上配送费 （配送费是以为元单位的 所以除以100）
-        totalPrice = totalPrice + pf.divide(new BigDecimal(100)).intValue();
 
         //店铺当天的订单数
         Integer orderNum = orderMapper.selectShopOrderNum(shopId);
@@ -182,7 +179,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         //商品详细信息集合
         List<OrderDetail> odlist = orderMapper.selectOrderDetailById(order.getOrderId());
         order.setOdList(odlist);
-        order.setAmountPayment(this.countOrderPayment(odlist));
         return order;
     }
 
@@ -245,6 +241,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"配货完成，开始配送"));
         }else if(status.equals("5")){
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"用户收到商品，订单完成"));
+        }else if(status.equals("7")){
+            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"订单已退款！"));
         }else {
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"异常订单，订单关闭"));
         }

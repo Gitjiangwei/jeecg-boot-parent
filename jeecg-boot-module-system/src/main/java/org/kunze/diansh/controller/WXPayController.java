@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.*;
 
 import static java.lang.System.out;
@@ -58,10 +59,12 @@ public class WXPayController {
         String money = request.getParameter("money");
 
         Order order = iOrderService.selectOrderById(orderId,userId,shopId);
+
         if(null == order){
             return Result.error("发起支付时出现错误！");
         }
-        if(!money.equals(order.getAmountPayment())){
+        Integer totalPrice = Integer.parseInt(order.getAmountPayment())+Integer.parseInt(order.getPostFree());
+        if(!money.equals(totalPrice.toString())){
             return Result.error("非法访问，请求已关闭！");
         }
         if(order.getStatus() != 1){
@@ -282,13 +285,11 @@ public class WXPayController {
     @PostMapping(value = "/doRefund")
     public Result doRefund(@RequestParam(name = "orderNo")String orderNo,@RequestParam(name = "amount")Integer amount){
         Result result = new Result();
-        Map<String, String> map = new HashMap<>();
         try {
-            map = iwxPayService.doRefund(orderNo,amount);
+            result = iwxPayService.doRefund(orderNo,amount);
         }catch (Exception e){
 
         }
-        result.setResult(map);
         return result;
     }
 

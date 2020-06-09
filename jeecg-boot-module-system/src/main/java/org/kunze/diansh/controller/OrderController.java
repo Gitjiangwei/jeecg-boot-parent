@@ -131,9 +131,6 @@ public class OrderController {
         if(orderId == null || orderId.equals("")){
             return result.error500("参数丢失");
         }
-        if(userID == null || userID.equals("")){
-            return result.error500("参数丢失");
-        }
         if(shopID == null || shopID.equals("")){
             return result.error500("参数丢失");
         }
