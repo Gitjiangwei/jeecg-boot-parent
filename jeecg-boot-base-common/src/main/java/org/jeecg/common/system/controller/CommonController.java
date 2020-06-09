@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -119,7 +120,10 @@ public class CommonController {
 			if (!file.exists()) {
 				file.mkdirs();// 创建文件根目录
 			}
-			String orgName = mf.getOriginalFilename();// 获取文件名
+			String uuid = UUID.randomUUID().toString().replace("-","");
+			uuid = uuid.substring(0,8);
+			//String orgName = mf.getOriginalFilename();// 获取文件名
+			String orgName = uuid;
 			fileName = orgName.substring(0, orgName.lastIndexOf(".")) + "_" + System.currentTimeMillis() + orgName.substring(orgName.indexOf("."));
 			String savePath = file.getPath() + File.separator + fileName;
 			File savefile = new File(savePath);
