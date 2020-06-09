@@ -52,17 +52,26 @@
         </foreach>
     </update>
 
-    <select id="selectFeaturesSkuId" resultType="String">
-        SELECT sku_id from kz_spu_features feat
+    <select id="selectFeaturesSkuId" resultType="org.kunze.diansh.entity.SpuFeatures">
+        SELECT features_id,sku_id from kz_spu_features feat
         WHERE NOW() &gt; feat.specialend_time
     </select>
+
+    <update id="updateFeatures">
+        update kz_spu_features set features_status = #{status}
+        where features_id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
 
     <delete id="delFeatures">
         delete from kz_spu_features where NOW() &gt; feat.specialend_time
     </delete>
 
-    <select id="selectFeaturesSkuIds" resultType="String">
-        SELECT sku_id from kz_spu_features feat
+    <select id="selectFeaturesSkuIds" resultType="org.kunze.diansh.entity.SpuFeatures">
+        SELECT features_id,sku_id from kz_spu_features feat
         WHERE  NOW() &gt; feat.specialstart_time
         AND NOW() &lt; feat.specialend_time
     </select>

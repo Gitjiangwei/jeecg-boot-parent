@@ -22,11 +22,18 @@ public interface SpuFeaturesMapper extends BaseMapper<SpuFeatures> {
 
     int updateSkuFeatures(@Param("list") List<String> skuIds,@Param("isFeatures") String isFeatures);
 
+    /***
+     * 修改特卖商品状态
+     * @param status
+     * @return
+     */
+    int updateFeatures(@Param("list") List<String> list, @Param("status") String status);
+
     /**
      * 查询热卖表中的过期的skuId
      * @return
      */
-    List<String> selectFeaturesSkuId();
+    List<SpuFeatures> selectFeaturesSkuId();
 
     /***
      * 删除过期商品的ID
@@ -38,7 +45,7 @@ public interface SpuFeaturesMapper extends BaseMapper<SpuFeatures> {
      * 查询热卖表中的skuId
      * @return
      */
-    List<String> selectFeaturesSkuIds();
+    List<SpuFeatures> selectFeaturesSkuIds();
 
 
     /***
