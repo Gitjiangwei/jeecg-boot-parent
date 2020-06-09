@@ -12,9 +12,9 @@
     </insert>
 
     <update id="updateSku">
-        update kz_sku
-        <trim prefix="set" suffixOverrides=",">
-            <foreach collection="skuList" item="sku" separator=",">
+        <foreach collection="skuList" item="sku" separator=";">
+            update kz_sku
+            <set>
                 <if test="sku.spuId !=null and sku.spuId != ''">spu_id=#{sku.spuId},</if>
                 <if test="sku.title !=null and sku.title != ''">title=#{sku.title},</if>
                 <if test="sku.images !=null and sku.images != ''">images=#{sku.images},</if>
@@ -26,12 +26,10 @@
                 <if test="sku.lastUpdateTime !=null and sku.lastUpdateTime != ''">last_update_time=NOW(),</if>
                 <if test="sku.shopId !=null and sku.shopId != ''">shop_id=#{sku.shopId},</if>
                 <if test="sku.updateName !=null and sku.updateName != ''">update_name=#{sku.updateName}</if>
-            </foreach>
-        </trim>
-        where id in
-        <foreach collection="skuList" index="index" item="sku" separator="," open="(" close=")">
-            #{sku.id}
+            </set>
+            where id = #{sku.id}
         </foreach>
+
     </update>
 
     <select id="querySkuById" resultType="org.kunze.diansh.entity.Sku">
@@ -122,4 +120,9 @@ AND sku.spu_id = #{id}
         AND SKU.SPU_ID = #{spuId}
     </select>
 
+
+    <select id="queryNotFeatSku" resultType="org.kunze.diansh.entity.Sku">
+        select id,title,own_spec from kz_sku
+        where is_features = '0' and spu_id = #{spuId}
+    </select>
 </mapper>

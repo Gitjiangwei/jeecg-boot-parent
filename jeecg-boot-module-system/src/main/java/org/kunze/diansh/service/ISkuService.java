@@ -1,6 +1,8 @@
 package org.kunze.diansh.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.entity.Sku;
 
 import java.util.List;
@@ -21,4 +23,11 @@ public interface ISkuService extends IService<Sku> {
      * @return
      */
     List<Map<String,Object>> selectSkuInfoBySpuId(String spuId);
+
+    /***
+     * 查询不是特卖商品的规格
+     * @param spuId
+     * @return
+     */
+    PageInfo<Sku> queryNotFeatSku(@Param("spuId") String spuId,Integer pageNo,Integer pageSize);
 }

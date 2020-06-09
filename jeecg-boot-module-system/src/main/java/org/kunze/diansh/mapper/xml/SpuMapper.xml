@@ -95,8 +95,8 @@
             <if test="isFlag != null and isFlag != ''">is_flag=#{isFlag},</if>
             <if test="lastUpdateTime != null and lastUpdateTime != ''">last_update_time=NOW(),</if>
             <if test="updateName != null and updateName != ''">update_name=#{updateName},</if>
-            <if test="images != null and images != ''">update_name=#{images},</if>
-            <if test="image != null and images != ''">update_name=#{image},</if>
+            <if test="images != null and images != ''">images=#{images},</if>
+            <if test="image != null and images != ''">image=#{image},</if>
             <if test="shopId != null and shopId != ''">shop_id=#{shopId},</if>
         </trim>
         where id=#{id}

@@ -10,7 +10,7 @@
         </foreach>
     </insert>
 
-    <update id="updateStock">
+<!--    <update id="updateStock">
         update kz_stock
         <trim prefix="set" suffixOverrides=",">
             <foreach collection="StockList" item="stock" separator=",">
@@ -23,8 +23,19 @@
         <foreach collection="StockList" item="stock" index="index" open="(" close=")" separator=",">
             #{stock.skuId}
         </foreach>
-    </update>
+    </update>-->
+    <update id="updateStock">
+        <foreach collection="StockList" item="stock" index="index" separator=";">
+            update kz_stock
+            <set>
+                <if test="stock.seckillStock != null and stock.seckillStock != ''">seckill_stock=#{stock.seckillStock},</if>
+                <if test="stock.seckillTotal != null and stock.seckillTotal != ''">seckill_total=#{stock.seckillTotal},</if>
+                <if test="stock.stock != null and stock.stock != ''">stock=CONVERT(#{stock.stock},SIGNED)</if>
+            </set>
+            where sku_id = #{stock.skuId}
+        </foreach>
 
+    </update>
     <!--查询库存数量 使用悲观锁-->
     <select id="selectStockLock" resultType="java.lang.Integer" parameterType="java.lang.String">
         SELECT STOCK FROM KZ_STOCK WHERE SKU_ID = #{skuId} FOR UPDATE
