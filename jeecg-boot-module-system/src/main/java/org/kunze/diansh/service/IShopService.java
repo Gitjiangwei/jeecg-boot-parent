@@ -34,4 +34,11 @@ public interface IShopService extends IService<KzShop> {
      * @return
      */
     Boolean updateShop(KzShop shop);
+
+    /***
+     * 删除超市信息
+     * @param shopId
+     * @return
+     */
+    Boolean delShops(String shopId);
 }

@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -85,5 +87,36 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, KzShop> implements 
             }
         }
         return flag;
+    }
+
+    /***
+     * 删除超市信息
+     * @param shopId
+     * @return
+     */
+    @Override
+    public Boolean delShops(String shopId) {
+        Boolean isflag = false;
+        if(shopId!=null&&!shopId.equals("")){
+            char a = shopId.charAt(shopId.length()-1);
+            if(a == ','){
+                shopId = shopId.substring(0,shopId.length()-1);
+            }
+            if(shopId==null||shopId.equals("")){
+                return false;
+            }
+            List<String> list = new ArrayList<String>();
+            if(shopId.contains(",")){
+                list = new ArrayList<String>(Arrays.asList(shopId.split(",")));
+            }else {
+                list.add(shopId);
+            }
+            int result = shopMapper.delShops(list);
+            if(result>0){
+                isflag = true;
+            }
+
+        }
+        return isflag;
     }
 }

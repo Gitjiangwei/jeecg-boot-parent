@@ -156,7 +156,7 @@
         LEFT JOIN kz_sku sku ON spu.id = sku.spu_id
 		where spu.title LIKE CONCAT('%',#{key},'%') and spu.shop_id = #{shopId}
 		GROUP BY spu.id
-        ORDER BY new_price,price
+        ORDER BY sku.new_price,sku.price
     </select>
 
     <update id="updateSpuSaleable" parameterType="java.lang.String">

@@ -272,4 +272,12 @@
         ) b on a.click_date = b.datetime
         ORDER BY  a.click_date desc
     </select>
+
+    <delete id="delShops">
+        update kz_shop set status = '1'
+        where id in
+        <foreach collection="delShop" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>

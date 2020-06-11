@@ -105,4 +105,23 @@ public class ShopController {
         }
         return result;
     }
+
+
+    @ApiOperation("删除超市信息")
+    @AutoLog("删除超市")
+    @DeleteMapping(value = "/delShops")
+    public Result<T> delShops(@RequestParam(name = "ids") String ids){
+        Result<T> result = new Result<T>();
+        if(ids==null||ids.equals("")){
+            result.error500("参数丢失！");
+        }else {
+            Boolean resultOk = shopService.delShops(ids);
+            if (resultOk){
+                result.success("删除成功！");
+            }else {
+                result.error500("删除失败！");
+            }
+        }
+        return result;
+    }
 }

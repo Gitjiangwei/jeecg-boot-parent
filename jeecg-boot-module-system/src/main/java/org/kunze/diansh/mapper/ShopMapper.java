@@ -119,4 +119,11 @@ public interface ShopMapper extends BaseMapper<KzShop> {
      * @return
      */
    List<Map<String,String>> selectSevenDeal(@Param("shopId") String shopId);
+
+
+    /**
+     * 删除超市
+     * @return
+     */
+   int delShops(@Param("delShop") List<String> list);
 }
