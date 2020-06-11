@@ -188,10 +188,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @return
      */
     @Override
-    public String updateOrderStatus(String orderId) {
+    public String updateOrderStatus(String orderId,String payment) {
         String flag = "error";
         //1、修改订单状态为【已支付】
-        int orderStatus = orderMapper.updateOrderStatus("2",orderId);
+        int orderStatus = orderMapper.updateOrderStatus("2",orderId,payment);
         orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"用户下单"));
         if(orderStatus > 0){
             //获取订单信息
@@ -232,9 +232,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @return
      */
     @Override
-    public String updateOrderStatus(String status,String orderId) {
+    public String updateOrderStatu(String status,String orderId) {
         String flag = "error";
-        int isSuccess = orderMapper.updateOrderStatus(status,orderId);
+        int isSuccess = orderMapper.updateOrderStatus(status,orderId,"");
         if(status.equals("3")){
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"商家接单"));
         }else if(status.equals("4")){

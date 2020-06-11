@@ -197,7 +197,7 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
                     //订单状态为未支付才开始业务处理
                     if("1".equals(order.getStatus().toString())){
                         //更新订单状态为【已支付】
-                        orderMapper.updateOrderStatus("2",outTradeNo,order.getAmountPayment());
+                        orderService.updateOrderStatus(outTradeNo,order.getAmountPayment());
                         //从队列中删除订单
                         OrderComsumer.removeToOrderDelayQueue(outTradeNo);
                         //更新商品库存

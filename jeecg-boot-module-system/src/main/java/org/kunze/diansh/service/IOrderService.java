@@ -50,7 +50,7 @@ public interface IOrderService extends IService<Order> {
      * @param orderId
      * @return
      */
-    String updateOrderStatus(String orderId);
+    String updateOrderStatus(String orderId,String payment);
 
 
     /**
@@ -59,7 +59,7 @@ public interface IOrderService extends IService<Order> {
      * @param orderId 订单id
      * @return
      */
-    String updateOrderStatus(String status,String orderId);
+    String updateOrderStatu(String status,String orderId);
 
 
 

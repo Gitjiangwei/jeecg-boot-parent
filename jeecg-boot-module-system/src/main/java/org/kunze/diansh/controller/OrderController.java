@@ -145,26 +145,6 @@ public class OrderController {
     }
 
 
-
-    @ApiOperation("付款后修改订单状态为【已付款】")
-    @AutoLog("付款成功后修改订单状态")
-    @PostMapping(value = "/updatePayMent")
-    public Result<T> updateOrderStatus(@RequestParam(name = "orderId") String orderId){
-        Result<T> result = new Result<T>();
-        if(orderId == null || orderId.equals("")){
-            result.error500("参数丢失！");
-        }else {
-            String resultOk = orderService.updateOrderStatus(orderId);
-            if(resultOk.equals("error")){
-                result.error500("出现未知异常！");
-            }else if (resultOk.equals("OK")){
-                result.success("下单成功！");
-            }
-        }
-        return result;
-    }
-
-
     @ApiOperation("后台管理系统查询订单")
     @AutoLog("后台管理系统查询订单")
     @GetMapping(value = "/selectOrder")
@@ -199,7 +179,7 @@ public class OrderController {
         JSONObject jsonObject = JSONObject.parseObject(orderStatus);
         String status = jsonObject.getString("status");
         String orderId = jsonObject.getString("orderId");
-        String resultOk = orderService.updateOrderStatus(status,orderId);
+        String resultOk = orderService.updateOrderStatu(status,orderId);
         if(resultOk.equals("ok")){
             result.success("ok");
         }else {
