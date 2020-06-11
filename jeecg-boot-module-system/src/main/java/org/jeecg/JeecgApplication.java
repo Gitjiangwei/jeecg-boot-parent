@@ -23,7 +23,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Slf4j
 @EnableSwagger2
 @SpringBootApplication
-@ComponentScan(basePackages = {"org.jeecg", "org.kunze"})
+@ComponentScan(basePackages = {"org.jeecg", "org.kunze","org.alipay"})
 @MapperScan({"org.kunze.*.mapper"})
 @EnableElasticsearchRepositories(basePackages = "org.kunze.diansh.esRepository")
 @EnableAutoConfiguration

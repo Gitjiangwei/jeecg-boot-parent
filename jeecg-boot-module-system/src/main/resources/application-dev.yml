@@ -96,7 +96,7 @@ spring:
         connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
       datasource:
         master:
-          url: jdbc:mysql://150.158.181.66:3306/kunze?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false
+          url: jdbc:mysql://124.70.2.47:3306/kunze?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false
           username: root
           password: honghongdaojia
           driver-class-name: com.mysql.jdbc.Driver
@@ -193,5 +193,3 @@ WeChatPay:
     mch_id: 1591431581
     apiKey: gqyky9uZ4KLoA1OGxwrgY0kbi9PVCu5s
     appSecret: 05fba7f7a91f94072b4b637f5b500877
-
-

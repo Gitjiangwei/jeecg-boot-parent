@@ -76,9 +76,11 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
     @Override
     @Transactional
     public void updateAddress(Address address) {
-        //重置收获地址为非默认
-        addressMapper.resetAddressDefault(address.getUserId());
-
+        //如何当前地址为默认地址，则重置所有地址状态
+        if("1".equals(address.getIsDefault())){
+            //重置收获地址为非默认
+            addressMapper.resetAddressDefault(address.getUserId());
+        }
         addressMapper.updateAddress(address);
     }
 
