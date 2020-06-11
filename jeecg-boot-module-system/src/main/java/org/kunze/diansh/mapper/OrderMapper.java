@@ -63,7 +63,7 @@ public interface OrderMapper extends BaseMapper<Order> {
      * @param orderStatus 订单状态
      * @return
      */
-    int updateOrderStatus(@Param("orderStatus") String orderStatus, @Param("orderId") String orderId);
+    int updateOrderStatus(@Param("orderStatus") String orderStatus, @Param("orderId") String orderId,@Param("payment") String payment);
 
 
     /***

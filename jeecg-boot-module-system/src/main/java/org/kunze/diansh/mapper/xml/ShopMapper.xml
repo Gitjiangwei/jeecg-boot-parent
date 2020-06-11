@@ -82,6 +82,9 @@
         <if test="choiceTime == 4">
             AND YEAR(ord.end_time)= YEAR(NOW())
         </if>
+        <trim prefix="where" prefixOverrides="and">
+            shop.`status`='0'
+        </trim>
         GROUP BY shop.id
         ORDER BY payment DESC
         <if test="more == 1">
