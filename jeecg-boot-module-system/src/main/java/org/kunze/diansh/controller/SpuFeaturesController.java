@@ -114,4 +114,22 @@ public class SpuFeaturesController  {
         result.setSuccess(true);
         return result;
     }
+
+    @ApiOperation("删除特卖商品")
+    @AutoLog("删除特卖商品")
+    @DeleteMapping(value = "/delFeatures")
+    public Result<T> delFeatures(@RequestParam(name = "ids") String ids){
+        Result<T> result = new Result<T>();
+        if(ids==null||ids.equals("")){
+            result.error500("参数丢失！");
+        }else {
+            Boolean resultOk = spuFeaturesService.delFeatures(ids);
+            if(resultOk){
+                result.success("删除成功！");
+            }else {
+                result.error500("删除失败！");
+            }
+        }
+        return result;
+    }
 }

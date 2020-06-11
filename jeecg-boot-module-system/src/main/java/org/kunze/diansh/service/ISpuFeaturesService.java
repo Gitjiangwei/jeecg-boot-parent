@@ -44,4 +44,12 @@ public interface ISpuFeaturesService extends IService<SpuFeatures> {
      * @return
      */
     PageInfo<SpuFeaturesListModel> selectFeatList(SpuFeaturesListVo spuFeaturesVo, Integer pageNo, Integer pageSize);
+
+
+    /***
+     * 删除特卖商品
+     * @param ids
+     * @return
+     */
+    Boolean delFeatures(String ids);
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import jdk.nashorn.internal.runtime.linker.LinkerCallSite;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.modules.system.entity.SysUser;
@@ -141,6 +142,36 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
             pageInfo.setTotal(page.getTotal());
             return pageInfo;
         }
+    }
+
+    /***
+     * 删除特卖商品
+     * @param ids
+     * @return
+     */
+    @Override
+    public Boolean delFeatures(String ids) {
+        Boolean isflag = false;
+        if(ids != null && !ids.equals("")){
+            char a = ids.charAt(ids.length()-1);
+            if(a == ','){
+                ids = ids.substring(0,ids.length()-1);
+            }
+            if(ids == null || ids.equals("")){
+                return false;
+            }
+            List<String> stringList = new ArrayList<String>();
+            if(ids.contains(",")){
+                stringList = new ArrayList<String>(Arrays.asList(ids.split(",")));
+            }else {
+                stringList.add(ids);
+            }
+            int result = spuFeaturesMapper.delFeatures(stringList);
+            if(result>0){
+                isflag = true;
+            }
+        }
+        return isflag;
     }
 
 

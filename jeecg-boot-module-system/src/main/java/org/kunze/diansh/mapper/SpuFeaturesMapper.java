@@ -39,7 +39,7 @@ public interface SpuFeaturesMapper extends BaseMapper<SpuFeatures> {
      * 删除过期商品的ID
      * @return
      */
-    int delFeatures();
+    int delFeatures(@Param("list") List<String> list);
 
     /**
      * 查询热卖表中的skuId
