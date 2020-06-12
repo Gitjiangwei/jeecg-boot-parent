@@ -12,7 +12,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +37,15 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements ISkuS
      */
     @Override
     public List<Map<String, Object>> selectSkuInfoBySpuId(String spuId) {
-        return CommonUtil.toCamel(skuMapper.selectSkuInfoBySpuId(spuId));
+        List<Map<String,Object>> skuMap = new ArrayList<Map<String, Object>>();
+        List<Map<String,Object>> map = skuMapper.selectSkuInfoBySpuId(spuId);
+        for(Map<String,Object> item:map){
+            Map<String,Object> map1 = item;
+            map1.put("PRICE",new BigDecimal(item.get("PRICE").toString()).divide(new BigDecimal("100")));
+            map1.put("NEW_PRICE",new BigDecimal(item.get("NEW_PRICE").toString()).divide(new BigDecimal("100")));
+            skuMap.add(map1);
+        }
+        return CommonUtil.toCamel(skuMap);
     }
 
 

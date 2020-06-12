@@ -91,12 +91,12 @@ spring:
         poolPreparedStatements: true
         maxPoolPreparedStatementPerConnectionSize: 20
         # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
-        filters: stat,wall,slf4j
+        filters: stat,slf4j
         # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
         connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
       datasource:
         master:
-          url: jdbc:mysql://124.70.2.47:3306/kunze?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false
+          url: jdbc:mysql://124.70.2.47:3306/kunze?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowMultiQueries=true
           username: root
           password: honghongdaojia
           driver-class-name: com.mysql.jdbc.Driver
@@ -109,7 +109,7 @@ spring:
   #redis 配置
   redis:
     database: 0
-    host: 127.0.0.1
+    host: 150.158.181.66
     lettuce:
       pool:
         max-active: 8   #最大连接数据库连接数,设 0 为没有限制
@@ -117,12 +117,12 @@ spring:
         max-wait: -1ms  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
         min-idle: 0     #最小等待连接中的数量,设 0 为没有限制
       shutdown-timeout: 100ms
-    password: '123456'
+    password: honghongdaojia
     port: 6379
   data:
     elasticsearch:
       cluster-name: elasticsearch
-      cluster-nodes: 192.168.2.101:9300
+      cluster-nodes: 192.168.1.5:9300
 #mybatis plus 设置
 mybatis-plus:
   mapper-locations: classpath*:org/**/**/**/xml/*Mapper.xml
@@ -193,3 +193,5 @@ WeChatPay:
     mch_id: 1591431581
     apiKey: gqyky9uZ4KLoA1OGxwrgY0kbi9PVCu5s
     appSecret: 05fba7f7a91f94072b4b637f5b500877
+
+

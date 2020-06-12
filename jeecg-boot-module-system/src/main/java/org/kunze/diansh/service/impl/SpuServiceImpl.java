@@ -162,9 +162,18 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
                 sku.setTitle(spu.getTitle());
                 sku.setEnable(item.getEnable());
                 sku.setImages(item.getImages());
-                BigDecimal ordPrice = new BigDecimal(item.getPrice());
-                BigDecimal newPrice = ordPrice.multiply(new BigDecimal(100));
-                sku.setPrice(newPrice.toString());
+                if(item.getNewPrice()!=null&&!item.getNewPrice().equals("")){
+                    sku.setNewPrice(new BigDecimal(item.getNewPrice()).multiply(new BigDecimal("100")).toString());
+                }else {
+                    sku.setNewPrice("0");
+                }
+                if(item.getPrice()!=null && !item.getPrice().equals("")) {
+                    BigDecimal ordPrice = new BigDecimal(item.getPrice());
+                    BigDecimal newPrice = ordPrice.multiply(new BigDecimal(100));
+                    sku.setPrice(newPrice.toString());
+                }else {
+                    sku.setPrice("0");
+                }
                 sku.setIndexes(item.getIndexes());
                 sku.setOwnSpec(item.getOwnSpec());
                 sku.setEnable(item.getEnable());
@@ -222,9 +231,18 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
                     sku.setTitle(spu.getTitle());
                     sku.setEnable(skuVo.getEnable());
                     sku.setImages(skuVo.getImages());
-                    BigDecimal ordPrice = new BigDecimal(skuVo.getPrice());
-                    BigDecimal newPrice = ordPrice.multiply(new BigDecimal(100));
-                    sku.setPrice(newPrice.toString());
+                    if(skuVo.getNewPrice()!=null && !skuVo.getNewPrice().equals("")){
+                        sku.setNewPrice(new BigDecimal(skuVo.getNewPrice()).multiply(new BigDecimal("100")).toString());
+                    }else {
+                        sku.setNewPrice("0");
+                    }
+                    if(skuVo.getPrice()!=null && !skuVo.equals("")) {
+                        BigDecimal ordPrice = new BigDecimal(skuVo.getPrice());
+                        BigDecimal newPrice = ordPrice.multiply(new BigDecimal(100));
+                        sku.setPrice(newPrice.toString());
+                    }else {
+                        sku.setPrice("0");
+                    }
                     sku.setIndexes(skuVo.getIndexes());
                     sku.setOwnSpec(skuVo.getOwnSpec());
                     sku.setEnable(skuVo.getEnable());
@@ -254,7 +272,11 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
 //        String userName = sysUser.getUsername()==null?"":sysUser.getUsername();
         Integer updateNum = spuMapper.deleteSpu("",spuList);
         if(updateNum>0){
-            resultFlag = true;
+            spuDetailMapper.delSpuDetail(spuList);
+            int result = skuMapper.delSku(spuList);
+            if(result>0) {
+                resultFlag = true;
+            }
         }
         return resultFlag;
     }

@@ -38,4 +38,11 @@ public interface SkuMapper extends BaseMapper<Sku> {
      * @return
      */
     List<Sku> queryNotFeatSku(@Param("spuId") String spuId);
+
+    /***
+     * 删除SKu
+     * @param spuList
+     * @return
+     */
+    int delSku(@Param("spuList") List<String> spuList);
 }

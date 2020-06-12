@@ -24,9 +24,18 @@
         select spu_id,description,specifications,spec_template,packing_list,after_service
         from kz_spu_detail
         <trim prefix="where" prefixOverrides="and">
+            is_flag = '0'
             <if test="spuId !=null and spuId != '' ">
-                spu_id = #{spuId}
+              and   spu_id = #{spuId}
             </if>
         </trim>
     </select>
+
+    <update id="delSpuDetail">
+        update kz_spu_detail set is_flag = '1'
+        where spu_id in
+        <foreach collection="spuList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
 </mapper>

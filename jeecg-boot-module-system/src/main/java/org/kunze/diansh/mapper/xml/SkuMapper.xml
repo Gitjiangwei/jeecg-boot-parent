@@ -18,7 +18,7 @@
                 <if test="sku.spuId !=null and sku.spuId != ''">spu_id=#{sku.spuId},</if>
                 <if test="sku.title !=null and sku.title != ''">title=#{sku.title},</if>
                 <if test="sku.images !=null and sku.images != ''">images=#{sku.images},</if>
-                <if test="sku.newPrice !=null and sku.images != ''">images=#{sku.newPrice},</if>
+                <if test="sku.newPrice !=null and sku.newPrice != ''">new_price=#{sku.newPrice},</if>
                 <if test="sku.price !=null and sku.price != ''">price=#{sku.price},</if>
                 <if test="sku.indexes !=null and sku.indexes != ''">indexes=#{sku.indexes},</if>
                 <if test="sku.ownSpec !=null and sku.ownSpec != ''">own_spec=#{sku.ownSpec},</if>
@@ -102,14 +102,16 @@ AND sku.spu_id = #{id}
         SKU.IMAGES,
         SKU.INDEXES,
         SKU.OWN_SPEC,
-        SKU.NEW_PRICE,
+        IFNULL(SKU.NEW_PRICE,'0') as NEW_PRICE,
+	    IFNULL(SKU.PRICE,'0') as PRICE,
         KSD.PACKING_LIST,
         KSD.AFTER_SERVICE,
         KSD.DESCRIPTION,
         KS.STOCK,
         SPU.CID1,
         SPU.CID2,
-        SPU.CID3
+        SPU.CID3,
+        BRAND_ID
         FROM
         KZ_SKU SKU
         LEFT JOIN KZ_SPU SPU ON SKU.SPU_ID = SPU.ID
@@ -125,4 +127,11 @@ AND sku.spu_id = #{id}
         select id,title,own_spec from kz_sku
         where is_features = '0' and spu_id = #{spuId}
     </select>
+
+    <update id="delSku">
+        update kz_sku set enable = '0' where spu_id in
+        <foreach collection="spuList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
 </mapper>

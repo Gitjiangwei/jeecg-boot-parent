@@ -19,4 +19,11 @@ public interface SpuDetailMapper extends BaseMapper<SpuDetail> {
      * @return
      */
     SpuDetail qreySpuDetail(@Param("spuId") String spuId);
+
+    /***
+     * 删除商品详情
+     * @param spuList
+     * @return
+     */
+    int delSpuDetail(@Param("spuList") List<String> spuList);
 }

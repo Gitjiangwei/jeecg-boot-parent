@@ -21,4 +21,7 @@ public class SpuDetail implements Serializable {
     private String packingList;// 包装清单
 
     private String afterService;// 售后服务
+
+    //是否删除
+    private String isFlag;
 }
