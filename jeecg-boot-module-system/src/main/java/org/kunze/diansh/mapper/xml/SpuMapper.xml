@@ -114,6 +114,7 @@
         from kz_spu spu left join kz_sku sku on spu.id = sku.spu_id
         where spu.cid3 = #{cateId}
         AND spu.shop_id = #{shopId}
+        AND SPU.SALEABLE = '1'
         group by spu.id
     </select>
 

@@ -185,10 +185,16 @@ public class AlipayServiceImpl implements IAlipayService {
     @Override
     public Byte checkAlipay(String outTradeNo) {
         log.info("==================向支付宝发起查询，查询商户订单号为："+outTradeNo);
-
         try {
             //实例化客户端（参数：网关地址、商户appid、商户私钥、格式、编码、支付宝公钥、加密类型）
-            AlipayClient alipayClient = AlipayPropertiesConfig.getInstance();
+            AlipayClient alipayClient =new DefaultAlipayClient(
+                    AlipayPropertiesConfig.getKey("gatewayUrl"),//支付宝网关
+                    AlipayPropertiesConfig.getKey("app_id"),//appid
+                    AlipayPropertiesConfig.getKey("app_private_key"),//商户私钥
+                    AlipayPropertiesConfig.getKey("format"),
+                    AlipayPropertiesConfig.getKey("charset"),//字符编码格式
+                    AlipayPropertiesConfig.getKey("alipay_public_key"),//支付宝公钥
+                    AlipayPropertiesConfig.getKey("sign_type"));
             AlipayTradeQueryRequest alipayTradeQueryRequest = new AlipayTradeQueryRequest();
             alipayTradeQueryRequest.setBizContent("{" +
                     "\"out_trade_no\":\""+outTradeNo+"\"" +

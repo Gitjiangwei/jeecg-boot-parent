@@ -281,7 +281,7 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
             if(resultMap.get("return_code").equals(WXPayConstants.SUCCESS)&& resultMap.get("result_code").equals(WXPayConstants.SUCCESS)){
                 //退款成功时，在此处更新退款状态
                 //更新订单状态为已退款
-                orderService.updateOrderStatus("7",resultMap.get("out_trade_no"));
+                orderService.updateOrderStatu("7",resultMap.get("out_trade_no"));
                 result.setSuccess(true);
                 result.setMessage("退款成功！");
             }else{

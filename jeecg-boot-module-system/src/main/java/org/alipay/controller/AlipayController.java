@@ -8,7 +8,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.alipay.bean.AlipayBean;
 import org.alipay.service.IAlipayService;
+import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.util.EmptyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +57,23 @@ public class AlipayController {
     }
 
 
-
+    /**
+     *
+     * @param outTradeNo
+     * @return
+     */
+    @PostMapping(value = "/checkAlipay")
+    @ApiOperation("查询支付宝订单交易状态")
+    @AutoLog("查询支付宝订单交易状态")
+    public Result checkAlipay(String outTradeNo){
+        Result result = new Result();
+        if(EmptyUtils.isEmpty(outTradeNo)){
+            return result.error500("参数为空");
+        }
+        byte resultStatus = alipayService.checkAlipay(outTradeNo);
+        result.setResult(resultStatus);
+        result.setSuccess(true);
+        return result;
+    }
 
 }
