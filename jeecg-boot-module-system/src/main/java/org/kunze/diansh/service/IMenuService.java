@@ -1,5 +1,6 @@
 package org.kunze.diansh.service;
 
+import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.vo.InformationVo;
 import org.kunze.diansh.controller.vo.SalesVo;
@@ -76,4 +77,12 @@ public interface IMenuService {
      * @return
      */
     List<Map<String,String>> selectSevenDeal(String shopId);
+
+
+    /**
+     * 查询库存
+     * @param shopId
+     * @return
+     */
+    PageInfo<Map<String,Object>> selectStock(String shopId,String title,String enable,Integer pageNo,Integer pageSize);
 }

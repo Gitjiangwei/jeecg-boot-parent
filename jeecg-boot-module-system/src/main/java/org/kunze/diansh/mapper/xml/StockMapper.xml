@@ -31,4 +31,19 @@
     <update id="updateStockNum">
         UPDATE KZ_STOCK SET STOCK = STOCK-#{skuNum} WHERE SKU_ID = #{skuId}
     </update>
+
+    <select id="selectStock" resultType="Map">
+        SELECT sku.id,sku.images,spu.title,sku.own_spec as 'ownSpec',stock.stock,IFNULL(sku.new_price,'0') as 'newPrice',sku.price,saleable  FROM kz_spu spu
+        LEFT JOIN kz_sku sku ON spu.id = sku.spu_id
+        LEFT JOIN kz_stock stock ON sku.id = stock.sku_id
+        <trim prefix="where" prefixOverrides="and">
+            stock.stock &lt;= 10  AND spu.shop_id = #{shopId} and sku.`enable` = '1'
+            <if test="title != null and title != ''">
+               and title like CONCAT('%',#{title},'%')
+            </if>
+            <if test="enable != null and enable != ''">
+                and saleable = #{enable}
+            </if>
+        </trim>
+    </select>
 </mapper>

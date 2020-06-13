@@ -1,10 +1,14 @@
 package org.kunze.diansh.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.kunze.diansh.controller.vo.InformationVo;
 import org.kunze.diansh.controller.vo.SalesVo;
 import org.kunze.diansh.entity.modelData.MonthMenuModel;
 import org.kunze.diansh.entity.modelData.SalesModel;
 import org.kunze.diansh.mapper.ShopMapper;
+import org.kunze.diansh.mapper.StockMapper;
 import org.kunze.diansh.service.IMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,9 @@ public class MenuServiceImpl implements IMenuService {
 
     @Autowired
     private ShopMapper shopMapper;
+
+    @Autowired
+    private StockMapper stockMapper;
 
     /**
      * 门店销售排行榜
@@ -195,5 +202,32 @@ public class MenuServiceImpl implements IMenuService {
     @Override
     public List<Map<String, String>> selectSevenDeal(String shopId) {
         return shopMapper.selectSevenDeal(shopId);
+    }
+
+    /**
+     * 查询库存
+     *
+     * @param shopId
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public PageInfo<Map<String, Object>> selectStock(String shopId,String title,String enable, Integer pageNo, Integer pageSize) {
+        Page page = PageHelper.startPage(pageNo,pageSize);
+        List<Map<String,Object>> mapList = stockMapper.selectStock(shopId,title,enable);
+        List<Map<String,Object>> newMapList = new ArrayList<Map<String, Object>>();
+        for(Map<String,Object> item:mapList) {
+            Map<String, Object> map = item;
+            map.put("newPrice",new BigDecimal(map.get("newPrice").toString()).divide(new BigDecimal("100")).toString());
+            BigDecimal price = new BigDecimal(map.get("price").toString()).divide(new BigDecimal("100"));
+            map.put("price",price.setScale(2, ROUND_HALF_UP).toString());
+            String ownSpec = map.get("ownSpec").toString().substring(1,map.get("ownSpec").toString().length()-1);
+            ownSpec = ownSpec.replace("\"","");
+            map.put("ownSpec",ownSpec);
+            newMapList.add(map);
+        }
+        PageInfo pageInfo = new PageInfo<Map<String,Object>>(newMapList);
+        return pageInfo;
     }
 }

@@ -1,7 +1,9 @@
 package org.kunze.diansh.controller;
 
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.kunze.diansh.controller.vo.InformationVo;
 import org.kunze.diansh.controller.vo.SalesVo;
@@ -12,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.naming.NameParser;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Api(tags = "后台管理系统首页")
 @RestController
@@ -124,6 +124,25 @@ public class MenuController {
         List<Map<String,String>> mapList = menuService.selectSevenDeal(shopId);
         result.setSuccess(true);
         result.setResult(mapList);
+        return result;
+    }
+
+
+    @ApiOperation("查询库存不足的商品")
+    @GetMapping(value = "/selectStock")
+    public Result<PageInfo<Map<String,Object>>> selectStock(@RequestParam(name = "shopId")String shopId,
+                                                            @RequestParam(name = "title",required = false) String title,
+                                                            @RequestParam(name = "enable",required = false) String enable,
+                                                            @RequestParam(name = "pageNo")String pageNo,
+                                                            @RequestParam(name = "pageSize") String pageSize){
+        Result<PageInfo<Map<String,Object>>> result = new Result<PageInfo<Map<String, Object>>>();
+        if(StringUtils.isEmpty(shopId.trim())){
+            result.error500("参数丢失！");
+        }else {
+            PageInfo<Map<String, Object>> pageInfo = menuService.selectStock(shopId,title,enable,Integer.valueOf(pageNo),Integer.valueOf(pageSize));
+            result.setSuccess(true);
+            result.setResult(pageInfo);
+        }
         return result;
     }
 }

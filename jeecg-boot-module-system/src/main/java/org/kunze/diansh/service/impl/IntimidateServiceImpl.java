@@ -117,7 +117,7 @@ public class IntimidateServiceImpl implements IIntimidateService {
         payAmout = payAmout.multiply(new BigDecimal("0.01"));
         salesTicketVo.setPractical(payAmout.toString());//实付金额
         if(status.equals("2")) {
-            orderService.updateOrderStatus("3", orderId);
+            orderService.updateOrderStatu("3", orderId);
         }
         return salesTicketVo;
     }

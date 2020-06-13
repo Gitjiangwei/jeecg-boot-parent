@@ -247,7 +247,7 @@
         SELECT COUNT(1) AS 'stock' FROM kz_spu spu
         LEFT JOIN kz_sku sku ON spu.id = sku.spu_id
         LEFT JOIN kz_stock stock ON sku.id = stock.sku_id
-        WHERE stock.stock &lt;=10 AND spu.shop_id = #{shopId}
+        WHERE stock.stock &lt;=10 AND spu.shop_id = #{shopId} and  sku.`enable` = '1'
         ) stock
     </select>
 

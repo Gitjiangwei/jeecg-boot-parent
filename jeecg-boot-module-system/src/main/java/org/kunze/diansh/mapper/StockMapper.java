@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.entity.Stock;
 
 import java.util.List;
+import java.util.Map;
 
 public interface StockMapper extends BaseMapper<Stock> {
 
@@ -18,4 +19,12 @@ public interface StockMapper extends BaseMapper<Stock> {
 
     //减库存
     int updateStockNum(@Param("skuNum")Integer skuNum,@Param("skuId")String skuId);
+
+
+    /***
+     * 查询库存商品
+     * @param shopId
+     * @return
+     */
+    List<Map<String,Object>> selectStock(@Param("shopId") String shopId,@Param("title") String title,@Param("enable") String enable);
 }
