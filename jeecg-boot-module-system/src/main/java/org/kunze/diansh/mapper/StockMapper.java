@@ -27,4 +27,10 @@ public interface StockMapper extends BaseMapper<Stock> {
      * @return
      */
     List<Map<String,Object>> selectStock(@Param("shopId") String shopId,@Param("title") String title,@Param("enable") String enable);
+
+    /**
+     * 修改库存
+     * @return
+     */
+    int updateStockJia(@Param("stock") Stock stock,@Param("stockNum") Integer stockNum);
 }

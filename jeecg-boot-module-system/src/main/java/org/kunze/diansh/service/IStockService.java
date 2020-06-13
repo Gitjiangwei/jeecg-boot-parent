@@ -12,4 +12,12 @@ public interface IStockService extends IService<Stock> {
      * @param orderId 订单id
      */
     void updateStockNum(String orderId);
+
+
+    /**
+     * 修改库存
+     * @param stock
+     * @return
+     */
+    Boolean updateStock(Stock stock);
 }

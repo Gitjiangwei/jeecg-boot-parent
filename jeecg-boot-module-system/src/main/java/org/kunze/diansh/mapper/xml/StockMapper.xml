@@ -46,4 +46,20 @@
             </if>
         </trim>
     </select>
+
+    <update id="updateStockJia">
+        update kz_stock
+        <trim prefix="set" suffixOverrides=",">
+            <if test="stock.stock!=null and stock.stock!=''">
+                stock = stock+#{stockNum},
+            </if>
+            <if test="stock.seckillStock!=null and stock.seckillStock!=''">
+                seckill_stock = #{stock.seckillStock},
+            </if>
+            <if test="stock.seckillTotal!=null and stock.seckillTotal!=''">
+                seckill_total = #{stock.seckillTotal},
+            </if>
+        </trim>
+        where sku_id = #{stock.skuId}
+    </update>
 </mapper>

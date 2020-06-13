@@ -1,6 +1,7 @@
 package org.kunze.diansh.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.entity.OrderDetail;
 import org.kunze.diansh.entity.Stock;
@@ -51,5 +52,27 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock> implements
             //手动抛出异常 事务回滚！
             throw new RuntimeException();
         }
+    }
+
+    /**
+     * 修改库存
+     *
+     * @param stock
+     * @return
+     */
+    @Override
+    public Boolean updateStock(Stock stock) {
+        Boolean isflag = false;
+        if(!StringUtils.isEmpty(stock.getSkuId())){
+            Integer stockNum = 0;
+            if(stock.getStock()!=null&&!stock.getStock().equals("")){
+                stockNum = Integer.valueOf(stock.getStock());
+            }
+            int result = stockMapper.updateStockJia(stock,stockNum);
+            if(result>0){
+                isflag = true;
+            }
+        }
+        return isflag;
     }
 }
