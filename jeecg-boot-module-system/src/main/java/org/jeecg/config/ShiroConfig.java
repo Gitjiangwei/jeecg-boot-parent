@@ -82,6 +82,7 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/sys/wxAppAppLogin","anon");//微信小程序登录
 		filterChainDefinitionMap.put("/sys/androidLogin","anon");//安卓登录
 		filterChainDefinitionMap.put("/sys/getRandomCode","anon");//安卓验证码
+		filterChainDefinitionMap.put("/kunze/alipay/alipay_pay","anon");//支付宝统一下单
 
 
 		filterChainDefinitionMap.put("/sys/getCheckCode", "anon"); //登录验证码接口排除

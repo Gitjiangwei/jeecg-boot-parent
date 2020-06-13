@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.alipay.mapper.AlipayMapper">
+
+    <!-- 添加支付宝交易记录 -->
+    <insert id="insertAlipay" parameterType="org.alipay.bean.AlipayOrder">
+        INSERT INTO `kunze`.
+            `alipay_order` (`order_id`, `trade_no`, `out_biz_no`, `buyer_logon_id`,
+            `seller_id`, `seller_email`, `total_amount`, `receipt_amount`,
+            `invoice_amount`, `buyer_pay_amount`, `notify_time`, `gmt_create`,
+            `gmt_payment`, `gmt_refund`, `gmt_close`, `trade_status`)
+
+            VALUES(#{orderId}, #{tradeNo},#{outBizNo}, #{buyerLogonId},
+            #{sellerId}, #{sellerEmail},#{totalAmount}, #{receiptAmount},
+            #{invoiceAmount}, #{buyerPayAmount},#{notifyTime}, #{gmtCreate},
+            #{gmtPayment}, #{gmtRefund}, #{gmtClose},#{tradeStatus});
+    </insert>
+
+    <!-- 更新支付宝交易记录 -->
+    <update id="updateAlipay" parameterType="org.alipay.bean.AlipayOrder">
+        UPDATE `kunze`.`alipay_order`
+        <trim prefix="set" suffixOverrides=",">
+            <if test="orderId != null and orderId != ''" >
+                `order_id` = #{orderId},
+            </if>
+            <if test="tradeNo != null and tradeNo != ''" >
+                `trade_no` = #{tradeNo},
+            </if>
+            <if test="outBizNo != null and outBizNo != ''" >
+                `out_biz_no` = #{outBizNo},
+            </if>
+            <if test="buyerLogonId != null and buyerLogonId != ''" >
+                `buyer_logon_id` = #{buyerLogonId},
+            </if>
+            <if test="sellerId != null and sellerId != ''" >
+                `seller_id` = #{sellerId},
+            </if>
+            <if test="sellerEmail != null and sellerEmail != ''" >
+                `seller_email` = #{sellerEmail},
+            </if>
+            <if test="totalAmount != null and totalAmount != ''" >
+                `total_amount` = #{totalAmount},
+            </if>
+            <if test="receiptAmount != null and receiptAmount != ''" >
+                `receipt_amount` = #{receiptAmount},
+            </if>
+            <if test="invoiceAmount != null and invoiceAmount != ''" >
+                `invoice_amount` = #{invoiceAmount},
+            </if>
+            <if test="buyerPayAmount != null and buyerPayAmount != ''" >
+                `buyer_pay_amount` = #{buyerPayAmount},
+            </if>
+            <if test="notifyTime != null and notifyTime != ''" >
+                `notify_time` = #{notifyTime},
+            </if>
+            <if test="gmtCreate != null and gmtCreate != ''" >
+                `gmt_create` = #{gmtCreate},
+            </if>
+            <if test="gmtPayment != null and gmtPayment != ''" >
+                `gmt_payment` = #{gmtPayment},
+            </if>
+            <if test="gmtRefund != null and gmtRefund != ''" >
+                `gmt_refund` = #{gmtRefund},
+            </if>
+            <if test="gmtClose != null and gmtClose != ''" >
+                `gmt_close` = #{gmtClose},
+            </if>
+            <if test="tradeStatus != null and tradeStatus != ''" >
+                `trade_status` = #{tradeStatus},
+            </if>
+        </trim>
+    </update>
+
+    <!--根据id查询支付宝交易记录-->
+    <select id="selectAlipayById" parameterType="org.alipay.bean.AlipayOrder" resultType="org.alipay.bean.AlipayOrder">
+        SELECT * FROM ALIPAY_ORDER WHERE ORDER_ID = #{alipay.orderId}
+    </select>
+
+</mapper>

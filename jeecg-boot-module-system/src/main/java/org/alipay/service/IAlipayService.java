@@ -26,4 +26,11 @@ public interface IAlipayService {
      * @return
      */
     String notify(Map<String, String> conversionParams);
+
+    /**
+     * 查询支付宝订单交易状态
+     * @param outTradeNo 业务系统订单编号
+     * @return
+     */
+    Byte checkAlipay(String outTradeNo);
 }

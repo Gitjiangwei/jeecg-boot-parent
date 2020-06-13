@@ -59,7 +59,7 @@
             <if test="idenitiy != null and idenitiy != ''">
                 idenitiy = #{idenitiy},
             </if>
-            <if test="postFree != null and postFree != ''">
+            <if test="postFree != null and postFree >= 0">
                 post_free = #{postFree},
             </if>
         </trim>
