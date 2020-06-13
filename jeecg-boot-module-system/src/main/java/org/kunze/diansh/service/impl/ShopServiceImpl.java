@@ -83,6 +83,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, KzShop> implements 
         if(shop.getId() != null && !shop.getId().equals("")){
             int result =  shopMapper.updateShop(shop);
             if(result>0){
+
                 flag = true;
             }
         }

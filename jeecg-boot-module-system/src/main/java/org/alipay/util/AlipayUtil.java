@@ -23,8 +23,15 @@ public class AlipayUtil {
         AlipayTradeAppPayRequest alipayRequest = new AlipayTradeAppPayRequest ();
 
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
+
+        model.setBody("我是测试数据");
+        model.setSubject("App支付测试Java");
+        model.setOutTradeNo(alipayBean.getOut_trade_no());
+        model.setTimeoutExpress("30m");
+        model.setTotalAmount(alipayBean.getTotal_amount().toString());
+        model.setProductCode("QUICK_MSECURITY_PAY");
         //封装参数
-        alipayRequest.setBizContent(JSON.toJSONString(alipayBean));
+        alipayRequest.setBizModel(model);
 
         //页面跳转同步通知页面路径
         alipayRequest.setReturnUrl(AlipayPropertiesConfig.getKey("return_url"));

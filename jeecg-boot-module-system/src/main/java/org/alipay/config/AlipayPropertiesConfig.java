@@ -73,10 +73,10 @@ public class AlipayPropertiesConfig implements ApplicationListener {
                     alipayClient = new DefaultAlipayClient(
                         AlipayPropertiesConfig.getKey("gatewayUrl"),//支付宝网关
                         AlipayPropertiesConfig.getKey("app_id"),//appid
-                        AlipayPropertiesConfig.getKey("merchant_private_key"),//商户私钥
+                        AlipayPropertiesConfig.getKey("app_private_key"),//商户私钥
                         AlipayPropertiesConfig.getKey("format"),
                         AlipayPropertiesConfig.getKey("charset"),//字符编码格式
-                        AlipayPropertiesConfig.getKey("alipay_public_key"),//支付宝公钥
+                        AlipayPropertiesConfig.getKey("app_public_key"),//商户公钥
                         AlipayPropertiesConfig.getKey("sign_type")//签名方式
                     );
                 }
