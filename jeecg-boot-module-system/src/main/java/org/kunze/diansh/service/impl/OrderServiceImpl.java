@@ -72,7 +72,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     @Override
     @Transactional
-    public Order createOrder(String aid, JSONArray cids, String shopId, String userID,String pick_up,String postFree) {
+    public Order createOrder(String aid, JSONArray cids, String shopId, String userID,String pick_up,String postFree,Integer payType) {
         //当前时间
         Date date = new Date();
         //根据aid查找相关的地址信息
@@ -115,6 +115,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setPostFree(postFree);//配送费
         order.setPayment("0"); //实付金额
         order.setStatus(1); //订单状态 未付款
+        order.setPayType(payType); //付款类型
 
         //插入订单数据
         Integer rows = orderMapper.insertOrder(order);

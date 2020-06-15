@@ -60,6 +60,7 @@ public class OrderController {
             @ApiImplicitParam(name="pick_up",value = "配送方式 1自提 2商家配送"),
             @ApiImplicitParam(name="postFree",value = "配送费 单位（元）"),
             @ApiImplicitParam(name="cids",value = "购物车商品的集合"),
+            @ApiImplicitParam(name="payType",value = "付款类型 0.微信 1.支付宝")
     })
     public Result<Order> createOrder(@RequestBody JSONObject params){
         Result<Order> orderResult = new Result<Order>();
@@ -69,6 +70,7 @@ public class OrderController {
         String pick_up = params.get("pick_up").toString();
         String postFree = params.getString("postFree");
         JSONArray cids = params.getJSONArray("cids");
+        Integer payType = params.getIntValue("payType");
 
         if(EmptyUtils.isEmpty(cids)){
             return orderResult.error500("cids参数丢失！");
@@ -82,7 +84,7 @@ public class OrderController {
         if(EmptyUtils.isEmpty(pick_up)){
             return orderResult.error500("配送参数丢失！");
         }
-        Order order = orderService.createOrder(aid,cids,shopId,userID,pick_up,postFree);
+        Order order = orderService.createOrder(aid,cids,shopId,userID,pick_up,postFree,payType);
         if(null != order){
             orderResult.success("创建成功！");
             orderResult.setResult(order);

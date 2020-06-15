@@ -13,14 +13,6 @@ import java.util.Map;
 public interface IAlipayService {
 
     /**
-     * 支付宝统一下单
-     * @param alipayBean
-     * @return
-     * @throws AlipayApiException
-     */
-    String aliPay(AlipayBean alipayBean) throws AlipayApiException;
-
-    /**
      * 支付宝异步回调通知
      * @param conversionParams
      * @return

@@ -13,7 +13,6 @@ import org.alipay.bean.AlipayOrder;
 import org.alipay.config.AlipayPropertiesConfig;
 import org.alipay.mapper.AlipayMapper;
 import org.alipay.service.IAlipayService;
-import org.alipay.util.AlipayUtil;
 import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.OrderComsumer;
 import org.jeecg.common.util.DateUtils;
@@ -45,16 +44,6 @@ public class AlipayServiceImpl implements IAlipayService {
     private IOrderService orderService;
 
 
-    /**
-     * 支付宝统一下单
-     * @param alipayBean
-     * @return
-     * @throws AlipayApiException
-     */
-    @Override
-    public String aliPay(AlipayBean alipayBean) throws AlipayApiException {
-        return AlipayUtil.connect(alipayBean);
-    }
 
     /**
      * 支付宝异步回调通知
@@ -147,11 +136,13 @@ public class AlipayServiceImpl implements IAlipayService {
                     default:
                         break;
                 }
-                //记录支付宝交易记录
-                this.addOrUpdAlipayInfo(alipayOrder);
+
 
                 if(tradeStatus.equals("TRADE_SUCCESS")){
                     //支付成功 开始业务处理
+
+                    //记录支付宝交易记录
+                    this.addOrUpdAlipayInfo(alipayOrder);
 
                     //订单状态为未支付才开始业务处理
                     if("1".equals(order.getStatus().toString())){

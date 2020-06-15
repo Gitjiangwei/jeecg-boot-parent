@@ -96,6 +96,9 @@ public class Order implements Serializable,Delayed {
     //买家是否已经评价,0未评价，1已评价
     private int buyerRate;
 
+    //付款类型 0.微信 1.支付宝
+    private Integer payType;
+
     //购物车集合
     private List<OrderDetail> odList;
 

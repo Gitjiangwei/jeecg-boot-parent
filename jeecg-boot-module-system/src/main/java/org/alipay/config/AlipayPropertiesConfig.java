@@ -2,6 +2,10 @@ package org.alipay.config;
 
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
+import org.alipay.paysdk.AliPayApiConfig;
+import org.alipay.paysdk.AliPayApiConfigKit;
+import org.kunze.diansh.entity.properties.WeChatPayProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationEvent;
@@ -17,6 +21,10 @@ import java.util.Properties;
 
 @Component
 public class AlipayPropertiesConfig implements ApplicationListener {
+
+    @Autowired
+    private AliPayApiConfig aliPayApiConfig;
+
     //保存加载配置参数
     private static Map<String, String> aliPropertiesMap = new HashMap<String, String>();
 
@@ -34,6 +42,9 @@ public class AlipayPropertiesConfig implements ApplicationListener {
 
     /*初始化加载aliPropertiesMap*/
     public void init(Map<String, String> map) {
+        AliPayApiConfig ApiConfig = aliPayApiConfig.build();
+        AliPayApiConfigKit.putApiConfig(ApiConfig);
+
         // 获得PathMatchingResourcePatternResolver对象
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         try {
@@ -76,7 +87,7 @@ public class AlipayPropertiesConfig implements ApplicationListener {
                         AlipayPropertiesConfig.getKey("app_private_key"),//商户私钥
                         AlipayPropertiesConfig.getKey("format"),
                         AlipayPropertiesConfig.getKey("charset"),//字符编码格式
-                        AlipayPropertiesConfig.getKey("app_public_key"),//商户公钥
+                        AlipayPropertiesConfig.getKey("alipay_public_key"),//支付宝公钥
                         AlipayPropertiesConfig.getKey("sign_type")//签名方式
                     );
                 }
