@@ -321,6 +321,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                     }
                 }
                 orderVo.setConsigneeSex(orderModels.get(i).getConsignee()==null?"":orderModels.get(i).getConsignee()+sex);
+                orderVo.setPayment(new BigDecimal(orderModels.get(i).getPayment()).divide(new BigDecimal("100")).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
                 orderVos.add(orderVo);
             }
             PageInfo pageInfo = new PageInfo<OrderVo>(orderVos);

@@ -10,5 +10,6 @@
         select create_time as 'sendTime',send_event as 'sendEvent'
         from kz_order_record
         where order_id = #{orderId}
+        ORDER BY create_time DESC
     </select>
 </mapper>

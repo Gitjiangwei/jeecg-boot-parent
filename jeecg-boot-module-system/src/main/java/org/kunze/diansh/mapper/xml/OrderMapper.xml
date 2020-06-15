@@ -91,7 +91,8 @@
                 end_time = NOW(),
             </if>
             <if test="orderStatus == 7">
-                end_time = NOW(),
+                end_time = null,
+                refund_time = NOW(),
             </if>
             update_time = NOW()
         </trim>

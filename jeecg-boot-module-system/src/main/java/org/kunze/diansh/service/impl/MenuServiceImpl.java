@@ -167,6 +167,7 @@ public class MenuServiceImpl implements IMenuService {
         InformationVo informationVo = new InformationVo();
         if(shopId!=null && !shopId.equals("")) {
             informationVo.setMoneyMoney(shopMapper.selectMonthMoney(shopId));
+            informationVo.setMoneyMoney(new BigDecimal(informationVo.getMoneyMoney()).divide(new BigDecimal("100")).setScale(2, ROUND_HALF_UP).toString());
             informationVo.setOrderNum(shopMapper.selectTotalOrder(shopId));
             informationVo.setSpuNum(shopMapper.selectTotalSpuNum(shopId));
         }
