@@ -3,6 +3,7 @@ package org.kunze.diansh.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.jeecg.common.util.CalculationUtil;
 import org.kunze.diansh.controller.vo.InformationVo;
 import org.kunze.diansh.controller.vo.SalesVo;
 import org.kunze.diansh.entity.modelData.MonthMenuModel;
@@ -41,7 +42,13 @@ public class MenuServiceImpl implements IMenuService {
             Map<String,String> map = new HashMap<String,String>();
             map.put("shopId",oldMapList.get(i).get("id") == null?"":oldMapList.get(i).get("id"));
             map.put("shopName",oldMapList.get(i).get("shopName") == null?"":oldMapList.get(i).get("shopName"));
-            map.put("payment",oldMapList.get(i).get("payment") == null?"0":String.valueOf(oldMapList.get(i).get("payment")));
+            String payment = "0";
+            if(oldMapList.get(i).get("payment")!=null){
+                BigDecimal ordPrice = new BigDecimal(String.valueOf(oldMapList.get(i).get("payment")));
+                BigDecimal newPrice = ordPrice.divide(new BigDecimal("100"));
+                payment = newPrice.setScale(2, ROUND_HALF_UP).toString();
+            }
+            map.put("payment",payment);
             newMapList.add(map);
         }
         return newMapList;
@@ -70,18 +77,18 @@ public class MenuServiceImpl implements IMenuService {
                 stringList.add("0");
             }
         }else {
-            stringList.add(monthMenuModel.getJanuary()==null?"0":monthMenuModel.getJanuary());
-            stringList.add(monthMenuModel.getFebruary()==null?"0":monthMenuModel.getFebruary());
-            stringList.add(monthMenuModel.getMarch()==null?"0":monthMenuModel.getMarch());
-            stringList.add(monthMenuModel.getApril()==null?"0":monthMenuModel.getApril());
-            stringList.add(monthMenuModel.getMay()==null?"0":monthMenuModel.getMay());
-            stringList.add(monthMenuModel.getJune()==null?"0":monthMenuModel.getJune());
-            stringList.add(monthMenuModel.getJuly()==null?"0":monthMenuModel.getJuly());
-            stringList.add(monthMenuModel.getAugust()==null?"0":monthMenuModel.getAugust());
-            stringList.add(monthMenuModel.getSeptember()==null?"0":monthMenuModel.getSeptember());
-            stringList.add(monthMenuModel.getOctober()==null?"0":monthMenuModel.getOctober());
-            stringList.add(monthMenuModel.getNovember()==null?"0":monthMenuModel.getNovember());
-            stringList.add(monthMenuModel.getDecember()==null?"0":monthMenuModel.getDecember());
+            stringList.add(CalculationUtil.FractionalConversion(monthMenuModel.getJanuary()));
+            stringList.add(CalculationUtil.FractionalConversion(monthMenuModel.getFebruary()));
+            stringList.add(CalculationUtil.FractionalConversion(monthMenuModel.getMarch()));
+            stringList.add(CalculationUtil.FractionalConversion(monthMenuModel.getApril()));
+            stringList.add(CalculationUtil.FractionalConversion(monthMenuModel.getMay()));
+            stringList.add(CalculationUtil.FractionalConversion(monthMenuModel.getJune()));
+            stringList.add(CalculationUtil.FractionalConversion(monthMenuModel.getJuly()));
+            stringList.add(CalculationUtil.FractionalConversion(monthMenuModel.getAugust()));
+            stringList.add(CalculationUtil.FractionalConversion(monthMenuModel.getSeptember()));
+            stringList.add(CalculationUtil.FractionalConversion(monthMenuModel.getOctober()));
+            stringList.add(CalculationUtil.FractionalConversion(monthMenuModel.getNovember()));
+            stringList.add(CalculationUtil.FractionalConversion(monthMenuModel.getDecember()));
         }
 
         return stringList;
@@ -150,9 +157,9 @@ public class MenuServiceImpl implements IMenuService {
             salesVo.setOnDay(df1.format(onToDay2)+"%");
         }
         //3、总销售额
-        salesVo.setTotal(salesModel.getTotal());
+        salesVo.setTotal(CalculationUtil.FractionalConversion(salesModel.getTotal()));
         //4、当天销售额
-        salesVo.setToDays(salesModel.getToday());
+        salesVo.setToDays(CalculationUtil.FractionalConversion(salesModel.getToday()));
         return salesVo;
     }
 
@@ -167,7 +174,7 @@ public class MenuServiceImpl implements IMenuService {
         InformationVo informationVo = new InformationVo();
         if(shopId!=null && !shopId.equals("")) {
             informationVo.setMoneyMoney(shopMapper.selectMonthMoney(shopId));
-            informationVo.setMoneyMoney(new BigDecimal(informationVo.getMoneyMoney()).divide(new BigDecimal("100")).setScale(2, ROUND_HALF_UP).toString());
+            informationVo.setMoneyMoney(CalculationUtil.FractionalConversion(informationVo.getMoneyMoney()));
             informationVo.setOrderNum(shopMapper.selectTotalOrder(shopId));
             informationVo.setSpuNum(shopMapper.selectTotalSpuNum(shopId));
         }
