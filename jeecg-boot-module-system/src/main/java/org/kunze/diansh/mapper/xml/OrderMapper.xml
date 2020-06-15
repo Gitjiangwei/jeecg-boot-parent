@@ -84,6 +84,15 @@
                 payment_time = NOW(),
                 payment = #{payment},
             </if>
+            <if test="orderStatus == 4">
+                consign_time = NOW(),
+            </if>
+            <if test="orderStatus == 5">
+                end_time = NOW(),
+            </if>
+            <if test="orderStatus == 7">
+                end_time = NOW(),
+            </if>
             update_time = NOW()
         </trim>
         where order_id = #{orderId}
