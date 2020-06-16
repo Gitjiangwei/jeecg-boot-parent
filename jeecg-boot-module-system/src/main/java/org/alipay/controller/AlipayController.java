@@ -1,7 +1,9 @@
 package org.alipay.controller;
 
+import cn.hutool.core.util.NumberUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
+import com.alipay.api.response.AlipayTradeAppPayResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -11,16 +13,24 @@ import org.alipay.bean.AlipayBean;
 import org.alipay.config.AlipayPropertiesConfig;
 import org.alipay.paysdk.AliPayApi;
 import org.alipay.service.IAlipayService;
+import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.EmptyUtils;
+import org.kunze.diansh.entity.Order;
+import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.NumberUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.math.RoundingMode;
 
 @Slf4j
 @Api(tags = "支付宝模块")
@@ -35,15 +45,42 @@ public class AlipayController {
     @Autowired
     private IAlipayService alipayService;
 
+    @Autowired
+    private IOrderService orderService;
+
     /**
      * 支付宝支付统一下单
      * @return
      * @throws AlipayApiException
      */
     @PostMapping(value = "/alipay_pay")
-    @ApiOperation("支付宝支付统一下单")
-    @AutoLog("支付宝支付统一下单")
-    public String alipay(@RequestBody @Valid AlipayBean alipayBean) throws AlipayApiException {
+    @ApiOperation("支付宝App支付统一下单")
+    @AutoLog("支付宝App支付统一下单")
+    public Result alipay(@RequestBody @Valid AlipayBean alipayBean, BindingResult bindingResult) throws AlipayApiException {
+        Result result = new Result();
+        //参数校验
+        if(bindingResult.hasErrors()){
+            String messages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .reduce((m1,m2)->","+m2)
+                    .orElse("输入参数有误！");
+            throw new IllegalArgumentException(messages);
+        }
+
+        Order order = orderService.selectOrderById(alipayBean.getOut_trade_no(),alipayBean.getUserId(),alipayBean.getShopId());
+
+        if(null == order){
+            return Result.error("发起支付时出现错误！");
+        }
+        Integer totalPrice = NumberUtil.add(order.getAmountPayment(),order.getPostFree()).intValue();
+        if(!alipayBean.getOut_trade_no().equals(totalPrice.toString())){
+            return Result.error("非法访问，请求已关闭！");
+        }
+
+
+        //除以100 保留两位小数 四舍五入模式
+        String totalAmount = NumberUtil.div(totalPrice.toString(),"100",2, RoundingMode.HALF_UP).toString();
 
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
 
@@ -51,11 +88,13 @@ public class AlipayController {
         model.setSubject(alipayBean.getSubject());
         model.setOutTradeNo(alipayBean.getOut_trade_no());
         model.setTimeoutExpress(AlipayBean.timeout_express);
-        model.setTotalAmount(alipayBean.getTotal_amount().toString());
+        model.setTotalAmount(totalAmount);
         model.setProductCode(AlipayBean.product_code);
 
         String resultStr = AliPayApi.appPayToResponse(model, AlipayPropertiesConfig.getKey("notify_url")).getBody();
-        return resultStr;
+        result.setSuccess(true);
+        result.setResult(resultStr);
+        return result;
     }
 
 

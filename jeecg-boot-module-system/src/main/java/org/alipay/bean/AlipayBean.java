@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /*支付实体对象*/
@@ -16,16 +17,22 @@ public class AlipayBean implements Serializable {
     @NotBlank(message = "订单号不能为空！")
     private String out_trade_no;
     /*订单名称，必填*/
-    @NotBlank(message = "订单名称不能为空！")
+    //@NotBlank(message = "订单名称不能为空！")
     private String subject;
     /*付款金额，必填*/
-    @NotBlank(message = "付款金额不能为空！")
+    @NotNull(message = "付款金额不能为空！")
     @DecimalMax("1000000000000")
     @DecimalMin("0")
     private Integer total_amount;
     /*商品描述，可空*/
-    @NotBlank(message = "商品描述不能为空！")
+    //@NotBlank(message = "商品描述不能为空！")
     private String body;
+    //用户id
+    @NotBlank(message = "用户id不能为空！")
+    private String userId;
+    //店铺id
+    @NotBlank(message = "店铺id不能为空！")
+    private String shopId;
     /**
      * 超时时间参数
      * 1m～15d。m-分钟，h-小时，d-天

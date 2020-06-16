@@ -37,9 +37,9 @@ public class OrderComsumer extends Thread implements ApplicationRunner {
                 System.out.println("目前队列中有"+queue.size()+"个订单！");
                 Order order = queue.take();
 
-                //模拟0取消订单操作
+                //取消订单
                 System.out.println("预计取消时间"+ order.getCancelTime().toString());
-                String resultInfo = iOrderService.updateOrderStatus("6",order.getOrderId());
+                String resultInfo = iOrderService.updateOrderStatu("6",order.getOrderId());
                 if("ok".equals(resultInfo)){
                     System.out.println("订单取消，当前时间"+ new Date().toString());
                 }else{

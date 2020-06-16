@@ -136,7 +136,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             od.setImage(sku.getImages());
             Integer odRows = orderMapper.insertOrderDetail(od);
             odList.add(od);
-            if (rows != 1){
+            if (odRows != 1){
                 new Exception("创建订单失败！插入订单时出现未知错误");
             }
         }
