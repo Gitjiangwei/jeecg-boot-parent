@@ -1,5 +1,6 @@
 package org.kunze.diansh.service.impl;
 
+import org.jeecg.common.util.CalculationUtil;
 import org.kunze.diansh.controller.vo.DistributionVo;
 import org.kunze.diansh.controller.vo.SalesTicketVo;
 import org.kunze.diansh.entity.*;
@@ -110,12 +111,9 @@ public class IntimidateServiceImpl implements IIntimidateService {
         salesTicketVo.setShopAddress(shop.getShopAddress()); //超市地址
         salesTicketVo.setSaleNum(totalNum.toString());//商品总数
         salesTicketVo.setBuyerMessage(order.getBuyerMessage()==null?"":order.getBuyerMessage());
-        BigDecimal amout = new BigDecimal(order.getAmountPayment());
-        amout = amout.multiply(new BigDecimal("0.01"));
-        salesTicketVo.setSaleSum(amout.toString()); //应付金额
-        BigDecimal payAmout = new BigDecimal(order.getPayment());
-        payAmout = payAmout.multiply(new BigDecimal("0.01"));
-        salesTicketVo.setPractical(payAmout.toString());//实付金额
+        salesTicketVo.setSaleSum(CalculationUtil.FractionalConversion(order.getAmountPayment())); //应付金额
+        salesTicketVo.setPractical(CalculationUtil.FractionalConversion(order.getPayment()));//实付金额
+        salesTicketVo.setPostFree(CalculationUtil.FractionalConversion(order.getPostFree()));//配送费
         if(status.equals("2")) {
             orderService.updateOrderStatu("3", orderId);
         }

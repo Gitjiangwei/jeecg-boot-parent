@@ -113,7 +113,13 @@
         select spu.id as id,spu.title as title,spu.sub_title as subTitle,spu.image as image,min(sku.price) as price,stock
         from kz_spu spu left join kz_sku sku on spu.id = sku.spu_id
         LEFT JOIN kz_stock stock ON sku.id = stock.sku_id
-        where spu.cid3 = #{cateId}
+        where
+        <if test="isFlag == 0">
+            spu.cid2 = #{cateId}
+        </if>
+        <if test="isFlag == 1">
+            spu.cid3 = #{cateId}
+        </if>
         AND spu.shop_id = #{shopId}
         AND SPU.SALEABLE = '1'
         group by spu.id

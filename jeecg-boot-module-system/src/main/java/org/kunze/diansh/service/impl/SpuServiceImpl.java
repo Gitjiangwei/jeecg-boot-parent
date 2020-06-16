@@ -98,9 +98,9 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
      * @return
      */
     @Override
-    public PageInfo<SpuModel> querySpuById(String cateId,Integer pageNo,Integer pageSize,String shopId) {
+    public PageInfo<SpuModel> querySpuById(String cateId,Integer pageNo,Integer pageSize,String shopId,String isFlag) {
         PageHelper.startPage(pageNo,pageSize);
-        List<SpuModel> spuList = spuMapper.querySpuById(cateId,shopId);
+        List<SpuModel> spuList = spuMapper.querySpuById(cateId,shopId,isFlag);
         return new PageInfo<SpuModel>(spuList);
     }
 

@@ -28,7 +28,7 @@ public interface SpuMapper extends BaseMapper<Spu> {
 
     int deleteSpu(String userName,@Param("spuList")List spuList);
 
-    List<SpuModel> querySpuById(@Param("cateId") String cateId,@Param("shopId") String shopId);
+    List<SpuModel> querySpuById(@Param("cateId") String cateId,@Param("shopId") String shopId,@Param("isFlag") String isFlag);
 
     Spu querySpuByIds(@Param("spuId") String spuId);
 

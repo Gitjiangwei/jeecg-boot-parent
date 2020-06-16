@@ -146,19 +146,31 @@ public class SpuController {
         return result;
     }
 
-    @ApiOperation("通过商品分类Id查询相关商品的详细信息")
+    @ApiOperation("通过商品三级分类Id查询相关商品的详细信息")
     @AutoLog("通过商品分类Id查询相关商品的详细信息")
     @PostMapping(value = "/querySpuByCateID")
     public Result<PageInfo<SpuModel>> querySpuByCateID(String cateId,
                                                   @RequestParam(name = "pageNo",defaultValue = "1") Integer pageNo,
                                                   @RequestParam(name = "pageSize") Integer pageSize,String shopId){
         Result<PageInfo<SpuModel>> result = new Result<PageInfo<SpuModel>>();
-        PageInfo<SpuModel> spuList = spuService.querySpuById(cateId,pageNo,pageSize,shopId);
+        PageInfo<SpuModel> spuList = spuService.querySpuById(cateId,pageNo,pageSize,shopId,"1");
         result.setSuccess(true);
         result.setResult(spuList);
         return result;
     }
 
+    @ApiOperation("通过商品二级分类Id查询相关商品的详细信息")
+    @AutoLog("通过商品分类Id查询相关商品的详细信息")
+    @PostMapping(value = "/querySpuByTwoID")
+    public Result<PageInfo<SpuModel>> querySpuByCateTwoID(String cateId,
+                                                       @RequestParam(name = "pageNo",defaultValue = "1") Integer pageNo,
+                                                       @RequestParam(name = "pageSize") Integer pageSize,String shopId){
+        Result<PageInfo<SpuModel>> result = new Result<PageInfo<SpuModel>>();
+        PageInfo<SpuModel> spuList = spuService.querySpuById(cateId,pageNo,pageSize,shopId,"0");
+        result.setSuccess(true);
+        result.setResult(spuList);
+        return result;
+    }
 
     @GetMapping(value = "/query")
     public void aa(){

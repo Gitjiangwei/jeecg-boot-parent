@@ -101,7 +101,7 @@
 
     <select id="selectById" resultType="org.kunze.diansh.entity.Order">
         select order_id,shop_id,address_id,amount_payment,payment,pick_up,status,create_time,update_time,
-        payment_time,consign_time,end_time,user_id,post_free,buyer_message
+        payment_time,consign_time,end_time,user_id,post_free,buyer_message,post_free
          from kz_order
         where order_id = #{orderId}
     </select>
