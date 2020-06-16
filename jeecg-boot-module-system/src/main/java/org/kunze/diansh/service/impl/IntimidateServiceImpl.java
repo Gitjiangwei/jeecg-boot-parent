@@ -112,7 +112,9 @@ public class IntimidateServiceImpl implements IIntimidateService {
         salesTicketVo.setSaleNum(totalNum.toString());//商品总数
         salesTicketVo.setBuyerMessage(order.getBuyerMessage()==null?"":order.getBuyerMessage());
         salesTicketVo.setSaleSum(CalculationUtil.FractionalConversion(order.getAmountPayment())); //应付金额
-        salesTicketVo.setPractical(CalculationUtil.FractionalConversion(order.getPayment()));//实付金额
+        BigDecimal postFree = new BigDecimal(order.getPostFree());
+        String practical = postFree.add(new BigDecimal(order.getPayment())).toString();
+        salesTicketVo.setPractical(CalculationUtil.FractionalConversion(practical));//实付金额
         salesTicketVo.setPostFree(CalculationUtil.FractionalConversion(order.getPostFree()));//配送费
         if(status.equals("2")) {
             orderService.updateOrderStatu("3", orderId);
