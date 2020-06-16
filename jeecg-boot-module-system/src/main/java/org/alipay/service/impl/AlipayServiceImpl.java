@@ -3,6 +3,7 @@ package org.alipay.service.impl;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.domain.AlipayTradeQueryModel;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.response.AlipayTradeQueryResponse;
@@ -12,6 +13,7 @@ import org.alipay.bean.AlipayBean;
 import org.alipay.bean.AlipayOrder;
 import org.alipay.config.AlipayPropertiesConfig;
 import org.alipay.mapper.AlipayMapper;
+import org.alipay.paysdk.AliPayApi;
 import org.alipay.service.IAlipayService;
 import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.OrderComsumer;
@@ -176,21 +178,11 @@ public class AlipayServiceImpl implements IAlipayService {
     @Override
     public Byte checkAlipay(String outTradeNo) {
         log.info("==================向支付宝发起查询，查询商户订单号为："+outTradeNo);
+
         try {
-            //实例化客户端（参数：网关地址、商户appid、商户私钥、格式、编码、支付宝公钥、加密类型）
-            AlipayClient alipayClient =new DefaultAlipayClient(
-                    AlipayPropertiesConfig.getKey("gatewayUrl"),//支付宝网关
-                    AlipayPropertiesConfig.getKey("app_id"),//appid
-                    AlipayPropertiesConfig.getKey("app_private_key"),//商户私钥
-                    AlipayPropertiesConfig.getKey("format"),
-                    AlipayPropertiesConfig.getKey("charset"),//字符编码格式
-                    AlipayPropertiesConfig.getKey("alipay_public_key"),//支付宝公钥
-                    AlipayPropertiesConfig.getKey("sign_type"));
-            AlipayTradeQueryRequest alipayTradeQueryRequest = new AlipayTradeQueryRequest();
-            alipayTradeQueryRequest.setBizContent("{" +
-                    "\"out_trade_no\":\""+outTradeNo+"\"" +
-                    "}");
-            AlipayTradeQueryResponse alipayTradeQueryResponse = alipayClient.execute(alipayTradeQueryRequest);
+            AlipayTradeQueryModel alipayModel = new AlipayTradeQueryModel();
+            alipayModel.setOutTradeNo(outTradeNo);
+            AlipayTradeQueryResponse alipayTradeQueryResponse = AliPayApi.tradeQueryToResponse(alipayModel);
             if(alipayTradeQueryResponse.isSuccess()){
                 byte orderFlag = 0;
                 switch (alipayTradeQueryResponse.getTradeStatus()) // 判断交易结果
@@ -205,7 +197,7 @@ public class AlipayServiceImpl implements IAlipayService {
                         orderFlag = 1;
                         break;
                     case "WAIT_BUYER_PAY": // 交易创建并等待买家付款
-                        orderFlag = 1;
+                        orderFlag = 0;
                         break;
                     default:
                         break;

@@ -67,6 +67,7 @@ public class WXPayController {
         if(!money.equals(totalPrice.toString())){
             return Result.error("非法访问，请求已关闭！");
         }
+
         if(order.getStatus() != 1){
             return Result.ok("此订单已支付！");
         }
