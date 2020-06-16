@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.jeecg.common.util.CalculationUtil;
 import org.jeecg.common.util.CommonUtil;
 import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.mapper.SkuMapper;
@@ -41,8 +42,9 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements ISkuS
         List<Map<String,Object>> map = skuMapper.selectSkuInfoBySpuId(spuId);
         for(Map<String,Object> item:map){
             Map<String,Object> map1 = item;
-            map1.put("PRICE",new BigDecimal(item.get("PRICE").toString()).divide(new BigDecimal("100")));
-            map1.put("NEW_PRICE",new BigDecimal(item.get("NEW_PRICE").toString()).divide(new BigDecimal("100")));
+            map1.put("PRICE",CalculationUtil.FractionalConversion(item.get("PRICE").toString()));
+            map1.put("NEW_PRICE", CalculationUtil.FractionalConversion(item.get("NEW_PRICE").toString()));
+            map1.put("OWN_SPEC",item.get("OWN_SPEC").toString().replace("\"",""));
             skuMap.add(map1);
         }
         return CommonUtil.toCamel(skuMap);

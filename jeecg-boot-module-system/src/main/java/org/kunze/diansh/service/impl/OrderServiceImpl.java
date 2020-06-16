@@ -294,7 +294,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @return
      */
     @Override
-    public PageInfo<OrderVo> selectOrder(String shopId, String status, String orderId,Integer pageNo,Integer pageSize) {
+    public PageInfo<OrderVo> selectOrder(String shopId, String status,String telphone, String orderId,Integer pageNo,Integer pageSize) {
         if(shopId == null || shopId.equals("")){
             return null;
         }else {
@@ -305,6 +305,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             }
             if(orderId!=null && !orderId.equals("")) {
                 order.setOrderId(orderId);
+            }
+            if(telphone!=null && !telphone.equals("")){
+                order.setAddressId(telphone);
             }
             Page page= PageHelper.startPage(pageNo,pageSize);
             List<OrderModel> orderModels = orderMapper.selectOrder(order);
@@ -389,7 +392,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 if(!ownSpec.equals("")){
                     ownSpec = ownSpec.substring(1,ownSpec.length()-1);
                 }
-                orderSpuVo.setOwenSpan(ownSpec);
+                orderSpuVo.setOwenSpan(ownSpec.replace("\"",""));
                 orderSpuVo.setSpuNum(num);
                 orderSpuVo.setUnitPrice(price);
                 orderSpuVo.setUnitPriceTotle(totalPrice.toString());

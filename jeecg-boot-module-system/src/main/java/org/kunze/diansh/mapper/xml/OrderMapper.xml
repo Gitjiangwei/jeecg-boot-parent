@@ -117,6 +117,9 @@
             <if test="status != null and status != ''">
                 and o.status = #{status}
             </if>
+            <if test="addressId != null and addressId != ''">
+                and address.telphone like CONCAT('%',#{addressId},'%')
+            </if>
         </trim>
         order by o.create_time desc
     </select>

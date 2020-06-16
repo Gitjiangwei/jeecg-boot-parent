@@ -70,7 +70,7 @@ public interface IOrderService extends IService<Order> {
      * @param orderId
      * @return
      */
-    PageInfo<OrderVo> selectOrder(String shopId, String status, String orderId,Integer pageNo,Integer pageSize);
+    PageInfo<OrderVo> selectOrder(String shopId, String status,String telphone, String orderId,Integer pageNo,Integer pageSize);
 
 
     /***
