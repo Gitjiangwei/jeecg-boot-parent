@@ -74,10 +74,9 @@ public class AlipayController {
             return Result.error("发起支付时出现错误！");
         }
         Integer totalPrice = NumberUtil.add(order.getAmountPayment(),order.getPostFree()).intValue();
-        if(!alipayBean.getOut_trade_no().equals(totalPrice.toString())){
+        if(!alipayBean.getTotal_amount().toString().equals(totalPrice.toString())){
             return Result.error("非法访问，请求已关闭！");
         }
-
 
         //除以100 保留两位小数 四舍五入模式
         String totalAmount = NumberUtil.div(totalPrice.toString(),"100",2, RoundingMode.HALF_UP).toString();

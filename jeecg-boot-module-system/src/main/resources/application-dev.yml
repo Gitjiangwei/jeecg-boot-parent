@@ -96,7 +96,7 @@ spring:
         connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
       datasource:
         master:
-          url: jdbc:mysql://124.70.2.47:3306/kunze?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowMultiQueries=true
+          url: jdbc:mysql://150.158.181.66:3306/kunze?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowMultiQueries=true
           username: root
           password: honghongdaojia
           driver-class-name: com.mysql.jdbc.Driver

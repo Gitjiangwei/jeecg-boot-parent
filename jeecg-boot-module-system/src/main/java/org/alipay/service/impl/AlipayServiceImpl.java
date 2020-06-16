@@ -167,7 +167,7 @@ public class AlipayServiceImpl implements IAlipayService {
 
         } else {  //验签不通过
             System.out.println("==================验签不通过 ！");
-            return "fail";
+            return "failure";
         }
     }
 
