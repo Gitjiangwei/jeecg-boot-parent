@@ -210,12 +210,11 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         spu.setUpdateName(userName);
         int updateSupResult = spuMapper.updateSpu(spu);
         updateSupResult = 1;
-        if(updateSupResult > 0){
-            int resultSpuDetail = -1;
+        if(updateSupResult > 0 && (spuBo.getSkuVos()!=null || spuBo.getSpuDetail() != null)){
             if(null != spuBo.getSpuDetail()){
                 SpuDetail spuDetail = spuBo.getSpuDetail();
                 spuDetail.setSpuId(spu.getId());
-                resultSpuDetail = spuDetailMapper.updateSpuDetail(spuDetail); //更新
+                spuDetailMapper.updateSpuDetail(spuDetail); //更新
             }
             if(null != spuBo.getSkuVos()){
                 List<Sku> skuList = new ArrayList<Sku>();
@@ -252,7 +251,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
                 }
                 int resultSku = skuMapper.updateSku(skuList);
                 int resultStock = stockMapper.updateStock(stockList);
-                if(resultSpuDetail > 0 && resultSku > 0 && resultStock > 0){
+                if(resultSku > 0 && resultStock > 0){
                     isFlag = true;
                 }
             }

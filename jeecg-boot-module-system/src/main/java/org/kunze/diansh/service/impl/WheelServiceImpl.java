@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.DelFileUtils;
 import org.kunze.diansh.controller.bo.WheelBo;
 import org.kunze.diansh.controller.vo.WheelVo;
 import org.kunze.diansh.entity.Wheel;
@@ -99,6 +101,10 @@ public class WheelServiceImpl extends ServiceImpl<WheelMapper, Wheel> implements
                 wheel.setUpdateName(sysUser.getRealname());
             } else {
                 wheel.setUpdateName("");
+            }
+            String oldImages = wheelMapper.queryImages(wheelBo.getWheelId());
+            if(!StringUtils.isEmpty(oldImages)){
+                DelFileUtils.delFile(oldImages);
             }
             int result = wheelMapper.updateWheel(wheel);
             if(result > 0){

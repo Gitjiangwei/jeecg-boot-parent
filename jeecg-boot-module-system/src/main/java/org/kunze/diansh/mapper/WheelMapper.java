@@ -35,4 +35,12 @@ public interface WheelMapper extends BaseMapper<Wheel> {
      */
     List<String> selectByShopId(@Param("id") String id);
 
+
+    /**
+     * 根据轮播图id查询轮播图
+     * @param id
+     * @return
+     */
+    String queryImages(@Param("id") String id);
+
 }

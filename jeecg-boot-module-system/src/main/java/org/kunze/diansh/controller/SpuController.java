@@ -122,7 +122,7 @@ public class SpuController {
         if(resultFlag){
             result.success("修改成功");
         }else{
-            result.success("修改失败！");
+            result.error500("修改失败！");
         }
         return result;
     }

@@ -110,4 +110,9 @@
     <select id="selectByShopId" resultType="String">
         select shop_id as 'shopId' from kz_wheel where wheel_id = #{id};
     </select>
+
+
+    <select id="queryImages" resultType="String">
+        select wheel_images from kz_wheel where wheel_id = #{id};
+    </select>
 </mapper>
