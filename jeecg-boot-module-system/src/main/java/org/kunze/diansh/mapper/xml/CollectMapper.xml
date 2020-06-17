@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.CollectMapper">
+
+    <!-- 添加商品收藏记录 -->
+    <insert id="insertCollect" parameterType="org.kunze.diansh.entity.Collect">
+        INSERT INTO `kunze`.
+        `kz_collect` (`id`, `user_id`, `good_id`, `status`, `create_time`) VALUES
+        (#{collect.id}, #{collect.userId}, #{collect.goodId}, 0, NOW());
+    </insert>
+    <!-- 删除商品收藏记录 -->
+    <delete id="deleteCollect" parameterType="org.kunze.diansh.entity.Collect">
+        DELETE FROM KZ_COLLECT WHERE ID IN
+        <foreach collection="list" open="(" close=")" index="index" item="item" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+    <!-- 查询当前用户的收藏商品 -->
+    <select id="selectCollectByUId" parameterType="java.lang.String" resultType="java.util.HashMap">
+        SELECT
+            KC.id,
+            SPU.id AS SPU_ID,
+            SPU.title,
+            SPU.sub_title,
+            SPU.cid1,
+            SPU.cid2,
+            SPU.cid3,
+            SPU.brand_id,
+            SPU.saleable,
+            SPU.is_flag,
+            SPU.create_time,
+            SPU.last_update_time,
+            SPU.update_name,
+            SPU.images,
+            SPU.image,
+            SPU.shop_id
+        FROM
+            kz_collect AS KC
+        INNER JOIN
+            kz_spu AS SPU
+        ON
+            KC.good_id = SPU.id
+        WHERE
+            KC.user_id = #{userId}
+    </select>
+    <!-- 查询当前用户收藏商品总数 -->
+    <select id="countCollectByUId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM KZ_COLLECT WHERE USER_ID = #{userId}
+    </select>
+    <!-- 查询当前商品是否被收藏 -->
+    <select id="isCollect" parameterType="java.lang.String" resultType="org.kunze.diansh.entity.Collect">
+        SELECT * FROM KZ_COLLECT WHERE USER_ID = #{userId} AND GOOD_ID = #{spuId}
+    </select>
+</mapper>

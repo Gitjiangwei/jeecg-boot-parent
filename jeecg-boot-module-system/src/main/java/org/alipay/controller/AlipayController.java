@@ -3,7 +3,9 @@ package org.alipay.controller;
 import cn.hutool.core.util.NumberUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
+import com.alipay.api.domain.AlipayTradeRefundModel;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.alipay.api.response.AlipayTradeRefundResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -113,6 +115,45 @@ public class AlipayController {
         byte resultStatus = alipayService.checkAlipay(outTradeNo);
         result.setResult(resultStatus);
         result.setSuccess(true);
+        return result;
+    }
+
+    /**
+     * 支付宝退款
+     * @param alipayBean
+     * @return
+     */
+    @PostMapping(value = "/refundAlipay")
+    @ApiOperation("支付宝退款")
+    @AutoLog("支付宝退款")
+    public Result refundAlipay(@RequestBody @Valid AlipayBean alipayBean, BindingResult bindingResult){
+        Result result = new Result();
+        //参数校验
+        if(bindingResult.hasErrors()){
+            String messages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .reduce((m1,m2)->","+m2)
+                    .orElse("输入参数有误！");
+            throw new IllegalArgumentException(messages);
+        }
+        AlipayTradeRefundModel model = new AlipayTradeRefundModel();//支付宝退款退款对象
+        model.setOutTradeNo(alipayBean.getOut_trade_no());
+        model.setRefundAmount(alipayBean.getTotal_amount().toString()); //退款(元)
+        try {
+            AlipayTradeRefundResponse response = AliPayApi.tradeRefundToResponse(model);
+            if(response.isSuccess()){
+                //调用成功！
+                //更新订单状态为已退款
+                orderService.updateOrderStatu("7",response.getOutTradeNo());
+                result.success("退款成功！");
+            }else {
+                return result.error500("调用支付宝失败，请重试！");
+            }
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+            return result.error500("调用支付宝时出现异常，请重试！");
+        }
         return result;
     }
 

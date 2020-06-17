@@ -258,7 +258,9 @@ public class WXPayController {
     @AutoLog("查询微信订单状态")
     @PostMapping(value = "/qryWxOrderStatus")
     public Result qryWxOrderStatus(String outTradeNo){
-
+        if(EmptyUtils.isEmpty(outTradeNo)){
+            return Result.error("订单号不能为空！");
+        }
         return iwxPayService.qryWxOrderStatus(outTradeNo);
     }
 
