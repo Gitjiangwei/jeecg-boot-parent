@@ -75,7 +75,7 @@
     </delete>
 
     <select id="selectFeaturesSkuIds" resultType="org.kunze.diansh.entity.SpuFeatures">
-        SELECT features_id,sku_id from kz_spu_features feat
+        SELECT features_id as 'featuresId',sku_id from kz_spu_features feat
         WHERE  NOW() &gt; feat.specialstart_time
         AND NOW() &lt; feat.specialend_time
     </select>
