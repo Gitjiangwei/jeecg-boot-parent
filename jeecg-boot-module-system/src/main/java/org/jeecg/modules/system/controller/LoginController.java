@@ -30,6 +30,7 @@ import org.jeecg.modules.system.service.ISysUserService;
 import org.jeecg.modules.system.util.RandImageUtil;
 import org.kunze.diansh.service.IWXPayService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -64,6 +65,9 @@ public class LoginController {
     @Autowired
     private IWXPayService iwxPayService;
 
+    @Value(value = "${check.yanzheng}")
+    private Boolean isCheck;
+
     private static final String BASE_CHECK_CODES = "qwertyuiplkjhgfdsazxcvbnmQWERTYUPLKJHGFDSAZXCVBNM1234567890";
 
     // 确保每个用户一个session
@@ -82,17 +86,19 @@ public class LoginController {
         //update-begin--Author:scott  Date:20190805 for：暂时注释掉密码加密逻辑，有点问题
 
         //update-begin-author:taoyan date:20190828 for:校验验证码
-        String captcha = sysLoginModel.getCaptcha();
-        if (captcha == null) {
-            result.error500("验证码无效");
-            return result;
-        }
-        String lowerCaseCaptcha = captcha.toLowerCase();
-        String realKey = MD5Util.MD5Encode(lowerCaseCaptcha + sysLoginModel.getCheckKey(), "utf-8");
-        Object checkCode = redisUtil.get(realKey);
-        if (checkCode == null || !checkCode.equals(lowerCaseCaptcha)) {
-            result.error500("验证码错误");
-            return result;
+        if(isCheck) {
+            String captcha = sysLoginModel.getCaptcha();
+            if (captcha == null) {
+                result.error500("验证码无效");
+                return result;
+            }
+            String lowerCaseCaptcha = captcha.toLowerCase();
+            String realKey = MD5Util.MD5Encode(lowerCaseCaptcha + sysLoginModel.getCheckKey(), "utf-8");
+            Object checkCode = redisUtil.get(realKey);
+            if (checkCode == null || !checkCode.equals(lowerCaseCaptcha)) {
+                result.error500("验证码错误");
+                return result;
+            }
         }
         //update-end-author:taoyan date:20190828 for:校验验证码
 

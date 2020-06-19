@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
   tomcat:
     max-swallow-size: -1
   servlet:
@@ -184,8 +184,11 @@ logging:
     org.jeecg.modules.system.mapper: debug
 #cas单点登录
 cas:
-  prefixUrl: http://cas.example.org:8443/cas
+  prefixUrl: https://cas.example.org:8443/cas_overlay_template_5_3_war
 address_max: 10
+#后台登录是否开启验证码
+check:
+  yanzheng: true
 #微信支付
 WeChatPay:
   wxapp:
