@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.CalculationUtil;
 import org.jeecg.modules.system.entity.SysUser;
 import org.kunze.diansh.controller.bo.SpuFeaturesBo;
 import org.kunze.diansh.controller.vo.*;
@@ -130,11 +131,9 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
             for(SpuFeaturesListModel item:spuFeaturesVoList){
                 SpuFeaturesListModel spuFeaturesListModel = new SpuFeaturesListModel();
                 BeanUtils.copyProperties(item,spuFeaturesListModel);
-                BigDecimal ordPrice = new BigDecimal(item.getFeaturesPrice());
-                BigDecimal newPrice = ordPrice.divide(new BigDecimal("100")).setScale(2,BigDecimal.ROUND_HALF_UP);
-                spuFeaturesListModel.setFeaturesPrice(newPrice.toString());
+                spuFeaturesListModel.setFeaturesPrice(CalculationUtil.FractionalConversion(item.getFeaturesPrice()));
                 String ownSpec = item.getOwnSpec().substring(1,item.getOwnSpec().length()-1);
-                spuFeaturesListModel.setOwnSpec(ownSpec);
+                spuFeaturesListModel.setOwnSpec(ownSpec.replace("\"",""));
                 spuFeaturesListModelList.add(spuFeaturesListModel);
             }
             PageInfo<SpuFeaturesListModel> pageInfo = new PageInfo<SpuFeaturesListModel>(spuFeaturesListModelList);

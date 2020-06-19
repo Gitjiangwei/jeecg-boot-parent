@@ -111,7 +111,8 @@ AND sku.spu_id = #{id}
         SPU.CID1,
         SPU.CID2,
         SPU.CID3,
-        BRAND_ID
+        BRAND_ID,
+        KSD.specifications
         FROM
         KZ_SKU SKU
         LEFT JOIN KZ_SPU SPU ON SKU.SPU_ID = SPU.ID

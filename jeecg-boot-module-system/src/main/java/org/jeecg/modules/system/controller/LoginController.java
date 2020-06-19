@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.checkerframework.checker.units.qual.A;
@@ -30,9 +31,13 @@ import org.jeecg.modules.system.util.RandImageUtil;
 import org.kunze.diansh.service.IWXPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import org.apache.shiro.session.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
@@ -61,6 +66,10 @@ public class LoginController {
 
     private static final String BASE_CHECK_CODES = "qwertyuiplkjhgfdsazxcvbnmQWERTYUPLKJHGFDSAZXCVBNM1234567890";
 
+    // 确保每个用户一个session
+    protected final Map<Object, Object> sessionMap = new HashMap<Object, Object>();
+
+
     @ApiOperation("登录接口")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Result<JSONObject> login(@RequestBody SysLoginModel sysLoginModel) {
@@ -73,7 +82,7 @@ public class LoginController {
         //update-begin--Author:scott  Date:20190805 for：暂时注释掉密码加密逻辑，有点问题
 
         //update-begin-author:taoyan date:20190828 for:校验验证码
-      /*  String captcha = sysLoginModel.getCaptcha();
+        String captcha = sysLoginModel.getCaptcha();
         if (captcha == null) {
             result.error500("验证码无效");
             return result;
@@ -84,7 +93,7 @@ public class LoginController {
         if (checkCode == null || !checkCode.equals(lowerCaseCaptcha)) {
             result.error500("验证码错误");
             return result;
-        }*/
+        }
         //update-end-author:taoyan date:20190828 for:校验验证码
 
         //1. 校验用户是否有效
@@ -335,6 +344,9 @@ public class LoginController {
     }
 
 
+
+
+
     /**
      * 用户信息
      *
@@ -343,10 +355,29 @@ public class LoginController {
      * @return
      */
     private Result<JSONObject> userInfo(SysUser sysUser, Result<JSONObject> result) {
+
         String syspassword = sysUser.getPassword();
         String username = sysUser.getUsername();
         // 生成token
         String token = JwtUtil.sign(username, syspassword);
+        if(sessionMap.get(username)!=null) {
+/*            Session session = (Session) sessionMap.get(username);
+            // 移除存储的之前用户名和sesion的键值对
+            sessionMap.remove(username);
+            // 销毁之前session
+            session.stop();*/
+            //清空用户登录Token缓存
+            redisUtil.del(sessionMap.get(username).toString());
+            //清空用户登录Shiro权限缓存
+            redisUtil.del(CommonConstant.PREFIX_USER_SHIRO_CACHE + sysUser.getId());
+            //清空用户的缓存信息（包括部门信息），例如sys:cache:user::<username>
+            redisUtil.del(String.format("%s::%s", CacheConstant.SYS_USERS_CACHE, sysUser.getUsername()));
+            // 确保每次登录之后将将用户名和session存进hashmap中
+            sessionMap.put(username, CommonConstant.PREFIX_USER_TOKEN +token);
+        }else {
+            sessionMap.put(username, CommonConstant.PREFIX_USER_TOKEN +token);
+        }
+        //session.setAttribute(username,CommonConstant.PREFIX_USER_TOKEN + token);
         // 设置token缓存有效时间
         redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
         redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME * 2 / 1000);

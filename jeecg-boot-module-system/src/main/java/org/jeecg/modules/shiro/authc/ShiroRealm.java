@@ -18,6 +18,7 @@ import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.RedisUtil;
 import org.jeecg.common.util.SpringContextUtils;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.message.mapper.SysUserShopMapper;
 import org.jeecg.modules.system.entity.SysUser;
 import org.jeecg.modules.system.service.ISysUserService;
 import org.springframework.beans.BeanUtils;
@@ -46,6 +47,9 @@ public class ShiroRealm extends AuthorizingRealm {
 	@Autowired
 	@Lazy
 	private RedisUtil redisUtil;
+	@Autowired
+	@Lazy
+	private SysUserShopMapper sysUserShopMapper;
 
 	/**
 	 * 必须重写此方法，不然Shiro会报错
