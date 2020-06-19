@@ -209,6 +209,9 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         BeanUtils.copyProperties(spuBo,spu);
         spu.setUpdateName(userName);
         int updateSupResult = spuMapper.updateSpu(spu);
+        if(updateSupResult>0){
+            isFlag = true;
+        }
         updateSupResult = 1;
         if(updateSupResult > 0 && (spuBo.getSkuVos()!=null || spuBo.getSpuDetail() != null)){
             if(null != spuBo.getSpuDetail()){
