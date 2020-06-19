@@ -1,5 +1,6 @@
 package org.alipay.service.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
@@ -26,6 +27,7 @@ import org.kunze.diansh.service.IStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 
@@ -96,8 +98,11 @@ public class AlipayServiceImpl implements IAlipayService {
             //获取当前交易的订单
             Order order = orderMapper.selectById(outTradeNo);
 
+            String Payment = NumberUtil.add(order.getAmountPayment(),order.getPostFree()).toString(); //配送费+商品价格
+            Payment = NumberUtil.div(Payment,"100",2, RoundingMode.HALF_UP).toString(); //转化为元
+
             //对比交易金额 和 商户id
-            if(order!=null && totalAmount.equals(order.getAmountPayment()) && AlipayPropertiesConfig.getKey("app_id").equals(appId)){
+            if(order!=null && totalAmount.equals(Payment) && AlipayPropertiesConfig.getKey("app_id").equals(appId)){
 
                 AlipayOrder alipayOrder = new AlipayOrder();
 

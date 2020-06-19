@@ -51,7 +51,7 @@ public class AlipayController {
     private IOrderService orderService;
 
     /**
-     * 支付宝支付统一下单
+     * 支付宝App支付统一下单
      * @return
      * @throws AlipayApiException
      */
@@ -75,13 +75,13 @@ public class AlipayController {
         if(null == order){
             return Result.error("发起支付时出现错误！");
         }
-        Integer totalPrice = NumberUtil.add(order.getAmountPayment(),order.getPostFree()).intValue();
-        if(!alipayBean.getTotal_amount().toString().equals(totalPrice.toString())){
+        String totalPrice = NumberUtil.add(order.getAmountPayment(),order.getPostFree()).toString();
+        if(!alipayBean.getTotal_amount().equals(totalPrice)){
             return Result.error("非法访问，请求已关闭！");
         }
 
         //除以100 保留两位小数 四舍五入模式
-        String totalAmount = NumberUtil.div(totalPrice.toString(),"100",2, RoundingMode.HALF_UP).toString();
+        String totalAmount = NumberUtil.div(totalPrice,"100",2, RoundingMode.HALF_UP).toString();
 
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
 
@@ -139,7 +139,7 @@ public class AlipayController {
         }
         AlipayTradeRefundModel model = new AlipayTradeRefundModel();//支付宝退款退款对象
         model.setOutTradeNo(alipayBean.getOut_trade_no());
-        model.setRefundAmount(alipayBean.getTotal_amount().toString()); //退款(元)
+        model.setRefundAmount(alipayBean.getTotal_amount()); //退款(元)
         try {
             AlipayTradeRefundResponse response = AliPayApi.tradeRefundToResponse(model);
             if(response.isSuccess()){
@@ -156,5 +156,7 @@ public class AlipayController {
         }
         return result;
     }
+
+
 
 }

@@ -21,9 +21,7 @@ public class AlipayBean implements Serializable {
     private String subject;
     /*付款金额，必填*/
     @NotNull(message = "付款金额不能为空！")
-    @DecimalMax("1000000000000")
-    @DecimalMin("0")
-    private Integer total_amount;
+    private String total_amount;
     /*商品描述，可空*/
     //@NotBlank(message = "商品描述不能为空！")
     private String body;
