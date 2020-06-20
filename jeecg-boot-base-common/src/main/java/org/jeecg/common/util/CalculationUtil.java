@@ -18,7 +18,7 @@ public class CalculationUtil {
         }else {
             BigDecimal old = new BigDecimal(ordPrice);
             BigDecimal newPrice = old.divide(new BigDecimal("100"));
-            return newPrice.setScale(2,BigDecimal.ROUND_HALF_UP).toString();
+            return newPrice.setScale(2).toString();
         }
     }
 
