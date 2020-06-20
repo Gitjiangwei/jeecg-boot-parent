@@ -42,4 +42,7 @@ public class SalesTicketVo implements Serializable {
 
     /**配送费*/
     private String postFree;
+
+    /**合计*/
+    private String priceTotle;
 }

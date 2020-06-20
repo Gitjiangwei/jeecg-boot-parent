@@ -324,7 +324,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                     }
                 }
                 orderVo.setConsigneeSex(orderModels.get(i).getConsignee()==null?"":orderModels.get(i).getConsignee()+sex);
-                orderVo.setPayment(new BigDecimal(orderModels.get(i).getPayment()).divide(new BigDecimal("100")).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+                orderVo.setPayment(new BigDecimal(orderModels.get(i).getPayment()).divide(new BigDecimal("100")).setScale(2).toString());
                 orderVos.add(orderVo);
             }
             PageInfo pageInfo = new PageInfo<OrderVo>(orderVos);
@@ -411,7 +411,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             BigDecimal payAmout = new BigDecimal(order.getPayment());
             payAmout = payAmout.multiply(new BigDecimal("0.01"));
             orderDetailVo.setPractical(payAmout.toString());//实付金额
-            orderDetailVo.setPostFree(order.getPostFree());//配送费
+            orderDetailVo.setPostFree(new BigDecimal(order.getPostFree()).setScale(2).toString());//配送费
+            orderDetailVo.setPriceTotle(new BigDecimal(order.getPostFree()).add(new BigDecimal(orderDetailVo.getPractical())).toString());
             return orderDetailVo;
         }else {
             return null;
