@@ -208,7 +208,6 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
                 } else if ("CLOSED".equals(map.get("trade_state"))) {
                     return Result.error("订单已关闭");
                 } else if ("PAYERROR".equals(map.get("trade_state"))) {
-
                     return Result.error("支付失败");
                 }
 
@@ -227,8 +226,8 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return Result.error("支付错误");
         }
-        return Result.error("支付错误");
     }
 
 
