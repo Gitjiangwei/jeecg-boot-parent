@@ -115,7 +115,7 @@ public class IntimidateServiceImpl implements IIntimidateService {
         BigDecimal postFree = new BigDecimal(order.getPostFree());
         String practical = postFree.add(new BigDecimal(order.getPayment())).toString();
         salesTicketVo.setPractical(CalculationUtil.FractionalConversion(practical));//实付金额
-        salesTicketVo.setPostFree(CalculationUtil.FractionalConversion(order.getPostFree()));//配送费
+        salesTicketVo.setPostFree(order.getPostFree());//配送费
         if(status.equals("2")) {
             orderService.updateOrderStatu("3", orderId);
         }

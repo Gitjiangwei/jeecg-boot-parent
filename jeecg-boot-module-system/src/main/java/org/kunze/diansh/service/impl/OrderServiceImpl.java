@@ -411,6 +411,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             BigDecimal payAmout = new BigDecimal(order.getPayment());
             payAmout = payAmout.multiply(new BigDecimal("0.01"));
             orderDetailVo.setPractical(payAmout.toString());//实付金额
+            orderDetailVo.setPostFree(order.getPostFree());//配送费
             return orderDetailVo;
         }else {
             return null;
