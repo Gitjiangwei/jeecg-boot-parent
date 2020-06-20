@@ -3,6 +3,7 @@ package org.kunze.diansh.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.jeecg.common.util.CalculationUtil;
 import org.jeecg.common.util.EmptyUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -411,7 +412,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             BigDecimal payAmout = new BigDecimal(order.getPayment());
             payAmout = payAmout.multiply(new BigDecimal("0.01"));
             orderDetailVo.setPractical(payAmout.toString());//实付金额
-            orderDetailVo.setPostFree(new BigDecimal(order.getPostFree()).setScale(2).toString());//配送费
+            orderDetailVo.setPostFree(CalculationUtil.FractionalConversion(order.getPostFree()));//配送费
             orderDetailVo.setPriceTotle(new BigDecimal(order.getPostFree()).add(new BigDecimal(orderDetailVo.getPractical())).toString());
             return orderDetailVo;
         }else {
