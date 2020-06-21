@@ -206,8 +206,10 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
 
                     return Result.ok("支付成功");
                 } else if ("CLOSED".equals(map.get("trade_state"))) {
+                    out.println("============================================================================================订单已关闭");
                     return Result.error("订单已关闭");
                 } else if ("PAYERROR".equals(map.get("trade_state"))) {
+                    out.println("============================================================================================支付失败");
                     return Result.error("支付失败");
                 }
 
@@ -221,6 +223,7 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
                 i++;
                 //防止无限的轮询下去，增加一个计数器
                 if (i >= 20) {
+                    out.println("============================================================================================支付失败");
                     return Result.error("二维码超时");
                 }
             }

@@ -71,6 +71,7 @@ public class OrderController {
         String postFree = params.getString("postFree");
         JSONArray cids = params.getJSONArray("cids");
         Integer payType = params.getIntValue("payType");
+        String buyerMessage = params.getString("buyerMessage");
 
         if(EmptyUtils.isEmpty(cids)){
             return orderResult.error500("cids参数丢失！");
@@ -84,7 +85,10 @@ public class OrderController {
         if(EmptyUtils.isEmpty(pick_up)){
             return orderResult.error500("配送参数丢失！");
         }
-        Order order = orderService.createOrder(aid,cids,shopId,userID,pick_up,postFree,payType);
+        if(EmptyUtils.isEmpty(postFree)){
+            return orderResult.error500("配送费不能为空！");
+        }
+        Order order = orderService.createOrder(aid,cids,shopId,userID,pick_up,postFree,payType,buyerMessage);
         if(null != order){
             orderResult.success("创建成功！");
             orderResult.setResult(order);

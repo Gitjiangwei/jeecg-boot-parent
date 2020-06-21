@@ -23,8 +23,9 @@ public interface IOrderService extends IService<Order> {
      * @param userID 用户id
      * @param pick_up 配送方式 1.自提 2.商家配送
      * @param postFree 配送费
+     * @param buyerMessage 备注
      */
-    Order createOrder(String aid, JSONArray cids, String shopId, String userID, String pick_up,String postFree,Integer payType);
+    Order createOrder(String aid, JSONArray cids, String shopId, String userID, String pick_up,String postFree,Integer payType,String buyerMessage);
 
     /**
      * 根据订单状态查询订单数据

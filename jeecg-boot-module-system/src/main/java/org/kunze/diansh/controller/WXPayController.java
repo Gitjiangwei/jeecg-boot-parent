@@ -9,6 +9,7 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.WxPayAPI.WXPayUtil;
+import org.kunze.diansh.WxPayAPI.WxPayDecodeUtil;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.entity.properties.WeChatPayProperties;
 import org.kunze.diansh.mapper.OrderMapper;
@@ -213,13 +214,14 @@ public class WXPayController {
             //处理业务开始
             Map requestMap = new HashMap(16);
             if (resultMap != null && resultMap.size() > 0) {
+                //退款结果解密
+                String reqInfo = WxPayDecodeUtil.decryptData(resultMap.get("req_info"));
                 //得到退款结果信息
-                Map<String, String> map = WXPayUtil.xmlToMap("");
+                Map<String, String> map = WXPayUtil.xmlToMap(reqInfo);
                 if ("SUCCESS".equals(map.get("refund_status"))) {
                     /**
                      * 业务处理
                      */
-
                     //通知微信.异步确认成功
                     requestMap.put("return_code", "SUCCESS");
                     requestMap.put("return_msg", "OK");

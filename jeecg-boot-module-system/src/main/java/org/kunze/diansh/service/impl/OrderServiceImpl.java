@@ -70,10 +70,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @param shopId 店铺id
      * @param userID 用户id
      * @param pick_up 配送方式 1.自提 2.商家配送
+     * @param postFree 配送费
+     * @param buyerMessage 备注
      */
     @Override
     @Transactional
-    public Order createOrder(String aid, JSONArray cids, String shopId, String userID,String pick_up,String postFree,Integer payType) {
+    public Order createOrder(String aid, JSONArray cids, String shopId, String userID,String pick_up,String postFree,Integer payType,String buyerMessage) {
         //当前时间
         Date date = new Date();
         //根据aid查找相关的地址信息
@@ -117,6 +119,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setPayment("0"); //实付金额
         order.setStatus(1); //订单状态 未付款
         order.setPayType(payType); //付款类型
+        order.setBuyerMessage(buyerMessage);//备注
 
         //插入订单数据
         Integer rows = orderMapper.insertOrder(order);
