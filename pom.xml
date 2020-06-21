@@ -351,7 +351,12 @@
 			<artifactId>aliyun-java-sdk-core</artifactId>
 			<version>${aliyun-java-sdk-core.version}</version>
 		</dependency>
-		
+		<!--腾讯云短信-->
+		<dependency>
+			<groupId>com.tencentcloudapi</groupId>
+			<artifactId>tencentcloud-sdk-java</artifactId>
+			<version>3.1.62</version>
+		</dependency>
 		<!--HttpClient-->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
