@@ -3,11 +3,14 @@ package org.jeecg.modules.system.controller;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.exceptions.ClientException;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.checkerframework.checker.units.qual.A;
@@ -19,6 +22,8 @@ import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.*;
 import org.jeecg.common.util.encryption.EncryptedString;
+import org.jeecg.common.util.tencentSms.SendSms;
+import org.jeecg.common.util.tencentSms.SendSmsEnum;
 import org.jeecg.modules.message.service.ISysUserShopService;
 import org.jeecg.modules.shiro.vo.DefContants;
 import org.jeecg.modules.system.entity.SysDepart;
@@ -241,6 +246,7 @@ public class LoginController {
      * @param jsonObject
      * @return
      */
+    @ApiOperation("短信接口")
     @PostMapping(value = "/sms")
     public Result<String> sms(@RequestBody JSONObject jsonObject) {
         Result<String> result = new Result<String>();
@@ -274,7 +280,8 @@ public class LoginController {
                     sysBaseAPI.addLog("手机号已经注册，请直接登录！", CommonConstant.LOG_TYPE_1, null);
                     return result;
                 }
-                b = DySmsHelper.sendSms(mobile, obj, DySmsEnum.REGISTER_TEMPLATE_CODE);
+                //b = DySmsHelper.sendSms(mobile, obj, DySmsEnum.REGISTER_TEMPLATE_CODE);
+                b = SendSms.sendSms(mobile,captcha+","+"10", SendSmsEnum.REGISTER_TEMPLATE_CODE);
             } else {
                 //登录模式，校验用户有效性
                 SysUser sysUser = sysUserService.getUserByPhone(mobile);
@@ -288,10 +295,12 @@ public class LoginController {
                  */
                 if (CommonConstant.SMS_TPL_TYPE_0.equals(smsmode)) {
                     //登录模板
-                    b = DySmsHelper.sendSms(mobile, obj, DySmsEnum.LOGIN_TEMPLATE_CODE);
+                    //b = DySmsHelper.sendSms(mobile, obj, DySmsEnum.LOGIN_TEMPLATE_CODE);
+                    b = SendSms.sendSms(mobile, captcha+","+"10", SendSmsEnum.LOGIN_TEMPLATE_CODE);
                 } else if (CommonConstant.SMS_TPL_TYPE_2.equals(smsmode)) {
                     //忘记密码模板
-                    b = DySmsHelper.sendSms(mobile, obj, DySmsEnum.FORGET_PASSWORD_TEMPLATE_CODE);
+                    //b = DySmsHelper.sendSms(mobile, obj, DySmsEnum.FORGET_PASSWORD_TEMPLATE_CODE);
+                    b = SendSms.sendSms(mobile, captcha+","+"10", SendSmsEnum.FORGET_PASSWORD_TEMPLATE_CODE);
                 }
             }
 
@@ -307,7 +316,7 @@ public class LoginController {
             //update-end--Author:scott  Date:20190812 for：issues#391
             result.setSuccess(true);
 
-        } catch (ClientException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             result.error500(" 短信接口未配置，请联系管理员！");
             return result;
@@ -483,6 +492,7 @@ public class LoginController {
      * @return
      * @throws Exception
      */
+    @ApiOperation("app登录")
     @RequestMapping(value = "/mLogin", method = RequestMethod.POST)
     public Result<JSONObject> mLogin(@RequestBody SysLoginModel sysLoginModel) throws Exception {
         Result<JSONObject> result = new Result<JSONObject>();
@@ -504,7 +514,7 @@ public class LoginController {
             return result;
         }
 
-        String orgCode = sysUser.getOrgCode();
+/*        String orgCode = sysUser.getOrgCode();
         if (oConvertUtils.isEmpty(orgCode)) {
             //如果当前用户无选择部门 查看部门关联信息
             List<SysDepart> departs = sysDepartService.queryUserDeparts(sysUser.getId());
@@ -515,7 +525,7 @@ public class LoginController {
             orgCode = departs.get(0).getOrgCode();
             sysUser.setOrgCode(orgCode);
             this.sysUserService.updateUserDepart(username, orgCode);
-        }
+        }*/
         JSONObject obj = new JSONObject();
         //用户登录信息
         obj.put("userInfo", sysUser);
@@ -623,6 +633,51 @@ public class LoginController {
         return result;
     }
 
+    /***
+     * APP注册
+     * @param jsonObject
+     * @return
+     */
+    @ApiOperation("APP注册接口")
+    @RequestMapping(value = "/appRegister",method = RequestMethod.POST)
+    public Result<T> appRegister(@RequestBody JSONObject jsonObject){
+        Result<T> result = new Result<T>();
+        String phone = jsonObject.getString("phone");
+        String smscode = jsonObject.getString("smscode");
+        String password = jsonObject.getString("password");
+        Object code = redisUtil.get(phone);
+        if (!smscode.equals(code)) {
+            result.setMessage("手机验证码错误");
+            return result;
+        }
+        SysUser sysUser2 = sysUserService.getUserByPhone(phone);
+        if (sysUser2 != null) {
+            result.setMessage("该手机号已注册");
+            result.setSuccess(false);
+            return result;
+        }
+        SysUser user = new SysUser();
+        try {
+            user.setCreateTime(new Date());// 设置创建时间
+            String salt = oConvertUtils.randomGen(8);
+            String passwordEncode = PasswordUtil.encrypt(phone, password, salt);
+            user.setSalt(salt);
+            user.setUsername(phone);
+            user.setRealname("hh"+RandomStringUtils.randomAlphanumeric(8));
+            user.setPassword(passwordEncode);
+            user.setEmail("");
+            user.setPhone(phone);
+            user.setStatus(1);
+            user.setDelFlag(CommonConstant.DEL_FLAG_0.toString());
+            user.setActivitiSync(CommonConstant.ACT_SYNC_1);
+            sysUserService.addUserWithRole(user, "ee8626f80f7c2619917b6236f3a7f02b");//默认临时角色 test
+            result.success("注册成功");
+        } catch (Exception e) {
+            result.error500("注册失败");
+        }
+        return  result;
+    }
+
     //Todo 此安卓登录方法为简单的逻辑模拟 正式需要修改为短信验证码登录
     /**
      * 安卓登录
@@ -692,6 +747,49 @@ public class LoginController {
         return result;
     }
 
+    /**
+     * 用户更改密码
+     */
+    @ApiOperation("APP更改密码")
+    @PostMapping(value = "/appPwdChange")
+    public Result<SysUser> passwordChange(@RequestBody JSONObject jsonObject) {
+        String password = jsonObject.getString("password");
+        String smscode = jsonObject.getString("smscode");
+        String phone = jsonObject.getString("phone");
+        Result<SysUser> result = new Result<SysUser>();
+        if (oConvertUtils.isEmpty(password) || oConvertUtils.isEmpty(smscode) || oConvertUtils.isEmpty(phone)) {
+            result.setMessage("重置密码失败！");
+            result.setSuccess(false);
+            return result;
+        }
 
+        SysUser sysUser = new SysUser();
+        Object object = redisUtil.get(phone);
+        if (null == object) {
+            result.setMessage("短信验证码失效！");
+            result.setSuccess(false);
+            return result;
+        }
+        if (!smscode.equals(object)) {
+            result.setMessage("短信验证码不匹配！");
+            result.setSuccess(false);
+            return result;
+        }
+        sysUser = this.sysUserService.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, phone).eq(SysUser::getPhone, phone));
+        if (sysUser == null) {
+            result.setMessage("未找到用户！");
+            result.setSuccess(false);
+            return result;
+        } else {
+            String salt = oConvertUtils.randomGen(8);
+            sysUser.setSalt(salt);
+            String passwordEncode = PasswordUtil.encrypt(sysUser.getUsername(), password, salt);
+            sysUser.setPassword(passwordEncode);
+            this.sysUserService.updateById(sysUser);
+            result.setSuccess(true);
+            result.setMessage("密码重置完成！");
+            return result;
+        }
+    }
 
 }

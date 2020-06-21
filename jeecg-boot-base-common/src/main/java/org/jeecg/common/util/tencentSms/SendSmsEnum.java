@@ -4,7 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.util.DySmsEnum;
 
 public enum SendSmsEnum {
-    //LOGIN_TEMPLATE_CODE("642066","JEECG","code"),
+    //登录
+    LOGIN_TEMPLATE_CODE("642197","山西乾森网络科技有限公司","code","1400388965"),
     //修改密码
     FORGET_PASSWORD_TEMPLATE_CODE("642066","山西乾森网络科技有限公司","code","1400388965"),
     //注册

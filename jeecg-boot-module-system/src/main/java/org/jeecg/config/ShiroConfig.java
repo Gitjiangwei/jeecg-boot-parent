@@ -90,6 +90,8 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/sys/login", "anon"); //登录接口排除
 		filterChainDefinitionMap.put("/sys/mLogin", "anon"); //登录接口排除
 		filterChainDefinitionMap.put("/sys/logout", "anon"); //登出接口排除
+		filterChainDefinitionMap.put("/sys/appPwdChange","anon"); //APP重置密码
+		filterChainDefinitionMap.put("/sys/appRegister","anon"); //APP注册排除
 		filterChainDefinitionMap.put("/sys/getEncryptedString", "anon"); //获取加密串
 		filterChainDefinitionMap.put("/sys/sms", "anon");//短信验证码
 		filterChainDefinitionMap.put("/sys/phoneLogin", "anon");//手机登录		
