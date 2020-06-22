@@ -19,7 +19,7 @@ public class Address implements Serializable {
     //收货人
     private String consignee;
 
-    //先生/女士
+    //1:先生 0:女士
     private int consigneeSex;
 
     //省

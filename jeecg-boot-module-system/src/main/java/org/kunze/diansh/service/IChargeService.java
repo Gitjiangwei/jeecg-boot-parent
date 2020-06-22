@@ -3,6 +3,8 @@ package org.kunze.diansh.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.kunze.diansh.entity.Charge;
 
+import java.util.Map;
+
 public interface IChargeService extends IService<Charge> {
 
     /**
@@ -19,4 +21,11 @@ public interface IChargeService extends IService<Charge> {
      * @return
      */
     Boolean updateCharge(Charge charge);
+
+
+    /***
+     * 查询手续费
+     * @return
+     */
+    Map<String,String> selectCharge();
 }

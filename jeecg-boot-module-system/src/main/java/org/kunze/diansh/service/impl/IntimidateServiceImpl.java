@@ -60,9 +60,9 @@ public class IntimidateServiceImpl implements IIntimidateService {
         //6、添加配送信息
         DistributionVo distributionVo = new DistributionVo();
         String sex = "";
-        if(address.getConsigneeSex()== 0){
+        if(address.getConsigneeSex()== 1){
             sex = "先生";
-        }else if(address.getConsigneeSex() == 1){
+        }else if(address.getConsigneeSex() == 0){
             sex = "女士";
         }
         String call = address.getConsignee()+sex;

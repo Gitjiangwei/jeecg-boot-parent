@@ -10,6 +10,7 @@ import org.kunze.diansh.service.IChargeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -56,5 +57,14 @@ public class ChargeServiceImpl extends ServiceImpl<ChargeMapper, Charge> impleme
             }
         }
         return isFlag;
+    }
+
+    /***
+     * 查询手续费
+     * @return
+     */
+    @Override
+    public Map<String, String> selectCharge() {
+        return chargeMapper.selectCharge();
     }
 }

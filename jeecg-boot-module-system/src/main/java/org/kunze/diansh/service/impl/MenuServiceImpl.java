@@ -8,6 +8,7 @@ import org.kunze.diansh.controller.vo.InformationVo;
 import org.kunze.diansh.controller.vo.SalesVo;
 import org.kunze.diansh.entity.modelData.MonthMenuModel;
 import org.kunze.diansh.entity.modelData.SalesModel;
+import org.kunze.diansh.mapper.ChargeMapper;
 import org.kunze.diansh.mapper.ShopMapper;
 import org.kunze.diansh.mapper.StockMapper;
 import org.kunze.diansh.service.IMenuService;
@@ -29,6 +30,9 @@ public class MenuServiceImpl implements IMenuService {
     @Autowired
     private StockMapper stockMapper;
 
+    @Autowired
+    private ChargeMapper chargeMapper;
+
     /**
      * 门店销售排行榜
      *
@@ -46,14 +50,30 @@ public class MenuServiceImpl implements IMenuService {
             if(oldMapList.get(i).get("payment")!=null){
                 BigDecimal ordPrice = new BigDecimal(String.valueOf(oldMapList.get(i).get("payment")));
                 BigDecimal newPrice = ordPrice.divide(new BigDecimal("100"));
-                payment = newPrice.setScale(2, ROUND_HALF_UP).toString();
+                payment = newPrice.setScale(2).toString();
             }
             map.put("payment",payment);
+            map.put("serviceCharge",serviceCharge(payment));
             newMapList.add(map);
         }
         return newMapList;
     }
 
+    /**
+     * 手续费
+     * @param payMent 商家利润
+     * jw
+     * @return
+     */
+    private String serviceCharge(String payMent){
+        Map<String,String> map = chargeMapper.selectCharge();
+        String serviceCharge = map.get("service_charge")==null?"0":map.get("service_charge");
+        if(!serviceCharge.equals("0")){
+            serviceCharge = new BigDecimal(serviceCharge).divide(new BigDecimal("100")).toString();
+            serviceCharge = new BigDecimal(payMent).multiply(new BigDecimal(serviceCharge)).setScale(2).toString();
+        }
+        return serviceCharge;
+    }
     /***
      * 门店销售统计图
      * @param shopId

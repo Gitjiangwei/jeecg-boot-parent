@@ -18,4 +18,8 @@
         </trim>
         where id = #{id}
     </update>
+
+    <select id="selectCharge" resultType="Map">
+        select id,service_charge from kz_charge
+    </select>
 </mapper>
