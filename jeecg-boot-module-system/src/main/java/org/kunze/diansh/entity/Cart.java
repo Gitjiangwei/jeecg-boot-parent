@@ -42,4 +42,7 @@ public class Cart implements Serializable {
     //状态
     private String status;
 
+    //店铺id
+    private String shopId;
+
 }

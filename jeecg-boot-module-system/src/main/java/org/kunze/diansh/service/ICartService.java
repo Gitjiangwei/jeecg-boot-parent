@@ -10,9 +10,10 @@ public interface ICartService extends IService<Cart> {
 
     /**
      * 购物车查询
+     * @param shopId
      * @return
      */
-    List<Cart> queryCart();
+    List<Cart> queryCart(String shopId);
 
     /**
      * 添加商品到购物车
@@ -22,14 +23,14 @@ public interface ICartService extends IService<Cart> {
 
     /**
      * 修改购物车商品数量
-     * @param cartList
+     * @param cart
      */
-    void updateCart(List<Cart> cartList);
+    void updateCart(Cart cart);
 
     /**
      * 删除购物车商品
      * @param skuId 商品id
      */
-    void deleteCart(List skuId);
+    void deleteCart(List skuId,String shopId);
 
 }
