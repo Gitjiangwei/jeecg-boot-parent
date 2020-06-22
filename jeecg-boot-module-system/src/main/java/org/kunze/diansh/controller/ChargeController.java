@@ -31,7 +31,7 @@ public class ChargeController {
      * @return
      */
     @ApiOperation("添加手续费")
-    @AutoLog(value = "添加手续费",logType = 2)
+    @AutoLog("添加手续费")
     @PostMapping(value = "/saveCharge")
     public Result<T> saveCharge(@RequestBody JSONObject jsonObject){
         Result<T> result = new Result<T>();
@@ -55,7 +55,7 @@ public class ChargeController {
      * @return
      */
     @ApiOperation("修改手续费")
-    @AutoLog(value = "修改手续费",logType = 3)
+    @AutoLog("修改手续费")
     @PostMapping(value = "/updateCharge")
     public Result<T> updateCharge(@RequestBody Charge charge){
         Result<T> result = new Result<T>();

@@ -70,7 +70,7 @@ public class MenuServiceImpl implements IMenuService {
         String serviceCharge = map.get("service_charge")==null?"0":map.get("service_charge");
         if(!serviceCharge.equals("0")){
             serviceCharge = new BigDecimal(serviceCharge).divide(new BigDecimal("100")).toString();
-            serviceCharge = new BigDecimal(payMent).multiply(new BigDecimal(serviceCharge)).setScale(2).toString();
+            serviceCharge = new BigDecimal(payMent).multiply(new BigDecimal(serviceCharge)).toString();
         }
         return serviceCharge;
     }
