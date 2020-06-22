@@ -84,12 +84,12 @@
         </if>
         <trim prefix="where" prefixOverrides="and">
             shop.`status`='0'
+            <if test="shopName != null and shopName != ''">
+              AND  shop.shop_name like CONCAT('%',#{shopName},'%')
+            </if>
         </trim>
         GROUP BY shop.id
         ORDER BY payment DESC
-        <if test="more == 1">
-            limit 7
-        </if>
     </select>
 
 

@@ -14,7 +14,7 @@ public interface IMenuService {
      * 门店销售排行榜
      * @return
      */
-    List<Map<String,String>> selectStoreLeaderboard(String more,String choiceTime);
+    PageInfo<Map<String, String>> selectStoreLeaderboard(String shopName, String more,String choiceTime,Integer pageNo,Integer pageSize);
 
 
     /***

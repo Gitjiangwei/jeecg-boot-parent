@@ -39,9 +39,10 @@ public class MenuServiceImpl implements IMenuService {
      * @return
      */
     @Override
-    public List<Map<String, String>> selectStoreLeaderboard(String more,String choiceTime) {
+    public PageInfo<Map<String, String>> selectStoreLeaderboard(String shopName,String more,String choiceTime,Integer pageNo,Integer pageSize) {
+        Page page = PageHelper.startPage(pageNo,pageSize);
         List<Map<String,String>> newMapList = new ArrayList<Map<String, String>>();
-        List<Map<String,String>> oldMapList = shopMapper.selectStoreLeaderboard(more,choiceTime);
+        List<Map<String,String>> oldMapList = shopMapper.selectStoreLeaderboard(shopName,more,choiceTime);
         for(int i =0;i< oldMapList.size();i++){
             Map<String,String> map = new HashMap<String,String>();
             map.put("shopId",oldMapList.get(i).get("id") == null?"":oldMapList.get(i).get("id"));
@@ -56,7 +57,9 @@ public class MenuServiceImpl implements IMenuService {
             map.put("serviceCharge",serviceCharge(payment));
             newMapList.add(map);
         }
-        return newMapList;
+        PageInfo<Map<String,String>> mapPageInfo = new PageInfo<Map<String, String>>(newMapList);
+        mapPageInfo.setTotal(page.getTotal());
+        return mapPageInfo;
     }
 
     /**
@@ -70,7 +73,7 @@ public class MenuServiceImpl implements IMenuService {
         String serviceCharge = map.get("service_charge")==null?"0":map.get("service_charge");
         if(!serviceCharge.equals("0")){
             serviceCharge = new BigDecimal(serviceCharge).divide(new BigDecimal("100")).toString();
-            serviceCharge = new BigDecimal(payMent).multiply(new BigDecimal(serviceCharge)).toString();
+            serviceCharge = new BigDecimal(payMent).multiply(new BigDecimal(serviceCharge)).setScale(2, ROUND_HALF_UP).toString();
         }
         return serviceCharge;
     }
@@ -84,7 +87,7 @@ public class MenuServiceImpl implements IMenuService {
     public List<String> selectStoreByShop(String shopId, String year) {
         List<String> stringList = new ArrayList<String>();
         if(shopId == null || shopId.equals("")){
-            List<Map<String,String>> mapList = shopMapper.selectStoreLeaderboard("0","0");
+            List<Map<String,String>> mapList = shopMapper.selectStoreLeaderboard(null,"0","0");
             shopId = mapList.get(0).get("id") == null?"":mapList.get(0).get("id");
         }
         if(year == null || year.equals("")){

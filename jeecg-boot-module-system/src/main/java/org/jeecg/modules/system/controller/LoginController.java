@@ -300,7 +300,7 @@ public class LoginController {
                 } else if (CommonConstant.SMS_TPL_TYPE_2.equals(smsmode)) {
                     //忘记密码模板
                     //b = DySmsHelper.sendSms(mobile, obj, DySmsEnum.FORGET_PASSWORD_TEMPLATE_CODE);
-                    b = SendSms.sendSms(mobile, captcha+","+"10", SendSmsEnum.FORGET_PASSWORD_TEMPLATE_CODE);
+                    b = SendSms.sendSms(mobile, captcha, SendSmsEnum.FORGET_PASSWORD_TEMPLATE_CODE);
                 }
             }
 

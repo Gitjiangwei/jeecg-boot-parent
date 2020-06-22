@@ -27,10 +27,13 @@ public class MenuController {
 
     @ApiOperation("门店总排行")
     @GetMapping(value = "/loaderboard")
-    public Result<List<Map<String,String>>> selectStoreLeaderboard(@RequestParam(name = "more",defaultValue = "1") String more,
-                                                                   @RequestParam(name = "choiceTime",defaultValue = "0")String choiceTime){
-        Result<List<Map<String,String>>> result = new Result<List<Map<String, String>>>();
-        List<Map<String,String>> mapList = menuService.selectStoreLeaderboard(more,choiceTime);
+    public Result<PageInfo<Map<String,String>>> selectStoreLeaderboard(@RequestParam(name = "shopName",required = false) String shopName,
+                                                                       @RequestParam(name = "more",defaultValue = "1") String more,
+                                                                   @RequestParam(name = "choiceTime",defaultValue = "0")String choiceTime,
+                                                                   @RequestParam(name = "pageNo",defaultValue = "1") String pageNo,
+                                                                   @RequestParam(name = "pageSize",defaultValue = "7") String pageSize){
+        Result<PageInfo<Map<String,String>>> result = new Result<PageInfo<Map<String, String>>>();
+        PageInfo<Map<String,String>> mapList = menuService.selectStoreLeaderboard(shopName,more,choiceTime,Integer.valueOf(pageNo),Integer.valueOf(pageSize));
         result.setSuccess(true);
         result.setResult(mapList);
         return result;
