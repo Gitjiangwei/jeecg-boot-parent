@@ -2,15 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.kunze.diansh.mapper.ShopMapper">
     <select id="selectByKey" resultType="org.kunze.diansh.entity.KzShop">
-        select id,shop_name,create_time,status,shop_address,image
-        from kz_shop
+         select shop.id,shop_name,create_time,status,reg.`name` as 'province',reg1.`name` as 'city',reg2.`name` as 'area' ,shop_address,image
+        from kz_shop shop
+        LEFT JOIN kz_region reg ON shop.province = reg.id
+        LEFT JOIN kz_region reg1 ON shop.city = reg1.id
+        LEFT JOIN kz_region reg2 ON shop.area = reg2.id
         where id = #{shopId} and status = '0'
     </select>
 
 
     <select id="queryShopList" resultType="org.kunze.diansh.controller.vo.ShopVo">
-        select id,shop_name,create_time,shop_address,image,CONCAT(start_business,'-',end_business) as 'businessHours',person_charge,telphone,idenitiy,update_time,post_free
-        from kz_shop
+        select shop.id,shop_name,create_time,province,city,area,shop_address,CONCAT(reg.`name`,reg1.`name`,reg2.`name`,shop_address)as 'addressTotal',image,CONCAT(start_business,'-',end_business) as 'businessHours',person_charge,telphone,idenitiy,update_time,post_free
+        from kz_shop shop
+        LEFT JOIN kz_region reg ON shop.province = reg.id
+        LEFT JOIN kz_region reg1 ON shop.city = reg1.id
+        LEFT JOIN kz_region reg2 ON shop.area = reg2.id
         <trim prefix="where" prefixOverrides="and">
             status = '0'
             <if test="shopName != null and shopName != ''">
@@ -19,16 +25,25 @@
             <if test="shopAddress != null and shopAddress != '' ">
                 and shop_address like CONCAT('%',#{shopAddress},'%')
             </if>
-<!--            <if test="businessHours != null and businessHours != ''">
-                and business_hours = #{businessHours}
-            </if>-->
+            <if test="province != null and province != ''">
+                and province = #{province}
+            </if>
+            <if test="province != null and province != ''">
+                and city = #{city}
+            </if>
+            <if test="province != null and province != ''">
+                and area = #{area}
+            </if>
+            <if test="id != null and id != ''">
+                and shop.id = #{id}
+            </if>
         </trim>
         order by update_time desc,create_time desc
     </select>
 
     <insert id="insertShop">
-        insert into kz_shop(id,shop_name,create_time,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time)
-        values (#{id},#{shopName},NOW(),#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW())
+        insert into kz_shop(id,shop_name,create_time,province,city,city,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time)
+        values (#{id},#{shopName},NOW(),#{province},#{city},#{city},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW())
     </insert>
 
     <update id="updateShop">
@@ -61,6 +76,15 @@
             </if>
             <if test="postFree != null and postFree >= 0">
                 post_free = #{postFree},
+            </if>
+            <if test="province != null and province != ''">
+                province = #{province},
+            </if>
+            <if test="city != null and city != ''">
+                city = #{city},
+            </if>
+            <if test="area != null and area >= 0">
+                area = #{area},
             </if>
         </trim>
         where id = #{id}
@@ -215,8 +239,8 @@
         ) yestToday
     </select>
 
-    <select id="selectMonthMoney" resultType="String">
-        SELECT IFNULL(SUM(payment),0) FROM kz_order o WHERE shop_id = #{shopId} AND `status`= '5' AND
+    <select id="selectMonthMoney" resultType="Map">
+        SELECT IFNULL(SUM(payment),0) as 'payment',IFNULL(SUM(o.post_free),0) as 'postFree' FROM kz_order o WHERE shop_id = #{shopId} AND `status`= '5' AND
         DATE_FORMAT(o.end_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m')
     </select>
 

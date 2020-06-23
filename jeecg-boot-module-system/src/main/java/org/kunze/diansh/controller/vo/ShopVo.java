@@ -21,6 +21,15 @@ public class ShopVo implements Serializable {
     /**超市名称*/
     private String shopName;
 
+    //省
+    private String province;
+
+    //市
+    private String city;
+
+    //区
+    private String area;
+
     /**超市地址*/
     private String shopAddress;
 
@@ -46,4 +55,7 @@ public class ShopVo implements Serializable {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
+
+    /**地址集*/
+    private String addressTotal;
 }

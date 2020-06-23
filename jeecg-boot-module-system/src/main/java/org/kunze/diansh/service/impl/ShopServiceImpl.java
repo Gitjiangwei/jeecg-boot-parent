@@ -46,7 +46,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, KzShop> implements 
 
     @Override
     public List<ShopVo> queryShopLists() {
-        KzShop shop = new KzShop();;
+        KzShop shop = new KzShop();
         return shopMapper.queryShopList(shop);
     }
 

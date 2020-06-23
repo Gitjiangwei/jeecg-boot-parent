@@ -108,7 +108,7 @@ public class IntimidateServiceImpl implements IIntimidateService {
         //8、填充订单其它信息
         salesTicketVo.setOrders(orderId); //订单编号
         salesTicketVo.setShopName(shop.getShopName()); //超市名称
-        salesTicketVo.setShopAddress(shop.getShopAddress()); //超市地址
+        salesTicketVo.setShopAddress(shop.getProvince()+shop.getCity()+shop.getArea()+shop.getShopAddress()); //超市地址
         salesTicketVo.setSaleNum(totalNum.toString());//商品总数
         salesTicketVo.setBuyerMessage(order.getBuyerMessage()==null?"":order.getBuyerMessage());
         salesTicketVo.setSaleSum(CalculationUtil.FractionalConversion(order.getAmountPayment())); //应付金额

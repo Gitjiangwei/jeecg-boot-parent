@@ -6,9 +6,11 @@ import com.github.pagehelper.PageInfo;
 import org.jeecg.common.util.CalculationUtil;
 import org.kunze.diansh.controller.vo.InformationVo;
 import org.kunze.diansh.controller.vo.SalesVo;
+import org.kunze.diansh.entity.OrderRecord;
 import org.kunze.diansh.entity.modelData.MonthMenuModel;
 import org.kunze.diansh.entity.modelData.SalesModel;
 import org.kunze.diansh.mapper.ChargeMapper;
+import org.kunze.diansh.mapper.OrderRecordMapper;
 import org.kunze.diansh.mapper.ShopMapper;
 import org.kunze.diansh.mapper.StockMapper;
 import org.kunze.diansh.service.IMenuService;
@@ -32,6 +34,9 @@ public class MenuServiceImpl implements IMenuService {
 
     @Autowired
     private ChargeMapper chargeMapper;
+
+    @Autowired
+    private OrderRecordMapper orderRecordMapper;
 
     /**
      * 门店销售排行榜
@@ -196,8 +201,12 @@ public class MenuServiceImpl implements IMenuService {
     public InformationVo selectInfo(String shopId) {
         InformationVo informationVo = new InformationVo();
         if(shopId!=null && !shopId.equals("")) {
-            informationVo.setMoneyMoney(shopMapper.selectMonthMoney(shopId));
-            informationVo.setMoneyMoney(CalculationUtil.FractionalConversion(informationVo.getMoneyMoney()));
+            Map<String,String> mapList = shopMapper.selectMonthMoney(shopId);
+            Object oldMoney = mapList.get("payment");
+            Object postFree = mapList.get("postFree");
+            informationVo.setMoneyMoney(CalculationUtil.FractionalConversion(oldMoney.toString()));
+            informationVo.setMoneyPostfree(CalculationUtil.FractionalConversion(postFree.toString()));
+            informationVo.setTotalMoney(new BigDecimal(informationVo.getMoneyMoney()).add(new BigDecimal(informationVo.getMoneyPostfree())).toString());
             informationVo.setOrderNum(shopMapper.selectTotalOrder(shopId));
             informationVo.setSpuNum(shopMapper.selectTotalSpuNum(shopId));
         }
@@ -260,5 +269,12 @@ public class MenuServiceImpl implements IMenuService {
         }
         PageInfo pageInfo = new PageInfo<Map<String,Object>>(newMapList);
         return pageInfo;
+    }
+
+    @Override
+    public PageInfo<OrderRecord> queryOrderRecordTotal(String shopId,Integer pageNo, Integer pageSize) {
+        PageHelper.startPage(pageNo,pageSize);
+        List<OrderRecord> orderRecordList = orderRecordMapper.queryOrderRecordTotal(shopId);
+        return new PageInfo<OrderRecord>(orderRecordList);
     }
 }

@@ -24,11 +24,21 @@ public class OrderRecord implements Serializable {
     /**发生事件*/
     private String sendEvent;
 
+    /**状态 1、订单消息，2、库存预警*/
+    private String status;
 
-    public OrderRecord(String id,String orderId,String sendEvent){
+    /**首页显示的时间*/
+    private String menuTime;
+
+    /**超市Id*/
+    private String shopId;
+
+    public OrderRecord(String id,String orderId,String sendEvent,String status,String shopId){
         this.id = id;
         this.orderId = orderId;
         this.sendEvent = sendEvent;
+        this.status = status;
+        this.shopId = shopId;
     }
 
 }

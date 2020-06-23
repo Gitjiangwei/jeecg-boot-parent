@@ -78,7 +78,7 @@ public interface ShopMapper extends BaseMapper<KzShop> {
      * @param shopId
      * @return
      */
-   String selectMonthMoney(@Param("shopId") String shopId);
+   Map<String,String> selectMonthMoney(@Param("shopId") String shopId);
 
 
     /**

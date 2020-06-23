@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.kunze.diansh.controller.vo.InformationVo;
 import org.kunze.diansh.controller.vo.SalesVo;
+import org.kunze.diansh.entity.OrderRecord;
 import org.kunze.diansh.service.IMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -146,6 +147,19 @@ public class MenuController {
             result.setSuccess(true);
             result.setResult(pageInfo);
         }
+        return result;
+    }
+
+
+    @ApiOperation("查询最新消息")
+    @GetMapping(value = "/queryOrderRecordTotal")
+    public Result<PageInfo<OrderRecord>> queryOrderRecordTotal(@RequestParam(name = "shopId")String shopId,
+                                                               @RequestParam(name = "pageNo",defaultValue = "1") String pageNo,
+                                                               @RequestParam(name = "pageSize",defaultValue = "20") String pageSize){
+        Result<PageInfo<OrderRecord>> result = new Result<PageInfo<OrderRecord>>();
+        PageInfo<OrderRecord> pageInfo = menuService.queryOrderRecordTotal(shopId,Integer.valueOf(pageNo),Integer.valueOf(pageSize));
+        result.setSuccess(true);
+        result.setResult(pageInfo);
         return result;
     }
 }

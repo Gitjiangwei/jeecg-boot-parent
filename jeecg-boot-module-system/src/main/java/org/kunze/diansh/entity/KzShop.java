@@ -25,6 +25,15 @@ public class KzShop implements Serializable {
     //是否删除 0：未删除 1：已删除
     private String status;
 
+    //省
+    private String province;
+
+    //市
+    private String city;
+
+    //区
+    private String area;
+
     //超市地址
     private String shopAddress;
 

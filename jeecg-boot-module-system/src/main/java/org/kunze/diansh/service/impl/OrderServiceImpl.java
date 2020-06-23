@@ -197,7 +197,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         String flag = "error";
         //1、修改订单状态为【已支付】
         int orderStatus = orderMapper.updateOrderStatus("2",orderId,payment);
-        orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"用户下单"));
+        orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"用户下单","1",selectShopId(orderId)));
         if(orderStatus > 0){
             //获取订单信息
             Order order = orderMapper.selectById(orderId);
@@ -240,16 +240,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public String updateOrderStatu(String status,String orderId) {
         String flag = "error";
         int isSuccess = orderMapper.updateOrderStatus(status,orderId,"");
+        String shopId = selectShopId(orderId);
         if(status.equals("3")){
-            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"商家接单"));
+            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"商家接单","1",shopId));
         }else if(status.equals("4")){
-            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"配货完成，开始配送"));
+            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"配货完成，开始配送","1",shopId));
         }else if(status.equals("5")){
-            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"用户收到商品，订单完成"));
+            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"用户收到商品，订单完成","1",shopId));
         }else if(status.equals("7")){
-            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"订单已退款！"));
+            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"订单已退款！","1",shopId));
         }else {
-            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"异常订单，订单关闭"));
+            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"异常订单，订单关闭","1",shopId));
         }
         if(isSuccess>0){
             flag = "ok";
@@ -257,6 +258,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return flag;
     }
 
+
+    /**
+     * 根据订单Id查询超市ID
+     * @param orderId
+     * @return
+     */
+    private String selectShopId(String orderId){
+        Order order = orderMapper.selectById(orderId);
+        return order.getShopId();
+    }
 
     /**
      * 计算商品总价格

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.vo.InformationVo;
 import org.kunze.diansh.controller.vo.SalesVo;
+import org.kunze.diansh.entity.OrderRecord;
 
 import java.util.List;
 import java.util.Map;
@@ -85,4 +86,7 @@ public interface IMenuService {
      * @return
      */
     PageInfo<Map<String,Object>> selectStock(String shopId,String title,String enable,Integer pageNo,Integer pageSize);
+
+
+    PageInfo<OrderRecord> queryOrderRecordTotal(String shopId,Integer pageNo,Integer pageSize);
 }
