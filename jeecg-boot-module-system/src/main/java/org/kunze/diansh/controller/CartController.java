@@ -47,8 +47,8 @@ public class CartController {
     @ApiOperation("添加商品到购物车")
     @AutoLog("添加商品到购物车")
     @PostMapping("/addCart")
-    public Result<Void> addCart(@RequestBody Cart cart){
-        Result<Void> resultList = new Result<Void>();
+    public Result addCart(@RequestBody Cart cart){
+        Result resultList = new Result();
         if(EmptyUtils.isEmpty(cart.getShopId())){
             return resultList.error500("店铺参数丢失！");
         }
@@ -60,8 +60,8 @@ public class CartController {
     @ApiOperation("更新购物车商品数量")
     @AutoLog("更新购物车商品数量")
     @PostMapping("/updateCartNum")
-    public Result<Void> updateCart(@RequestBody Cart cart){
-        Result<Void> resultList = new Result<Void>();
+    public Result updateCart(@RequestBody Cart cart){
+        Result resultList = new Result();
         if(EmptyUtils.isEmpty(cart.getShopId())){
             return resultList.error500("店铺参数丢失！");
         }
@@ -73,13 +73,14 @@ public class CartController {
     @ApiOperation("删除购物车商品")
     @AutoLog("删除购物车商品")
     @PostMapping("/deleteCart")
-    @ApiImplicitParam(name = "skuIdList",value = "商品'skuId'的集合")
-    public Result<Void> deleteCart(@RequestParam(name = "skuIdList") List<String> skuIdList,@RequestParam(name = "shopId")String shopId){
-        Result<Void> resultList = new Result<Void>();
+    @ApiImplicitParam(name = "/skuIdList",value = "商品'skuId'的集合")
+    public Result deleteCart(@RequestParam String skuIdList,@RequestParam(name = "shopId")String shopId){
+        Result resultList = new Result();
         if(EmptyUtils.isEmpty(shopId)){
             return resultList.error500("店铺参数丢失！");
         }
-        cartService.deleteCart(skuIdList,shopId);
+        List<Object> skuList= JSON.parseArray(skuIdList);
+        cartService.deleteCart(skuList,shopId);
         return resultList;
     }
 

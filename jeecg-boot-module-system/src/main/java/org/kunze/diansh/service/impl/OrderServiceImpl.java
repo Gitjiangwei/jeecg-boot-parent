@@ -1,5 +1,6 @@
 package org.kunze.diansh.service.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -269,19 +270,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return order.getShopId();
     }
 
+
     /**
      * 计算商品总价格
-     * @param odList
-     * @return
+     * @param odList 订单详细数据的集合
+     * @return 价格
      */
-    private String countOrderPayment(List<OrderDetail> odList){
-        Integer totalPrice = 0;
+    @Override
+    public String countOrderPayment(List<OrderDetail> odList){
+        BigDecimal totalPrice = new BigDecimal(0);
         //计算订单总价
         for (OrderDetail od:odList) {
-            BigDecimal unitPrice = new BigDecimal(od.getPrice());
-            BigDecimal num = new BigDecimal(od.getNum());
-            BigDecimal price = unitPrice.multiply(num);
-            totalPrice = totalPrice+price.intValue();
+            BigDecimal price = NumberUtil.mul(od.getPrice(),od.getNum());
+            totalPrice = NumberUtil.add(totalPrice,price);
         }
         return totalPrice.toString();
     }

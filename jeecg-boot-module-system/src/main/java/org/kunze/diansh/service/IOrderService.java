@@ -8,6 +8,7 @@ import org.kunze.diansh.controller.bo.OrderBo;
 import org.kunze.diansh.controller.vo.OrderDetailVo;
 import org.kunze.diansh.controller.vo.OrderVo;
 import org.kunze.diansh.entity.Order;
+import org.kunze.diansh.entity.OrderDetail;
 
 import java.util.List;
 import java.util.Map;
@@ -94,4 +95,11 @@ public interface IOrderService extends IService<Order> {
      * @return
      */
     Order selectById(String orderId);
+
+    /**
+     * 计算商品总价格
+     * @param odList 订单详细数据的集合
+     * @return 价格
+     */
+    String countOrderPayment(List<OrderDetail> odList);
 }

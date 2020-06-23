@@ -60,7 +60,6 @@ public class WXPayController {
         String money = request.getParameter("money");
 
         Order order = iOrderService.selectOrderById(orderId,userId,shopId);
-
         if(null == order){
             return Result.error("发起支付时出现错误！");
         }
