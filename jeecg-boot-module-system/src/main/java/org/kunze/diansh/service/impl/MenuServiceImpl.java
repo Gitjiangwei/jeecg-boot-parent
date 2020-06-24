@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.rmi.MarshalledObject;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -202,12 +203,18 @@ public class MenuServiceImpl implements IMenuService {
     public InformationVo selectInfo(String shopId) {
         InformationVo informationVo = new InformationVo();
         if(shopId!=null && !shopId.equals("")) {
-            Map<String,String> mapList = shopMapper.selectMonthMoney(shopId);
+            Map<String,String> mapList = shopMapper.selectMonthMoney(shopId); //月交易额
             Object oldMoney = mapList.get("payment");
             Object postFree = mapList.get("postFree");
             informationVo.setMoneyMoney(CalculationUtil.FractionalConversion(oldMoney.toString()));
             informationVo.setMoneyPostfree(CalculationUtil.FractionalConversion(postFree.toString()));
             informationVo.setTotalMoney(new BigDecimal(informationVo.getMoneyMoney()).add(new BigDecimal(informationVo.getMoneyPostfree())).toString());
+            Map<String,String> toDayMap = shopMapper.selectToDayMoney(shopId); //当日交易额
+            Object toDayMoney = toDayMap.get("todayMoney");
+            Object toDayPostFree = toDayMap.get("postFree");
+            informationVo.setToDayMoney(CalculationUtil.FractionalConversion(toDayMoney.toString()));
+            informationVo.setToDayPostFree(CalculationUtil.FractionalConversion(toDayPostFree.toString()));
+            informationVo.setToDayTotalPrice(new BigDecimal(informationVo.getToDayMoney()).add(new BigDecimal(informationVo.getToDayPostFree())).toString());
             informationVo.setOrderNum(shopMapper.selectTotalOrder(shopId));
             informationVo.setSpuNum(shopMapper.selectTotalSpuNum(shopId));
         }

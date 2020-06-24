@@ -82,6 +82,13 @@ public interface ShopMapper extends BaseMapper<KzShop> {
 
 
     /**
+     * 查询超市当天销售额
+     * @param shopId
+     * @return
+     */
+   Map<String,String> selectToDayMoney(@Param("shopId") String shopId);
+
+    /**
      * 查询超市的商品总数(包含上架和未上架)
      * @param shopId
      * @return
