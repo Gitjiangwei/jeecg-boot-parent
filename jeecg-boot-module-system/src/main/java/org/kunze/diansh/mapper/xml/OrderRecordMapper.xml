@@ -13,8 +13,19 @@
         ORDER BY create_time DESC
     </select>
 
-    <select id="queryOrderRecordTotal" resultType="org.kunze.diansh.entity.OrderRecord">
-        SELECT id,IF(`status`=1,'订单消息','库存预警') as 'status', send_event,date_format(create_time,'%m-%d %H:%i:%s') as 'menuTime' FROM kz_order_record
+    <select id="queryOrderRecordTotal" resultType="Map">
+        SELECT id,
+        date_format(
+        create_time,
+        '%m-%d %H:%i:%s'
+        ) AS 'menuTime',
+        send_event,
+        IF (
+        `status` = 1,
+        '订单消息',
+        '库存预警'
+        ) AS 'status'
+        FROM kz_order_record
         where shop_id = #{shopId}
         ORDER BY create_time DESC
     </select>

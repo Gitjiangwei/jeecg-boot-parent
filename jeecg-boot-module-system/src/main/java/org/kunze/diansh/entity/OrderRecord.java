@@ -27,8 +27,6 @@ public class OrderRecord implements Serializable {
     /**状态 1、订单消息，2、库存预警*/
     private String status;
 
-    /**首页显示的时间*/
-    private String menuTime;
 
     /**超市Id*/
     private String shopId;

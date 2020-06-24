@@ -153,11 +153,11 @@ public class MenuController {
 
     @ApiOperation("查询最新消息")
     @GetMapping(value = "/queryOrderRecordTotal")
-    public Result<PageInfo<OrderRecord>> queryOrderRecordTotal(@RequestParam(name = "shopId")String shopId,
+    public Result<PageInfo<Map<String,Object>>> queryOrderRecordTotal(@RequestParam(name = "shopId")String shopId,
                                                                @RequestParam(name = "pageNo",defaultValue = "1") String pageNo,
                                                                @RequestParam(name = "pageSize",defaultValue = "20") String pageSize){
-        Result<PageInfo<OrderRecord>> result = new Result<PageInfo<OrderRecord>>();
-        PageInfo<OrderRecord> pageInfo = menuService.queryOrderRecordTotal(shopId,Integer.valueOf(pageNo),Integer.valueOf(pageSize));
+        Result<PageInfo<Map<String,Object>>> result = new Result<PageInfo<Map<String,Object>>>();
+        PageInfo<Map<String,Object>> pageInfo = menuService.queryOrderRecordTotal(shopId,Integer.valueOf(pageNo),Integer.valueOf(pageSize));
         result.setSuccess(true);
         result.setResult(pageInfo);
         return result;

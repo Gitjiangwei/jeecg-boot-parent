@@ -29,5 +29,5 @@ public interface OrderRecordMapper extends BaseMapper<OrderRecord> {
      * 查询所有消息记录
      * @return
      */
-    List<OrderRecord> queryOrderRecordTotal(@Param("shopId") String shopId);
+    List<Map<String,Object>> queryOrderRecordTotal(@Param("shopId") String shopId);
 }

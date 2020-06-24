@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.jeecg.common.util.CalculationUtil;
+import org.jeecg.common.util.CommonUtil;
 import org.kunze.diansh.controller.vo.InformationVo;
 import org.kunze.diansh.controller.vo.SalesVo;
 import org.kunze.diansh.entity.OrderRecord;
@@ -272,9 +273,9 @@ public class MenuServiceImpl implements IMenuService {
     }
 
     @Override
-    public PageInfo<OrderRecord> queryOrderRecordTotal(String shopId,Integer pageNo, Integer pageSize) {
+    public PageInfo<Map<String,Object>> queryOrderRecordTotal(String shopId,Integer pageNo, Integer pageSize) {
         PageHelper.startPage(pageNo,pageSize);
-        List<OrderRecord> orderRecordList = orderRecordMapper.queryOrderRecordTotal(shopId);
-        return new PageInfo<OrderRecord>(orderRecordList);
+        List<Map<String,Object>> orderRecordList = orderRecordMapper.queryOrderRecordTotal(shopId);
+        return new PageInfo<Map<String,Object>>(CommonUtil.toCamel(orderRecordList));
     }
 }

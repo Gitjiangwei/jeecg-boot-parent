@@ -88,5 +88,5 @@ public interface IMenuService {
     PageInfo<Map<String,Object>> selectStock(String shopId,String title,String enable,Integer pageNo,Integer pageSize);
 
 
-    PageInfo<OrderRecord> queryOrderRecordTotal(String shopId,Integer pageNo,Integer pageSize);
+    PageInfo<Map<String,Object>> queryOrderRecordTotal(String shopId,Integer pageNo,Integer pageSize);
 }
