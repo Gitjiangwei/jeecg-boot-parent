@@ -1,19 +1,28 @@
 package org.jeecg.common.util;
 
 
-import com.google.api.client.util.Value;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 
 /**
  * 删除原文件工具类
  */
+@Component
 public class DelFileUtils {
 
-    @Value(value = "${jeecg.path.upload}")
+
     private static String uploadpath;
 
+
+    @Value(value = "${jeecg.path.upload}")
+    public void setUploadpath(String uploadpath){
+        DelFileUtils.uploadpath = uploadpath;
+    }
 
     /***
      * 删除文件
