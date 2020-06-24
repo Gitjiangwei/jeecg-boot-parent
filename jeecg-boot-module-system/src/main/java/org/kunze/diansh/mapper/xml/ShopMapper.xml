@@ -7,7 +7,7 @@
         LEFT JOIN kz_region reg ON shop.province = reg.id
         LEFT JOIN kz_region reg1 ON shop.city = reg1.id
         LEFT JOIN kz_region reg2 ON shop.area = reg2.id
-        where id = #{shopId} and status = '0'
+        where shop.id = #{shopId} and status = '0'
     </select>
 
 
@@ -18,7 +18,7 @@
         LEFT JOIN kz_region reg1 ON shop.city = reg1.id
         LEFT JOIN kz_region reg2 ON shop.area = reg2.id
         <trim prefix="where" prefixOverrides="and">
-            status = '0'
+            shop.status = '0'
             <if test="shopName != null and shopName != ''">
                 and  shop_name like CONCAT('%',#{shopName},'%')
             </if>
