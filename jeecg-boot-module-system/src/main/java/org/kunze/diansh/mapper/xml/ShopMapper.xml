@@ -42,8 +42,8 @@
     </select>
 
     <insert id="insertShop">
-        insert into kz_shop(id,shop_name,create_time,province,city,city,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time)
-        values (#{id},#{shopName},NOW(),#{province},#{city},#{city},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW())
+        insert into kz_shop(id,shop_name,create_time,province,city,area,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time)
+        values (#{id},#{shopName},NOW(),#{province},#{city},#{area},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW())
     </insert>
 
     <update id="updateShop">
