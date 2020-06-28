@@ -102,6 +102,9 @@
             <if test="wheelIsflag != null and wheelIsflag != ''">
                 and wheel_isflag = #{wheelIsflag}
             </if>
+            <if test="shopName != null and shopName != ''">
+                and shop_name LIKE  CONCAT('%',#{shopName},'%')
+            </if>
         </trim>
         order by wheel_no,wheel.update_time desc,wheel.create_time desc
     </select>

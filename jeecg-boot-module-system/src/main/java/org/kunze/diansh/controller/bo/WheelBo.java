@@ -16,4 +16,7 @@ public class WheelBo extends WheelVo implements Serializable {
 
     /**轮播图类型*/
     private String wheelIsflag;
+
+    //超市名称
+    private String shopName;
 }
