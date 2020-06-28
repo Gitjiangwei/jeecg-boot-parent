@@ -59,4 +59,6 @@ public class Sku implements Serializable {
     private Integer num;
 
     private String shopId;
+
+    private String stock;
 }

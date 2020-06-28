@@ -240,8 +240,18 @@
     </select>
 
     <select id="selectMonthMoney" resultType="Map">
-        SELECT IFNULL(SUM(payment),0) as 'payment',IFNULL(SUM(o.post_free),0) as 'postFree' FROM kz_order o WHERE shop_id = #{shopId} AND `status`= '5' AND
+        SELECT * FROM (
+         SELECT IFNULL(SUM(payment),0) as 'payment',IFNULL(SUM(o.post_free),0) as 'postFree' FROM kz_order o WHERE shop_id = #{shopId} AND (`status`= '5' OR `status` = '7' ) AND
+        (DATE_FORMAT(o.end_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m') OR DATE_FORMAT(o.refund_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m'))
+				) total,
+				(
+        SELECT IFNULL(SUM(payment),0) as 'okPayment',count(1) as 'okTotal' FROM kz_order o WHERE shop_id = #{shopId} AND `status`= '5' AND
         DATE_FORMAT(o.end_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m')
+				) ok,
+				(
+        SELECT IFNULL(SUM(payment),0) as 'refundPayment',count(1) as 'refundTotal' FROM kz_order o WHERE shop_id = #{shopId} AND `status` = '7' AND
+        DATE_FORMAT(o.refund_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m')
+				) refund
     </select>
 
     <select id="selectToDayMoney" resultType="Map">

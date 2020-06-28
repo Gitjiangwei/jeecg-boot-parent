@@ -87,9 +87,16 @@ AND sku.spu_id = #{id}
 	'特卖'
 	ELSE
 	''
-	END AS 'isFeatures'
+	END AS 'isFeatures',
+	CASE sku.is_features
+	WHEN '1' THEN
+	feat.features_stock
+	ELSE
+	stock.stock
+	END AS 'stock'
         from kz_sku sku
         LEFT JOIN kz_spu_features feat ON sku.id = feat.sku_id
+        LEFT JOIN kz_stock stock ON sku.id = stock.sku_id
         where `enable`=1 and sku.spu_id = #{spuId}
     </select>
 

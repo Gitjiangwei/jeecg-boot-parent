@@ -16,6 +16,24 @@ public class InformationVo implements Serializable {
     /**总额*/
     private String totalMoney;
 
+    /*月交易成功金额*/
+    private String okPayment;
+
+    /**手续费率*/
+    private String charge;
+
+    /*手续费*/
+    private String chargeTotal;
+
+    /**月退款金额*/
+    private String refundPayment;
+
+    /**月交易成功订单数*/
+    private String okTotal;
+
+    /**月退款订单数*/
+    private String refundTotal;
+
     /**当日交易额*/
     private String toDayMoney;
 

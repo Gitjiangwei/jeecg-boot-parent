@@ -18,6 +18,7 @@ import org.kunze.diansh.service.IMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.management.ObjectName;
 import java.math.BigDecimal;
 import java.rmi.MarshalledObject;
 import java.text.DecimalFormat;
@@ -204,11 +205,31 @@ public class MenuServiceImpl implements IMenuService {
         InformationVo informationVo = new InformationVo();
         if(shopId!=null && !shopId.equals("")) {
             Map<String,String> mapList = shopMapper.selectMonthMoney(shopId); //月交易额
-            Object oldMoney = mapList.get("payment");
-            Object postFree = mapList.get("postFree");
+            Object oldMoney = mapList.get("payment"); //月交易额(包含退款)
+            Object postFree = mapList.get("postFree"); //月配送费
+            Object okPayment = mapList.get("okPayment"); // 月交易成功交易额
+            Object okTotal = mapList.get("okTotal"); //月交易成功订单数
+            Object refundPayment = mapList.get("refundPayment"); //月订单退款额度
+            Object refundTotal = mapList.get("refundTotal");// 月退款订单数
             informationVo.setMoneyMoney(CalculationUtil.FractionalConversion(oldMoney.toString()));
             informationVo.setMoneyPostfree(CalculationUtil.FractionalConversion(postFree.toString()));
             informationVo.setTotalMoney(new BigDecimal(informationVo.getMoneyMoney()).add(new BigDecimal(informationVo.getMoneyPostfree())).toString());
+            informationVo.setOkPayment(CalculationUtil.FractionalConversion(okPayment.toString()));
+            informationVo.setOkTotal(okTotal.toString());
+            informationVo.setRefundPayment(CalculationUtil.FractionalConversion(refundPayment.toString()));
+            informationVo.setRefundTotal(refundTotal.toString());
+            //计算手续费
+            Map<String,String> map = chargeMapper.selectCharge();
+            String serviceCharge = map.get("service_charge")==null?"0":map.get("service_charge");
+            if(!serviceCharge.equals("0")){
+                informationVo.setCharge(serviceCharge);
+                serviceCharge = new BigDecimal(serviceCharge).divide(new BigDecimal("100")).toString();
+                informationVo.setChargeTotal(new BigDecimal(informationVo.getTotalMoney()).multiply(new BigDecimal(serviceCharge)).setScale(2, BigDecimal.ROUND_UP).toString());
+                informationVo.setTotalMoney(new BigDecimal(informationVo.getTotalMoney()).subtract(new BigDecimal(informationVo.getChargeTotal())).toString());
+            }else {
+                informationVo.setCharge("0");
+                informationVo.setChargeTotal("0");
+            }
             Map<String,String> toDayMap = shopMapper.selectToDayMoney(shopId); //当日交易额
             Object toDayMoney = toDayMap.get("todayMoney");
             Object toDayPostFree = toDayMap.get("postFree");
