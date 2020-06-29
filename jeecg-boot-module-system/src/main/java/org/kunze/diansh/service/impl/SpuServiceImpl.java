@@ -8,6 +8,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
@@ -347,20 +348,26 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
 
 
     private List<String> querySpuId(String cid3,String spuId,String shopId){
+            int num = 8; //相似商品查4个 首页分类查8个
+            if(!StringUtils.isEmpty(spuId)){
+                num = 4;
+            }
             List<String> stringList = spuMapper.selectCid3SpuByIds(cid3, spuId,shopId);
             if(stringList.size()==0){
                 return null;
             }
-            if (stringList.size()<8){
+            if (stringList.size() < num){
                 return stringList;
             }
             List<String> a = new ArrayList<String>();
-            int mun = 8;
+            int mun = num;
             for (int i = 0; i < mun; i++) {
-                if (a.size() == 8) {
+                //如果a集合的大小等于初始变量则不继续添加
+                if (a.size() == num) {
                     break;
                 }
-                if ((i + 1) == mun && a.size() != 8) {
+                //如果循环次数等于初始变量，但是a集合不等于初始变量，则循环次数+1
+                if ((i + 1) == mun && a.size() != num) {
                     mun++;
                 }
                 //获取0至spuId集合总数之间的随机数

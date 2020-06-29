@@ -12,7 +12,7 @@ public interface IChargeService extends IService<Charge> {
      * @param serviceCharge
      * @return
      */
-    Boolean saveCharge(String serviceCharge);
+    Boolean saveCharge(String shopId,String serviceCharge);
 
 
     /***
@@ -27,5 +27,5 @@ public interface IChargeService extends IService<Charge> {
      * 查询手续费
      * @return
      */
-    Map<String,String> selectCharge();
+    Map<String,String> selectCharge(String shopId);
 }

@@ -26,5 +26,5 @@ public interface ChargeMapper extends BaseMapper<Charge> {
      * 查询手续费
      * @return
      */
-    Map<String,String> selectCharge();
+    Map<String,String> selectCharge(String shopId);
 }

@@ -36,10 +36,11 @@ public class ChargeController {
     public Result<T> saveCharge(@RequestBody JSONObject jsonObject){
         Result<T> result = new Result<T>();
         String serviceCharge = jsonObject.getString("serviceCharge");
+        String shopId = jsonObject.getString("shopId");
         if(StringUtils.isEmpty(serviceCharge)){
             result.error500("参数丢失！");
         }else {
-            Boolean resultOk = chargeService.saveCharge(serviceCharge);
+            Boolean resultOk = chargeService.saveCharge(shopId,serviceCharge);
             if(resultOk){
                 result.success("添加成功！");
             }else {
@@ -79,11 +80,16 @@ public class ChargeController {
     @ApiOperation("查询手续费")
     @AutoLog("查询手续费")
     @GetMapping(value = "/queryCharge")
-    public Result<Map<String,String>> selectCharge(){
+    public Result<Map<String,String>> selectCharge(@RequestParam(name = "shopId",required = false) String shopId){
         Result<Map<String,String>> result = new Result<Map<String,String>>();
-        Map<String,String> map = chargeService.selectCharge();
-        result.setResult(map);
-        result.setSuccess(true);
+        if(!StringUtils.isEmpty(shopId)){
+            Map<String,String> map = chargeService.selectCharge(shopId);
+            result.setResult(map);
+            result.setSuccess(true);
+        }else {
+            result.setResult(null);
+            result.setSuccess(true);
+        }
         return result;
     }
 }

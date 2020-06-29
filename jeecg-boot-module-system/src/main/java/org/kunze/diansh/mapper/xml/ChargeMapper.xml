@@ -3,8 +3,8 @@
 <mapper namespace="org.kunze.diansh.mapper.ChargeMapper">
 
     <insert id="saveCharge">
-        insert into kz_charge(id,service_charge,create_time,update_time)
-        values (#{id},#{serviceCharge},NOW(),NOW())
+        insert into kz_charge(id,shop_id,service_charge,create_time,update_time)
+        values (#{id},#{shopId},#{serviceCharge},NOW(),NOW())
     </insert>
 
     <update id="updateCharge">
@@ -16,10 +16,11 @@
             </if>
             update_time = NOW()
         </trim>
-        where id = #{id}
+        where shop_id = #{shopId}
     </update>
 
     <select id="selectCharge" resultType="Map">
         select id,service_charge from kz_charge
+        where shop_id = #{shopId}
     </select>
 </mapper>

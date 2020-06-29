@@ -77,7 +77,7 @@ public class MenuServiceImpl implements IMenuService {
      * @return
      */
     private String serviceCharge(String payMent){
-        Map<String,String> map = chargeMapper.selectCharge();
+        Map<String,String> map = chargeMapper.selectCharge("1");
         String serviceCharge = map.get("service_charge")==null?"0":map.get("service_charge");
         if(!serviceCharge.equals("0")){
             serviceCharge = new BigDecimal(serviceCharge).divide(new BigDecimal("100")).toString();
@@ -219,7 +219,7 @@ public class MenuServiceImpl implements IMenuService {
             informationVo.setRefundPayment(CalculationUtil.FractionalConversion(refundPayment.toString()));
             informationVo.setRefundTotal(refundTotal.toString());
             //计算手续费
-            Map<String,String> map = chargeMapper.selectCharge();
+            Map<String,String> map = chargeMapper.selectCharge("1");
             String serviceCharge = map.get("service_charge")==null?"0":map.get("service_charge");
             if(!serviceCharge.equals("0")){
                 informationVo.setCharge(serviceCharge);

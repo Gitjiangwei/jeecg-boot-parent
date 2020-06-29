@@ -139,15 +139,16 @@
     </select>
 
     <select id="selectCid3SpuByIds" resultType="String">
-        select id from kz_spu WHERE
-        <if test="spuId == null and spuId == ''">
-           and cid1 = #{ci3}
-        </if>
-        <if test="spuId != null and spuId != '' ">
-            cid3 = #{ci3}
-            and id &lt;&gt; #{spuId}
-        </if>
-        and shop_id = #{shopId}
+        select id from kz_spu WHERE      shop_id = #{shopId}
+        <choose>
+            <when test="spuId != null and spuId != ''">
+                and  cid3 = #{ci3}
+                and id &lt;&gt; #{spuId}
+            </when>
+            <otherwise>
+                and cid1 = #{ci3}
+            </otherwise>
+        </choose>
         and is_flag = '0' and saleable = '1'
     </select>
 

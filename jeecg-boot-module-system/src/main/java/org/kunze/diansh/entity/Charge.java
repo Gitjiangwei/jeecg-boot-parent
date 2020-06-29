@@ -13,6 +13,9 @@ public class Charge implements Serializable {
     /**主键ID*/
     private String id;
 
+    /**超市ID*/
+    private String shopId;
+
     /**手续费*/
     private String serviceCharge;
 

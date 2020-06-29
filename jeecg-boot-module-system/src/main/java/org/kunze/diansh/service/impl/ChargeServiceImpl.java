@@ -28,12 +28,13 @@ public class ChargeServiceImpl extends ServiceImpl<ChargeMapper, Charge> impleme
      * @return
      */
     @Override
-    public Boolean saveCharge(String serviceCharge) {
+    public Boolean saveCharge(String shopId,String serviceCharge) {
         Boolean isFlag = false;
-        if(!StringUtils.isEmpty(serviceCharge)){
+        if(!StringUtils.isEmpty(serviceCharge) && !StringUtils.isEmpty(shopId)){
             Charge charge = new Charge();
             charge.setId(UUID.randomUUID().toString().replace("-",""));
             charge.setServiceCharge(serviceCharge);
+            charge.setShopId(shopId);
             int result = chargeMapper.saveCharge(charge);
             if(result>0){
                 isFlag = true;
@@ -64,7 +65,7 @@ public class ChargeServiceImpl extends ServiceImpl<ChargeMapper, Charge> impleme
      * @return
      */
     @Override
-    public Map<String, String> selectCharge() {
-        return chargeMapper.selectCharge();
+    public Map<String, String> selectCharge(String shopId) {
+        return chargeMapper.selectCharge(shopId);
     }
 }
