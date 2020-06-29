@@ -87,6 +87,7 @@ public class OrderComsumer extends Thread implements ApplicationRunner {
             Order orderNext = (Order) iterator.next();
             if(orderId.equals(orderNext.getOrderId())){
                 queue.remove(orderNext);
+                System.out.println("已删除："+orderNext.getOrderId());
             }
         }
 //        queue.stream().forEach(o -> {
@@ -94,6 +95,6 @@ public class OrderComsumer extends Thread implements ApplicationRunner {
 //                queue.remove(o);
 //            }
 //        });
-        System.out.println("已删除："+queue.size());
+        System.out.println("当前队列剩余："+queue.size());
     }
 }
