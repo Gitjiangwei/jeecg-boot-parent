@@ -28,10 +28,10 @@
             <if test="province != null and province != ''">
                 and province = #{province}
             </if>
-            <if test="province != null and province != ''">
+            <if test="city != null and city != ''">
                 and city = #{city}
             </if>
-            <if test="province != null and province != ''">
+            <if test="area != null and area != ''">
                 and area = #{area}
             </if>
             <if test="id != null and id != ''">
