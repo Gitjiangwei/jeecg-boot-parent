@@ -139,8 +139,12 @@
     </select>
 
     <select id="selectCid3SpuByIds" resultType="String">
-        select id from kz_spu WHERE cid1 = #{ci3}
+        select id from kz_spu WHERE
+        <if test="spuId == null and spuId == ''">
+           and cid1 = #{ci3}
+        </if>
         <if test="spuId != null and spuId != '' ">
+            cid3 = #{ci3}
             and id &lt;&gt; #{spuId}
         </if>
         and shop_id = #{shopId}
