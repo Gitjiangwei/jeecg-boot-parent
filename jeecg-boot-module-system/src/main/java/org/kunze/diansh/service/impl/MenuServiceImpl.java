@@ -62,7 +62,8 @@ public class MenuServiceImpl implements IMenuService {
                 payment = newPrice.setScale(2).toString();
             }
             map.put("payment",payment);
-            map.put("serviceCharge",serviceCharge(payment));
+            map.put("charge",oldMapList.get(i).get("charge"));
+            map.put("serviceCharge",serviceCharge(payment,map.get("charge")));
             newMapList.add(map);
         }
         PageInfo<Map<String,String>> mapPageInfo = new PageInfo<Map<String, String>>(newMapList);
@@ -73,17 +74,17 @@ public class MenuServiceImpl implements IMenuService {
     /**
      * 手续费
      * @param payMent 商家利润
+     * @param charge 手续费率
      * jw
      * @return
      */
-    private String serviceCharge(String payMent){
-        Map<String,String> map = chargeMapper.selectCharge("1");
-        String serviceCharge = map.get("service_charge")==null?"0":map.get("service_charge");
-        if(!serviceCharge.equals("0")){
-            serviceCharge = new BigDecimal(serviceCharge).divide(new BigDecimal("100")).toString();
-            serviceCharge = new BigDecimal(payMent).multiply(new BigDecimal(serviceCharge)).setScale(2, BigDecimal.ROUND_UP).toString();
+    private String serviceCharge(String payMent,String charge){
+        String chargeService = "0";
+        if(!charge.equals("0")){
+            charge = new BigDecimal(charge).divide(new BigDecimal("100")).toString();
+            chargeService = new BigDecimal(payMent).multiply(new BigDecimal(charge)).setScale(2, BigDecimal.ROUND_UP).toString();
         }
-        return serviceCharge;
+        return chargeService;
     }
     /***
      * 门店销售统计图
