@@ -17,6 +17,7 @@ import org.kunze.diansh.service.IOrderService;
 import org.kunze.diansh.service.IStockService;
 import org.kunze.diansh.service.IWXPayService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -93,6 +94,7 @@ public class WXPayController {
      * @param response
      * @throws Exception
      */
+    @Async
     @RequestMapping(value="/xcxNotify")
     public void xcxNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
         //读取参数
@@ -141,20 +143,21 @@ public class WXPayController {
                     /**
                      * 业务处理
                      */
-//                    String out_trade_no = (String) packageParams.get("out_trade_no");
-//
-//                    Order order = iOrderService.selectById(out_trade_no);
-//                    //如果订单状态不等于1 说明已经处理过了
-//                    if("1".equals(order.getStatus())){
-//                        synchronized (Order.class){
-//                            //更新订单状态为【已支付】
-//                            iOrderService.updateOrderStatus(out_trade_no);
-//                            //从队列中删除订单
-//                            OrderComsumer.removeToOrderDelayQueue(out_trade_no);
-//                            //更新商品库存
-//                            iStockService.updateStockNum(out_trade_no);
-//                        }
-//                    }
+                    String out_trade_no = (String) packageParams.get("out_trade_no");
+                    String total_fee = packageParams.get("total_fee").toString();
+
+                    Order order = iOrderService.selectById(out_trade_no);
+                    //如果订单状态不等于1 说明已经处理过了
+                    synchronized (Order.class){
+                        if("1".equals(order.getStatus().toString())){
+                        //更新订单状态为【已支付】
+                        iOrderService.updateOrderStatus(out_trade_no,total_fee);
+                        //从队列中删除订单
+                        OrderComsumer.removeToOrderDelayQueue(out_trade_no);
+                        //更新商品库存
+                        iStockService.updateStockNum(out_trade_no);
+                        }
+                    }
                 } else {
 
                     requestMap.put("return_code", "FAIL");
@@ -255,7 +258,7 @@ public class WXPayController {
 
 
 
-        @ApiOperation("查询微信订单状态")
+    @ApiOperation("查询微信订单状态")
     @AutoLog("查询微信订单状态")
     @PostMapping(value = "/qryWxOrderStatus")
     public Result qryWxOrderStatus(String outTradeNo){

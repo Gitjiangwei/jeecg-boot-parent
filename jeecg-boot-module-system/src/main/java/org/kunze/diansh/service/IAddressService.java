@@ -45,6 +45,12 @@ public interface IAddressService extends IService<Address> {
     void updateDefaultByID(String id,String userID) throws AddressException;
 
     /**
+     * 根据订单id查询地址信息
+     * @param id
+     * @return
+     */
+    Address selectAddressByID(String id);
+    /**
      * 查询省市区全部信息
      * 用Tree格式返回
      * @return

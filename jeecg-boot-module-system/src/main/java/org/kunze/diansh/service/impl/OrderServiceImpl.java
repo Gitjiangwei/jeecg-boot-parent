@@ -80,11 +80,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         //当前时间
         Date date = new Date();
         //根据aid查找相关的地址信息
-        //Address address = addressMapper.selectAddressByID(aid);
+        Address address = addressMapper.selectAddressByID(aid);
 
         //根据cids获取购买的物品的信息
         List<Sku> cartList = this.selectSkuList(cids);
-
 
         //总价格
         Integer totalPrice = 0;

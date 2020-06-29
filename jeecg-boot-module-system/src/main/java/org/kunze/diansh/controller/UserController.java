@@ -11,6 +11,7 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.exception.AddressException;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.entity.Address;
 import org.kunze.diansh.service.IAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,6 +128,18 @@ public class UserController {
     }
 
 
+    @ApiOperation("根据地址id查询地址")
+    @AutoLog("根据地址id查询地址")
+    @PostMapping(value = "/selectAddressByID")
+    public Result selectAddressByID(@RequestParam(name = "id") String id){
+        Result result = new Result();
+        if(EmptyUtils.isEmpty(id)){
+            return result.error500("参数为空！");
+        }
+        Address address = addressService.selectAddressByID(id);
+        result.setResult(address);
+        return result;
+    }
 
     //验证地址格式
     private boolean addressValidate(Address address){

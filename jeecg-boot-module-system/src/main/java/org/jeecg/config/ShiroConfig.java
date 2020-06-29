@@ -86,6 +86,7 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/kunze/alipay/alipay_pay","anon");//支付宝统一下单
 		filterChainDefinitionMap.put("/kunze/user/getRegionInfo","anon"); //获取省市区
 		filterChainDefinitionMap.put("/kunze/mytest/testInsert","anon"); //test
+		filterChainDefinitionMap.put("/kunze/menu/queryOrderRecordTotal","anon"); //消息提醒
 
 
 		filterChainDefinitionMap.put("/sys/getCheckCode", "anon"); //登录验证码接口排除

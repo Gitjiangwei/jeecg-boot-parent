@@ -9,6 +9,7 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.util.DateUtils;
 import org.jeecg.common.util.HttpRequest;
 import org.jeecg.common.util.MD5Util;
+import org.jeecg.common.util.RedisUtil;
 import org.kunze.diansh.WxPayAPI.MiniprogramConfig;
 import org.kunze.diansh.WxPayAPI.WXPay;
 import org.kunze.diansh.WxPayAPI.WXPayConstants;
@@ -43,6 +44,9 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
 
     @Autowired
     private IOrderService orderService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     private MiniprogramConfig config;
     private WXPay wxpay;
@@ -185,6 +189,7 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
                 //查询支付状态
                 String resultXml = HttpRequest.sendPost(weChatPayProperties.QUERY_WX_PAY_STATUS,xmlParam);
                 Map map = WXPayUtil.xmlToMap(resultXml);
+                redisUtil.set(outTradeNo+"__"+DateUtils.formatTime(new Date()),map,15,true,null);
                 if (map == null) {
                     return Result.error("支付错误");
                 } else if ("FAIL".equals(map.get("trade_state"))) {
@@ -192,17 +197,17 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
                 }
                 if ("SUCCESS".equals(map.get("trade_state"))) {
 
-                    //支付成功 开始业务处理
-                    Order order = orderMapper.selectById(outTradeNo);
-                    //订单状态为未支付才开始业务处理
-                    if("1".equals(order.getStatus().toString())){
-                        //更新订单状态为【已支付】
-                        orderService.updateOrderStatus(outTradeNo,order.getAmountPayment());
-                        //从队列中删除订单
-                        OrderComsumer.removeToOrderDelayQueue(outTradeNo);
-                        //更新商品库存
-                        iStockService.updateStockNum(outTradeNo);
-                    }
+//                    //支付成功 开始业务处理
+//                    Order order = orderMapper.selectById(outTradeNo);
+//                    //订单状态为未支付才开始业务处理
+//                    if("1".equals(order.getStatus().toString())){
+//                        //更新订单状态为【已支付】
+//                        orderService.updateOrderStatus(outTradeNo,order.getAmountPayment());
+//                        //从队列中删除订单
+//                        OrderComsumer.removeToOrderDelayQueue(outTradeNo);
+//                        //更新商品库存
+//                        iStockService.updateStockNum(outTradeNo);
+//                    }
 
                     return Result.ok("支付成功");
                 } else if ("CLOSED".equals(map.get("trade_state"))) {

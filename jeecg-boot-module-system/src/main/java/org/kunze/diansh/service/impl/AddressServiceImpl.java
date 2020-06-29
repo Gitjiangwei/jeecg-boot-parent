@@ -127,6 +127,16 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
     }
 
     /**
+     * 根据地址id查询地址
+     * @param id
+     * @return
+     */
+    @Override
+    public Address selectAddressByID(String id) {
+        return addressMapper.selectAddressByID(id);
+    }
+
+    /**
      * 查询省市区全部信息
      * 用Tree格式返回
      * @return

@@ -20,6 +20,11 @@ public interface AddressMapper extends BaseMapper<Address> {
 
     Integer resetAddressDefault(@Param("userID") String userID);
 
+    /**
+     * 根据地址id查询地址
+     * @param id
+     * @return
+     */
     Address selectAddressByID(@Param("id") String id);
 
     Integer updateDefaultByID(@Param("id") String id,@Param("userID") String userID);
