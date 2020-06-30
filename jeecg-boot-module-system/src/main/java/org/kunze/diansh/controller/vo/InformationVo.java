@@ -11,7 +11,7 @@ public class InformationVo implements Serializable {
     private String moneyMoney;
 
     /**配送费*/
-    private String moneyPostfree;
+    //private String moneyPostfree;
 
     /**总额*/
     private String totalMoney;

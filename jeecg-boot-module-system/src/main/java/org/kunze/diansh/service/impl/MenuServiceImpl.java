@@ -209,15 +209,15 @@ public class MenuServiceImpl implements IMenuService {
         InformationVo informationVo = new InformationVo();
         if(shopId!=null && !shopId.equals("")) {
             Map<String,String> mapList = shopMapper.selectMonthMoney(shopId); //月交易额
-            Object oldMoney = mapList.get("payment"); //月交易额(包含退款)
-            Object postFree = mapList.get("postFree"); //月配送费
+            Object oldMoney = mapList.get("payment"); //月交易额(包含退款和配送费)
+            //Object postFree = mapList.get("postFree"); //月配送费
             Object okPayment = mapList.get("okPayment"); // 月交易成功交易额
             Object okTotal = mapList.get("okTotal"); //月交易成功订单数
             Object refundPayment = mapList.get("refundPayment"); //月订单退款额度
             Object refundTotal = mapList.get("refundTotal");// 月退款订单数
             informationVo.setMoneyMoney(CalculationUtil.FractionalConversion(oldMoney.toString()));
-            informationVo.setMoneyPostfree(CalculationUtil.FractionalConversion(postFree.toString()));
-            informationVo.setTotalMoney(new BigDecimal(informationVo.getMoneyMoney()).add(new BigDecimal(informationVo.getMoneyPostfree())).toString());
+            //informationVo.setMoneyPostfree(CalculationUtil.FractionalConversion(postFree.toString()));
+            informationVo.setTotalMoney(informationVo.getMoneyMoney());
             informationVo.setOkPayment(CalculationUtil.FractionalConversion(okPayment.toString()));
             informationVo.setOkTotal(okTotal.toString());
             informationVo.setRefundPayment(CalculationUtil.FractionalConversion(refundPayment.toString()));
