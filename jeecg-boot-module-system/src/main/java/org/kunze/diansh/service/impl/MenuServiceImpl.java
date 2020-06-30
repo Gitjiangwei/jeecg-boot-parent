@@ -50,11 +50,11 @@ public class MenuServiceImpl implements IMenuService {
     public PageInfo<Map<String, String>> selectStoreLeaderboard(String shopName,String more,String choiceTime,Integer pageNo,Integer pageSize) {
         Page page = PageHelper.startPage(pageNo,pageSize);
         List<Map<String,String>> newMapList = new ArrayList<Map<String, String>>();
-        List<Map<String,String>> oldMapList = shopMapper.selectStoreLeaderboard(shopName,more,choiceTime);
+        List<Map<String,Object>> oldMapList = shopMapper.selectStoreLeaderboard(shopName,more,choiceTime);
         for(int i =0;i< oldMapList.size();i++){
             Map<String,String> map = new HashMap<String,String>();
-            map.put("shopId",oldMapList.get(i).get("id") == null?"":oldMapList.get(i).get("id"));
-            map.put("shopName",oldMapList.get(i).get("shopName") == null?"":oldMapList.get(i).get("shopName"));
+            map.put("shopId",oldMapList.get(i).get("id") == null?"":oldMapList.get(i).get("id").toString());
+            map.put("shopName",oldMapList.get(i).get("shopName") == null?"":oldMapList.get(i).get("shopName").toString());
             String payment = "0";
             if(oldMapList.get(i).get("payment")!=null){
                 BigDecimal ordPrice = new BigDecimal(String.valueOf(oldMapList.get(i).get("payment")));
@@ -62,8 +62,16 @@ public class MenuServiceImpl implements IMenuService {
                 payment = newPrice.setScale(2).toString();
             }
             map.put("payment",payment);
-            map.put("charge",oldMapList.get(i).get("charge"));
+            map.put("charge",oldMapList.get(i).get("charge").toString());
             map.put("serviceCharge",serviceCharge(payment,map.get("charge")));
+            String okTotal = oldMapList.get(i).get("okTotal")==null?"0":oldMapList.get(i).get("okTotal").toString();
+            String okPayment =oldMapList.get(i).get("okPayment")==null?"0":CalculationUtil.FractionalConversion(oldMapList.get(i).get("okPayment").toString());
+            String refundTotal = oldMapList.get(i).get("refundTotal")==null?"0":oldMapList.get(i).get("refundTotal").toString();
+            String refundPayment =oldMapList.get(i).get("refundPayment")==null?"0":CalculationUtil.FractionalConversion(oldMapList.get(i).get("refundPayment").toString());
+            map.put("okPayment",okTotal+"单"+okPayment+"元");
+            //map.put("okTotal",);
+            map.put("refundPayment",refundTotal+"单"+refundPayment+"元");
+            //map.put("refundTotal",);
             newMapList.add(map);
         }
         PageInfo<Map<String,String>> mapPageInfo = new PageInfo<Map<String, String>>(newMapList);
@@ -99,8 +107,8 @@ public class MenuServiceImpl implements IMenuService {
     public List<String> selectStoreByShop(String shopId, String year) {
         List<String> stringList = new ArrayList<String>();
         if(shopId == null || shopId.equals("")){
-            List<Map<String,String>> mapList = shopMapper.selectStoreLeaderboard(null,"0","0");
-            shopId = mapList.get(0).get("id") == null?"":mapList.get(0).get("id");
+            List<Map<String,Object>> mapList = shopMapper.selectStoreLeaderboard(null,"0","0");
+            shopId = mapList.get(0).get("id") == null?"":mapList.get(0).get("id").toString();
         }
         if(year == null || year.equals("")){
             Calendar date = Calendar.getInstance();

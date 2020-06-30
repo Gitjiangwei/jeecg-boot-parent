@@ -92,7 +92,9 @@
 
 
     <select id="selectStoreLeaderboard" resultType="Map">
-        SELECT shop.id,shop.shop_name as 'shopName',SUM(ord.payment) as 'payment',IFNULL(charge.service_charge,'0') as 'charge' FROM kz_shop shop
+        SELECT shop.id,shop.shop_name as 'shopName',SUM(ord.payment) as 'payment',IFNULL(charge.service_charge,'0') as 'charge',
+        okPayment,ok.okTotal,refund.refundPayment,refund.refundTotal
+        FROM kz_shop shop
         LEFT JOIN kz_order ord ON shop.id = ord.shop_id AND (ord.`status` = '5' or ord.`status` = '7')
         <if test="choiceTime == 1">
            AND (to_days(ord.end_time) = to_days(now()) or to_days(ord.consign_time) = to_days(now()))
@@ -107,6 +109,39 @@
             AND (YEAR(ord.end_time)= YEAR(NOW()) or YEAR(ord.consign_time)= YEAR(NOW()))
         </if>
         LEFT JOIN kz_charge charge ON shop.id = charge.shop_id
+        LEFT JOIN (
+            SELECT IFNULL(SUM(payment),0) as 'okPayment',count(1) as 'okTotal',o.shop_id FROM kz_order o WHERE  `status`= '5'
+            <if test="choiceTime == 1">
+                AND to_days(o.end_time) = to_days(now())
+            </if>
+            <if test="choiceTime == 2">
+                AND YEARWEEK(date_format(o.end_time,'%Y-%m-%d' )) = YEARWEEK(now())
+            </if>
+            <if test="choiceTime == 3">
+                AND DATE_FORMAT(o.end_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m')
+            </if>
+            <if test="choiceTime == 4">
+                AND YEAR(o.end_time)= YEAR(NOW())
+            </if>
+            GROUP BY o.shop_id
+        ) ok ON shop.id = ok.shop_id
+        LEFT JOIN
+        (
+            SELECT IFNULL(SUM(payment),0) as 'refundPayment',count(1) as 'refundTotal',o.shop_id FROM kz_order o WHERE `status` = '7'
+            <if test="choiceTime == 1">
+                AND to_days(o.end_time) = to_days(now())
+            </if>
+            <if test="choiceTime == 2">
+                AND YEARWEEK(date_format(o.end_time,'%Y-%m-%d' )) = YEARWEEK(now())
+            </if>
+            <if test="choiceTime == 3">
+                AND DATE_FORMAT(o.end_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m')
+            </if>
+            <if test="choiceTime == 4">
+                AND YEAR(o.end_time)= YEAR(NOW())
+            </if>
+            GROUP BY o.shop_id
+        ) refund ON shop.id = refund.shop_id
         <trim prefix="where" prefixOverrides="and">
             shop.`status`='0'
             <if test="shopName != null and shopName != ''">

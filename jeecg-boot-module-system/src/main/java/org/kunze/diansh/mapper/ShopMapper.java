@@ -41,7 +41,7 @@ public interface ShopMapper extends BaseMapper<KzShop> {
      * 超市销售排行
      * @return
      */
-    List<Map<String,String>> selectStoreLeaderboard(@Param("shopName")String shopName, @Param("more") String more,@Param("choiceTime") String choiceTime);
+    List<Map<String,Object>> selectStoreLeaderboard(@Param("shopName")String shopName, @Param("more") String more,@Param("choiceTime") String choiceTime);
 
 
     /**
