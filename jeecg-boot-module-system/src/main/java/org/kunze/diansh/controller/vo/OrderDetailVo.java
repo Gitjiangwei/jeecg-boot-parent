@@ -38,7 +38,7 @@ public class OrderDetailVo {
     private String postFree;
 
     /**总价格*/
-    private String priceTotle;
+    //private String priceTotle;
     /**订单中商品信息*/
     private List<OrderSpuVo> orderSpuVos;
 }
