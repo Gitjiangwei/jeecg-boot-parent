@@ -37,7 +37,7 @@ public class SchedulingDealInfo implements Job {
             return;
         }
         for (String id:ids) {
-            Map map = shopMapper.selectMonthMoney(id);
+            Map map = shopMapper.selectOldMonthMoney(id); //查询上个月的汇总数据
             String payment = map.get("payment").toString();//订单交易额
             String postFree = map.get("postFree").toString();//配送费
             String okPayment = map.get("okPayment").toString();//交易完成的钱
