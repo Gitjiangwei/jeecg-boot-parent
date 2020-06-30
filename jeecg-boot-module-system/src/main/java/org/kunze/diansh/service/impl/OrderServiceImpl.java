@@ -416,7 +416,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderDetailVo.setOrderSpuVos(orderSpuVos);
             //8、填充订单其它信息
             orderDetailVo.setOrderId(orderId);//商品ID
-            orderDetailVo.setBuyerMessage(order.getBuyerMessage()==null?"买家没有留言呦！":order.getBuyerMessage()); //买家留言
+            String remakes = "买家没有留言呦！";
+            if (order.getBuyerMessage()!=null && !order.getBuyerMessage().equals("")){
+                remakes = order.getBuyerMessage();
+            }
+            orderDetailVo.setBuyerMessage(remakes); //买家留言
             orderDetailVo.setCreateTime(order.getPaymentTime()); //下单时间
             orderDetailVo.setPostFree(order.getPostFree()==null?"0":order.getPostFree());//配送费
             orderDetailVo.setSaleNum(totalNum.toString());//商品总数
