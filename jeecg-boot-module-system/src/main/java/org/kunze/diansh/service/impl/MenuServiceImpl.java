@@ -80,6 +80,9 @@ public class MenuServiceImpl implements IMenuService {
      */
     private String serviceCharge(String payMent,String charge){
         String chargeService = "0";
+        if (payMent.equals("0")){
+            return chargeService;
+        }
         if(!charge.equals("0")){
             charge = new BigDecimal(charge).divide(new BigDecimal("100")).toString();
             chargeService = new BigDecimal(payMent).multiply(new BigDecimal(charge)).setScale(2, BigDecimal.ROUND_UP).toString();
