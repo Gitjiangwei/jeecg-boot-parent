@@ -133,4 +133,10 @@ public interface ShopMapper extends BaseMapper<KzShop> {
      * @return
      */
    int delShops(@Param("delShop") List<String> list);
+
+    /**
+     * 查询超市id的集合
+     * @return
+     */
+   List<String> selectShopIds();
 }

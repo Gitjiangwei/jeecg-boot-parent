@@ -324,4 +324,9 @@
             #{item}
         </foreach>
     </delete>
+
+    <!-- 查询超市id的集合 -->
+    <select id="selectShopIds">
+        SELECT ID FROM KZ_SHOP
+    </select>
 </mapper>
