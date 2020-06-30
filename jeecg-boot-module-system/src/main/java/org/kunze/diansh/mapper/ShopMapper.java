@@ -80,6 +80,12 @@ public interface ShopMapper extends BaseMapper<KzShop> {
      */
    Map<String,String> selectMonthMoney(@Param("shopId") String shopId);
 
+    /**
+     * 查询上个月的汇总信息
+     * @param shopId
+     * @return
+     */
+   Map<String,String> selectOldMonthMoney(@Param("shopId") String shopId);
 
     /**
      * 查询超市当天销售额

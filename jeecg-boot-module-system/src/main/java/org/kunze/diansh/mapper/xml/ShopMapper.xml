@@ -255,6 +255,23 @@
 				) refund
     </select>
 
+    <!-- 查询上个月的汇总信息 -->
+    <select id="selectOldMonthMoney" resultType="java.util.Map">
+        SELECT * FROM (
+        SELECT IFNULL(SUM(payment),0) as 'payment',IFNULL(SUM(o.post_free),0) as 'postFree' FROM kz_order o WHERE shop_id = '1' AND (`status`= '5' OR `status` = '7' ) AND
+        (PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( create_time, '%Y%m' ) ) =1)
+        ) total,
+        (
+        SELECT IFNULL(SUM(payment),0) as 'okPayment',count(1) as 'okTotal' FROM kz_order o WHERE shop_id = '1' AND `status`= '5' AND
+        PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( create_time, '%Y%m' ) ) =1
+        ) ok,
+        (
+        SELECT IFNULL(SUM(payment),0) as 'refundPayment',count(1) as 'refundTotal' FROM kz_order o WHERE shop_id = '1' AND `status` = '7' AND
+        PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( create_time, '%Y%m' ) ) =1
+        ) refund
+
+    </select>
+
     <select id="selectToDayMoney" resultType="Map">
             SELECT IFNULL(SUM(o.payment),0) as 'todayMoney',IFNULL(SUM(o.post_free),0) as 'postFree' FROM kz_order o
             WHERE o.`status` = '5' AND to_days(o.end_time) = to_days(now())
