@@ -44,8 +44,8 @@ public class SchedulingDealInfo implements Job {
             String okTotal = map.get("okTotal").toString();//交易完成的单量
             String refundPayment = map.get("refundPayment").toString();//退款金额
             String refundTotal = map.get("refundTotal").toString(); //退款单量
-            String serviceFee = NumberUtil.mul(NumberUtil.add(payment,postFree),new BigDecimal("0.01")).toString(); //手续费 (订单交易额+配送费*0.01)
-            String totalPayment = NumberUtil.sub(NumberUtil.add(okPayment,refundPayment,postFree),new BigDecimal(serviceFee)).toString(); //月总交易额 (交易完成的钱+退款金额+配送费 - 服务费)
+            String serviceFee = NumberUtil.mul(payment,"0.01").toString(); //手续费 (订单交易额*0.01)
+            String totalPayment = NumberUtil.sub(NumberUtil.add(okPayment,refundPayment),new BigDecimal(serviceFee)).toString(); //月总交易额 (交易完成的钱+退款金额 - 服务费)
 
             DealInfo dealInfo = DealInfo.builder()
                     .id(UUID.randomUUID().toString().replace("-",""))
