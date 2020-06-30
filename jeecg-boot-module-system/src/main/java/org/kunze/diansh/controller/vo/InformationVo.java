@@ -22,7 +22,7 @@ public class InformationVo implements Serializable {
     /**手续费率*/
     private String charge;
 
-    /*手续费*/
+    /*月手续费*/
     private String chargeTotal;
 
     /**月退款金额*/
@@ -37,8 +37,20 @@ public class InformationVo implements Serializable {
     /**当日交易额*/
     private String toDayMoney;
 
-    /**日配送费*/
-    private String toDayPostFree;
+    /**当日成功交易*/
+    private String toDayOkPayment;
+
+    /**当日手续费*/
+    private String toDayChargeTotal;
+
+    /**当日退款金额*/
+    private String toDayRefundPayment;
+
+    /**当日交易成功订单数*/
+    private String toDayokTotal;
+
+    /**当日退款订单数*/
+    private String toDayRefundTotal;
 
     /**当日盈利*/
     private String toDayTotalPrice;

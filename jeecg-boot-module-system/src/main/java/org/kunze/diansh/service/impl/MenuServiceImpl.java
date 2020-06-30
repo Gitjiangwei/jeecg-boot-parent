@@ -231,7 +231,7 @@ public class MenuServiceImpl implements IMenuService {
             informationVo.setRefundPayment(CalculationUtil.FractionalConversion(refundPayment.toString()));
             informationVo.setRefundTotal(refundTotal.toString());
             //计算手续费
-            Map<String,String> map = chargeMapper.selectCharge("1");
+            Map<String,String> map = chargeMapper.selectCharge(shopId);
             String serviceCharge = map.get("service_charge")==null?"0":map.get("service_charge");
             if(!serviceCharge.equals("0")){
                 informationVo.setCharge(serviceCharge);
@@ -243,16 +243,31 @@ public class MenuServiceImpl implements IMenuService {
                 informationVo.setChargeTotal("0");
             }
             Map<String,String> toDayMap = shopMapper.selectToDayMoney(shopId); //当日交易额
-            Object toDayMoney = toDayMap.get("todayMoney");
-            Object toDayPostFree = toDayMap.get("postFree");
+            Object toDayMoney = toDayMap.get("payment"); //当日交易额
+            Object toDayOkPayment = toDayMap.get("okPayment"); //当日成功交易
+            Object toDayokTotal = toDayMap.get("okTotal"); //当日交易成功的订单数
+            Object toDayRefundPayment = toDayMap.get("refundPayment"); //当日退款金额
+            Object toDayRefundTotal = toDayMap.get("refundTotal");// 当日退款订单数
             informationVo.setToDayMoney(CalculationUtil.FractionalConversion(toDayMoney.toString()));
-            informationVo.setToDayPostFree(CalculationUtil.FractionalConversion(toDayPostFree.toString()));
-            informationVo.setToDayTotalPrice(new BigDecimal(informationVo.getToDayMoney()).add(new BigDecimal(informationVo.getToDayPostFree())).toString());
+            informationVo.setToDayOkPayment(CalculationUtil.FractionalConversion(toDayOkPayment.toString()));
+            informationVo.setToDayokTotal(toDayokTotal.toString());
+            informationVo.setToDayRefundPayment(CalculationUtil.FractionalConversion(toDayRefundPayment.toString()));
+            informationVo.setToDayRefundTotal(toDayRefundTotal.toString());
+            //计算当日的手续费
+            if(!serviceCharge.equals("0")){
+                //serviceCharge = new BigDecimal(serviceCharge).divide(new BigDecimal("100")).toString();
+                informationVo.setToDayChargeTotal(new BigDecimal(informationVo.getToDayMoney()).multiply(new BigDecimal(serviceCharge)).setScale(2, BigDecimal.ROUND_UP).toString());
+                informationVo.setToDayTotalPrice(new BigDecimal(informationVo.getToDayMoney()).subtract(new BigDecimal(informationVo.getToDayChargeTotal())).toString());
+            }else {
+                informationVo.setToDayChargeTotal("0");
+                informationVo.setToDayTotalPrice(informationVo.getToDayMoney());
+            }
             informationVo.setOrderNum(shopMapper.selectTotalOrder(shopId));
             informationVo.setSpuNum(shopMapper.selectTotalSpuNum(shopId));
         }
         return informationVo;
     }
+
 
     /***
      * 订单统计

@@ -308,9 +308,20 @@
     </select>
 
     <select id="selectToDayMoney" resultType="Map">
-            SELECT IFNULL(SUM(o.payment),0) as 'todayMoney',IFNULL(SUM(o.post_free),0) as 'postFree' FROM kz_order o
-            WHERE o.`status` = '5' AND to_days(o.end_time) = to_days(now())
-            AND o.shop_id = #{shopId}
+
+        SELECT * FROM (
+         SELECT IFNULL(SUM(payment),0) as 'payment',IFNULL(SUM(o.post_free),0) as 'postFree' FROM kz_order o WHERE shop_id = #{shopId} AND (`status`= '5' OR `status` = '7' ) AND
+        (to_days(o.end_time) = to_days(now()) OR to_days(o.refund_time) = to_days(now()))
+				) total,
+				(
+        SELECT IFNULL(SUM(payment),0) as 'okPayment',count(1) as 'okTotal' FROM kz_order o WHERE shop_id = #{shopId} AND `status`= '5' AND
+        to_days(o.end_time) = to_days(now())
+				) ok,
+				(
+        SELECT IFNULL(SUM(payment),0) as 'refundPayment',count(1) as 'refundTotal' FROM kz_order o WHERE shop_id = #{shopId} AND `status` = '7' AND
+        to_days(o.refund_time) = to_days(now())
+				) refund
+
     </select>
 
     <select id="selectTotalSpuNum" resultType="String">
