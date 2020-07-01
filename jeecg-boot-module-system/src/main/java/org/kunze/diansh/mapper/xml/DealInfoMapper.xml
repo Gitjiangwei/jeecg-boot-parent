@@ -2,4 +2,33 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.kunze.diansh.mapper.DealInfoMapper">
 
+
+
+    <select id="queryDealInfoList" resultType="org.kunze.diansh.entity.modelData.DealInfoModel">
+        SELECT
+            id,
+            payment,
+            ok_payment,
+            ok_total,
+            refund_payment,
+            refund_total,
+            total_payment,
+            service_fee,
+            <if test="dateFlag == 0">
+                date_format(create_time,'%Y-%m') as 'createTime',
+            </if>
+            <if test="dateFlag == 1">
+                date_format(create_time,'%Y-%m-%d') as 'createTime',
+            </if>
+            service_change
+        FROM
+            kz_dealinfo
+        <trim prefix="where" prefixOverrides="and">
+            shop_id = #{shopId}
+            <if test="dateFlag != null and dateFlag != ''">
+                and date_flag = #{dateFlag}
+            </if>
+        </trim>
+
+    </select>
 </mapper>

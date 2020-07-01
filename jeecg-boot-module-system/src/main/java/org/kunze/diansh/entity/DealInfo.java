@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Date;
 @Data
 @Builder
 @TableName("kz_dealinfo")
-public class DealInfo {
+public class DealInfo implements Serializable {
 
     private String id; //主键
     private String payment; //订单交易额
