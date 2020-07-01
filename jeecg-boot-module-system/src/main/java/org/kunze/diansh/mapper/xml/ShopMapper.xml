@@ -299,7 +299,8 @@
             CAST(IFNULL(ok.okPayment,"0") AS CHAR(1000) CHARACTER SET utf8	) as 'okPayment',
             CAST(IFNULL(ok.okTotal,"0") AS CHAR(1000) CHARACTER SET utf8) AS 'okTotal',
             CAST(IFNULL(refund.refundPayment,"0") AS CHAR(1000) CHARACTER SET utf8	) as 'refundPayment',
-            CAST(IFNULL(refund.refundTotal,"0") AS CHARACTER) as 'refundTotal'
+            CAST(IFNULL(refund.refundTotal,"0") AS CHARACTER) as 'refundTotal',
+            concat(date_format(now(),'%Y'),'-',date_format(now(),'%m')-1) as `occurrenceTime`
             FROM kz_shop shop
             LEFT JOIN kz_order ord ON shop.id = ord.shop_id AND (ord.`status` = '5' or ord.`status` = '7')
             AND	(PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( ord.create_time, '%Y%m' ) ) =1)
@@ -331,7 +332,8 @@
             CAST(IFNULL(ok.okPayment,"0") AS CHAR(1000) CHARACTER SET utf8	) as 'okPayment',
             CAST(IFNULL(ok.okTotal,"0") AS CHAR(1000) CHARACTER SET utf8) AS 'okTotal',
             CAST(IFNULL(refund.refundPayment,"0") AS CHAR(1000) CHARACTER SET utf8	) as 'refundPayment',
-            CAST(IFNULL(refund.refundTotal,"0") AS CHARACTER) as 'refundTotal'
+            CAST(IFNULL(refund.refundTotal,"0") AS CHARACTER) as 'refundTotal',
+            DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d') as 'occurrenceTime'
             FROM kz_shop shop
             LEFT JOIN kz_order ord ON shop.id = ord.shop_id AND (ord.`status` = '5' or ord.`status` = '7')
             AND	(TO_DAYS( NOW() ) - TO_DAYS(ord.create_time) = 1)

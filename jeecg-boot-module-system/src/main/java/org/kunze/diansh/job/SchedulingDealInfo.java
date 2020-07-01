@@ -50,6 +50,7 @@ public class SchedulingDealInfo implements Job {
             String okTotal = map.get("okTotal").toString();//交易完成的单量
             String refundPayment = map.get("refundPayment").toString();//退款金额
             String refundTotal = map.get("refundTotal").toString(); //退款单量
+            String occurrenceTime = map.get("occurrenceTime");
             String serviceFee = "0";
             if(!charge.equals("0")){
                 serviceFee = NumberUtil.round(NumberUtil.mul(payment, CalculationUtil.ServiceCharge(charge)).toString(),0, RoundingMode.UP).toString(); //手续费 (订单交易额*0.01)
@@ -70,6 +71,7 @@ public class SchedulingDealInfo implements Job {
                     .shopId(id)
                     .serviceChange(charge)
                     .dateFlag(0)
+                    .occurrenceTime(occurrenceTime)
                     .build();
             dealInfoMapper.insert(dealInfo);
         }
