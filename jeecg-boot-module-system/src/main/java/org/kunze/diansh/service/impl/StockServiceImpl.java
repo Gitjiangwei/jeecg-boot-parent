@@ -45,6 +45,10 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock> implements
                     //库存数量为0
                     continue;
                 }
+                if(od.getNum()>stockNum){
+                    System.out.println("================================库存不足");
+                    continue;
+                }
                 //更新库存
                 stockMapper.updateStockNum(od.getNum(),od.getSkuId());
             }

@@ -51,8 +51,8 @@ public class WeChatPayProperties implements Serializable {
     public final String QUERY_WX_PAY_STATUS = "https://api.mch.weixin.qq.com/pay/orderquery";
 
     //小程序支付回调地址
-    public final String WX_PAY_NOTIFY_URL = "http://www.hohodj.com/jeecg-boot/kunze/wechatpay/xcxNotify";
+    public final String WX_PAY_NOTIFY_URL = "http://image.hohodj.com/jeecg-boot/kunze/wechatpay/xcxNotify";
 
     //小程序退款回调地址
-    public final String WX_PAY_REFUND_URL = "http://www.hohodj.com/jeecg-boot/kunze/wechatpay/refundResult";
+    public final String WX_PAY_REFUND_URL = "http://image.hohodj.com/jeecg-boot/kunze/wechatpay/refundResult";
 }

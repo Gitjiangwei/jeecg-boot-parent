@@ -102,4 +102,11 @@ public interface IOrderService extends IService<Order> {
      * @return 价格
      */
     String countOrderPayment(List<OrderDetail> odList);
+
+    /**
+     * 根据用户id查询当前是否有未支付的订单
+     * @param userId
+     * @return
+     */
+    Boolean selectOrderByUserId(String userId,String shopId);
 }

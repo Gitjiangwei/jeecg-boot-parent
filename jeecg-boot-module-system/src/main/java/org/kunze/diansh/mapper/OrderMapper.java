@@ -80,4 +80,11 @@ public interface OrderMapper extends BaseMapper<Order> {
      * @return
      */
     List<OrderModel> selectOrder(Order order);
+
+    /**
+     * 根据用户id查询当前是否有未支付的订单
+     * @param userId
+     * @return
+     */
+    Integer selectOrderByUserId(@Param("userId") String userId,@Param("shopId") String shopId);
 }

@@ -122,4 +122,9 @@
         </trim>
         order by o.create_time desc
     </select>
+
+    <!-- 根据用户id查询当前是否有未支付的订单 -->
+    <select id="selectOrderByUserId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM KZ_ORDER KO WHERE KO.`STATUS` = '1' AND KO.USER_ID = #{userId} AND SHOP_ID = #{shopId}
+    </select>
 </mapper>

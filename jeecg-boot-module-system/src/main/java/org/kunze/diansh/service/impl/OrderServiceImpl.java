@@ -465,5 +465,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return orderMapper.selectById(order);
     }
 
+    /**
+     * 根据用户id查询当前是否有未支付的订单
+     * @param userId
+     * @return
+     */
+    @Override
+    public Boolean selectOrderByUserId(String userId,String shopId) {
+        Integer num = orderMapper.selectOrderByUserId(userId,shopId);
+        if(num>1){
+            return true;
+        }
+        return false;
+    }
 
 }

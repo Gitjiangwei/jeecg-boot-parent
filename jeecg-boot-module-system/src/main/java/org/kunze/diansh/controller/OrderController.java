@@ -88,6 +88,11 @@ public class OrderController {
         if(EmptyUtils.isEmpty(postFree)){
             return orderResult.error500("配送费不能为空！");
         }
+
+        Boolean flag = orderService.selectOrderByUserId(userID,shopId);
+        if(flag){
+            return orderResult.error500("您有未支付的订单，请勿重复支付！");
+        }
         Order order = orderService.createOrder(aid,cids,shopId,userID,pick_up,postFree,payType,buyerMessage);
         if(null != order){
             orderResult.success("创建成功！");

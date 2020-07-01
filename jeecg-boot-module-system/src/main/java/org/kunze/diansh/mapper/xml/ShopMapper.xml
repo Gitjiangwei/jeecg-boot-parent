@@ -291,20 +291,35 @@
     </select>
 
     <!-- 查询上个月的汇总信息 -->
-    <select id="selectOldMonthMoney" resultType="java.util.Map">
-        SELECT * FROM (
-        SELECT IFNULL(SUM(payment),0) as 'payment',IFNULL(SUM(o.post_free),0) as 'postFree' FROM kz_order o WHERE shop_id = '1' AND (`status`= '5' OR `status` = '7' ) AND
-        (PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( create_time, '%Y%m' ) ) =1)
-        ) total,
-        (
-        SELECT IFNULL(SUM(payment),0) as 'okPayment',count(1) as 'okTotal' FROM kz_order o WHERE shop_id = '1' AND `status`= '5' AND
-        PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( create_time, '%Y%m' ) ) =1
-        ) ok,
-        (
-        SELECT IFNULL(SUM(payment),0) as 'refundPayment',count(1) as 'refundTotal' FROM kz_order o WHERE shop_id = '1' AND `status` = '7' AND
-        PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( create_time, '%Y%m' ) ) =1
-        ) refund
-
+    <select id="selectOldMonthMoney" resultType="java.util.HashMap" parameterType="java.lang.String">
+        SELECT shop.id as 'shopId',
+            CAST(IFNULL(SUM(ord.post_free),"0") AS CHAR(1000) CHARACTER SET utf8	) as 'postFree' ,
+            CAST(IFNULL(SUM(ord.payment),"0") AS CHAR(1000) CHARACTER SET utf8	) as 'payment',
+            IFNULL(charge.service_charge,'0') as 'charge',
+            CAST(IFNULL(ok.okPayment,"0") AS CHAR(1000) CHARACTER SET utf8	) as 'okPayment',
+            CAST(IFNULL(ok.okTotal,"0") AS CHAR(1000) CHARACTER SET utf8) AS 'okTotal',
+            CAST(IFNULL(refund.refundPayment,"0") AS CHAR(1000) CHARACTER SET utf8	) as 'refundPayment',
+            CAST(IFNULL(refund.refundTotal,"0") AS CHARACTER) as 'refundTotal'
+            FROM kz_shop shop
+            LEFT JOIN kz_order ord ON shop.id = ord.shop_id AND (ord.`status` = '5' or ord.`status` = '7')
+            AND	(PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( ord.create_time, '%Y%m' ) ) =1)
+            LEFT JOIN kz_charge charge ON shop.id = charge.shop_id
+            LEFT JOIN (
+            SELECT IFNULL(SUM(payment),0) as 'okPayment',count(1) as 'okTotal',o.shop_id FROM kz_order o WHERE  `status`= '5'
+            and (PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( o.create_time, '%Y%m' ) ) =1)
+            GROUP BY o.shop_id
+            ) ok ON shop.id = ok.shop_id
+            LEFT JOIN
+            (
+            SELECT IFNULL(SUM(payment),0) as 'refundPayment',count(1) as 'refundTotal',o.shop_id FROM kz_order o WHERE `status` = '7'
+            and (PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( o.create_time, '%Y%m' ) ) =1)
+            GROUP BY o.shop_id
+            ) refund ON shop.id = refund.shop_id
+            where
+            shop.`status`='0'
+            and shop.id = #{shopId}
+            GROUP BY shop.id
+            ORDER BY payment DESC
     </select>
 
     <select id="selectToDayMoney" resultType="Map">
@@ -389,7 +404,7 @@
     </delete>
 
     <!-- 查询超市id的集合 -->
-    <select id="selectShopIds">
+    <select id="selectShopIds" resultType="java.lang.String">
         SELECT ID FROM KZ_SHOP
     </select>
 </mapper>
