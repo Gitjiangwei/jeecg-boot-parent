@@ -88,6 +88,11 @@ public interface ShopMapper extends BaseMapper<KzShop> {
    Map<String,String> selectOldMonthMoney(@Param("shopId") String shopId);
 
     /**
+     * 查询上一日的汇总信息
+     * @return
+     */
+   List<Map<String,String>> selectDaysMoney();
+    /**
      * 查询超市当天销售额
      * @param shopId
      * @return

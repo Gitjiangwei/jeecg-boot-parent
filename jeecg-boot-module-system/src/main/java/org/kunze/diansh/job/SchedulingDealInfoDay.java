@@ -1,7 +1,6 @@
 package org.kunze.diansh.job;
 
 import cn.hutool.core.util.NumberUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.util.CalculationUtil;
 import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.entity.DealInfo;
@@ -14,17 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-/**
- * 定时记录商铺汇总信息
- * 月汇总
- */
-@Slf4j
-public class SchedulingDealInfo implements Job {
+public class SchedulingDealInfoDay implements Job {
 
     @Autowired
     private ShopMapper shopMapper;
@@ -32,17 +23,11 @@ public class SchedulingDealInfo implements Job {
     @Autowired
     private DealInfoMapper dealInfoMapper;
 
-
-
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        List<String> ids = shopMapper.selectShopIds();
-        if(EmptyUtils.isEmpty(ids)){
-            log.error("记录商铺汇总信息失败！商品为空");
-            return;
-        }
-        for (String id:ids) {
-            Map<String,String> map = shopMapper.selectOldMonthMoney(id); //查询上个月的汇总数据
+        List<Map<String,String>> dayList = shopMapper.selectDaysMoney();
+        for (Map map:dayList) {
+            String shopId = map.get("shopId").toString();
             String charge = map.get("charge").toString(); //服务费率
             String payment = map.get("payment").toString();//订单交易额
             String postFree = map.get("postFree").toString();//配送费
@@ -51,13 +36,13 @@ public class SchedulingDealInfo implements Job {
             String refundPayment = map.get("refundPayment").toString();//退款金额
             String refundTotal = map.get("refundTotal").toString(); //退款单量
             String serviceFee = "0";
-            if(!charge.equals("0")){
-                serviceFee = NumberUtil.round(NumberUtil.mul(payment, CalculationUtil.ServiceCharge(charge)).toString(),0, RoundingMode.UP).toString(); //手续费 (订单交易额*0.01)
+            if (!charge.equals("0")) {
+                serviceFee = NumberUtil.round(NumberUtil.mul(payment, CalculationUtil.ServiceCharge(charge)).toString(), 0, RoundingMode.UP).toString(); //手续费 (订单交易额*0.01)
             }
-            String totalPayment = NumberUtil.sub(NumberUtil.add(okPayment,refundPayment),new BigDecimal(serviceFee)).toString(); //月总交易额 (交易完成的钱+退款金额 - 服务费)
+            String totalPayment = NumberUtil.sub(NumberUtil.add(okPayment, refundPayment), new BigDecimal(serviceFee)).toString(); //月总交易额 (交易完成的钱+退款金额 - 服务费)
 
             DealInfo dealInfo = DealInfo.builder()
-                    .id(UUID.randomUUID().toString().replace("-",""))
+                    .id(UUID.randomUUID().toString().replace("-", ""))
                     .payment(payment)
                     .postFree(postFree)
                     .okPayment(okPayment)
@@ -67,9 +52,9 @@ public class SchedulingDealInfo implements Job {
                     .totalPayment(totalPayment)
                     .serviceFee(serviceFee)
                     .createTime(new Date())
-                    .shopId(id)
+                    .shopId(shopId)
                     .serviceChange(charge)
-                    .dateFlag(0)
+                    .dateFlag(1)
                     .build();
             dealInfoMapper.insert(dealInfo);
         }

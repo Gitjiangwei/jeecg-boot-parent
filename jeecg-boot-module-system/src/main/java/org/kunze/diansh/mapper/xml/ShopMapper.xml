@@ -322,6 +322,37 @@
             ORDER BY payment DESC
     </select>
 
+    <!-- 查询上一日的汇总信息 -->
+    <select id="selectDaysMoney" resultType="java.util.HashMap">
+        SELECT shop.id as 'shopId',
+            CAST(IFNULL(SUM(ord.post_free),"0") AS CHAR(1000) CHARACTER SET utf8	) as 'postFree' ,
+            CAST(IFNULL(SUM(ord.payment),"0") AS CHAR(1000) CHARACTER SET utf8	) as 'payment',
+            IFNULL(charge.service_charge,'0') as 'charge',
+            CAST(IFNULL(ok.okPayment,"0") AS CHAR(1000) CHARACTER SET utf8	) as 'okPayment',
+            CAST(IFNULL(ok.okTotal,"0") AS CHAR(1000) CHARACTER SET utf8) AS 'okTotal',
+            CAST(IFNULL(refund.refundPayment,"0") AS CHAR(1000) CHARACTER SET utf8	) as 'refundPayment',
+            CAST(IFNULL(refund.refundTotal,"0") AS CHARACTER) as 'refundTotal'
+            FROM kz_shop shop
+            LEFT JOIN kz_order ord ON shop.id = ord.shop_id AND (ord.`status` = '5' or ord.`status` = '7')
+            AND	(TO_DAYS( NOW() ) - TO_DAYS(ord.create_time) = 1)
+            LEFT JOIN kz_charge charge ON shop.id = charge.shop_id
+            LEFT JOIN (
+            SELECT IFNULL(SUM(payment),0) as 'okPayment',count(1) as 'okTotal',o.shop_id FROM kz_order o WHERE  `status`= '5'
+            and (TO_DAYS( NOW() ) - TO_DAYS(o.create_time) = 1)
+            GROUP BY o.shop_id
+            ) ok ON shop.id = ok.shop_id
+            LEFT JOIN
+            (
+            SELECT IFNULL(SUM(payment),0) as 'refundPayment',count(1) as 'refundTotal',o.shop_id FROM kz_order o WHERE `status` = '7'
+            and (TO_DAYS( NOW() ) - TO_DAYS(o.create_time) = 1)
+            GROUP BY o.shop_id
+            ) refund ON shop.id = refund.shop_id
+            where
+            shop.`status`='0'
+            GROUP BY shop.id
+            ORDER BY payment DESC
+    </select>
+
     <select id="selectToDayMoney" resultType="Map">
 
         SELECT * FROM (
