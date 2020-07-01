@@ -43,7 +43,7 @@ public class DealInfoServiceImpl extends ServiceImpl<DealInfoMapper, DealInfo> i
             DealInfoVo dealInfoVo = new DealInfoVo();
             dealInfoVo.setId(item.getId());
             dealInfoVo.setServiceChange(item.getServiceChange()+"%");
-            dealInfoVo.setCreateTime(item.getCreateTime());
+            dealInfoVo.setOccurrenceTime(item.getOccurrenceTime());
             dealInfoVo.setOkPaymentTotal(item.getOkTotal()+"单"+ CalculationUtil.FractionalConversion(item.getOkPayment())+"元");
             dealInfoVo.setRefundPaymentTotal(item.getRefundTotal()+"单"+CalculationUtil.FractionalConversion(item.getRefundPayment())+"元");
             dealInfoVo.setPayment(CalculationUtil.FractionalConversion(item.getPayment()));

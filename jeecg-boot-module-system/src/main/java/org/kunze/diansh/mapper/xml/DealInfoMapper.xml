@@ -14,12 +14,7 @@
             refund_total,
             total_payment,
             service_fee,
-            <if test="dateFlag == 0">
-                date_format(create_time,'%Y-%m') as 'createTime',
-            </if>
-            <if test="dateFlag == 1">
-                date_format(create_time,'%Y-%m-%d') as 'createTime',
-            </if>
+            occurrenceTime,
             service_change
         FROM
             kz_dealinfo

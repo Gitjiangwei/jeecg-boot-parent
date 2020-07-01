@@ -16,6 +16,6 @@ public class DealInfoModel implements Serializable {
     private String refundTotal; //退款单量
     private String totalPayment; //月总交易额
     private String serviceFee; //服务费/手续费
-    private String createTime; //创建时间
+    private String occurrenceTime; //创建时间
     private String serviceChange; //手续费
 }
