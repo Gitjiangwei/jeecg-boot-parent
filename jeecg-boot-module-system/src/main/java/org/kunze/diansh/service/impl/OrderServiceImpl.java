@@ -479,4 +479,31 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return false;
     }
 
+    /**
+     * 根据订单ID查询订单数据
+     * @param orderId 订单id
+     * @param userID 用户id
+     * @param shopID 店铺id
+     * @return 订单数据
+     */
+    @Override
+    public Map<String,Object> againOrder(String orderId, String userID, String shopID) {
+        Map<String,Object> map = new HashMap<>();
+        Order order = orderMapper.selectOrderById(orderId,userID,shopID);
+        //商品详细信息集合
+        List<OrderDetail> odlist = orderMapper.selectOrderDetailById(order.getOrderId());
+
+        List<Sku> skuList = skuMapper.getSkusByOrder(odlist);
+        for (int i=0;i<=odlist.size();i++){
+            if(odlist.get(i).getSkuId().equals(skuList.get(i).getId())){
+
+            }
+        }
+        //根据aid查找相关的地址信息
+        Address address = addressMapper.selectAddressByID(order.getAddressId());
+        map.put("skuList",skuList);
+        map.put("address",address);
+        return map;
+    }
+
 }

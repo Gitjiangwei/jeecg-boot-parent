@@ -109,4 +109,13 @@ public interface IOrderService extends IService<Order> {
      * @return
      */
     Boolean selectOrderByUserId(String userId,String shopId);
+
+    /**
+     * 根据订单ID查询订单数据
+     * @param orderId 订单id
+     * @param userID 用户id
+     * @param shopID 店铺id
+     * @return 订单数据
+     */
+    Map<String,Object> againOrder(String orderId, String userID, String shopID);
 }

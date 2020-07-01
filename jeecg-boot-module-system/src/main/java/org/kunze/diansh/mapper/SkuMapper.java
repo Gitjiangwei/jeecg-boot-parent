@@ -2,6 +2,7 @@ package org.kunze.diansh.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.kunze.diansh.entity.OrderDetail;
 import org.kunze.diansh.entity.Sku;
 
 import java.util.List;
@@ -45,4 +46,10 @@ public interface SkuMapper extends BaseMapper<Sku> {
      * @return
      */
     int delSku(@Param("spuList") List<String> spuList);
+
+    /**
+     * 批量获取商品信息 通过orderDetail中的skuId
+     * @return
+     */
+    List<Sku> getSkusByOrder(@Param("list")List<OrderDetail> list);
 }

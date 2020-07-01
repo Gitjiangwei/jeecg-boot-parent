@@ -142,4 +142,13 @@ AND sku.spu_id = #{id}
             #{item}
         </foreach>
     </update>
+
+    <!-- 批量获取商品信息 通过orderDetail中的skuId -->
+    <select id="getSkusByOrder" resultType="org.kunze.diansh.entity.Sku">
+        SELECT * FROM KZ_SKU SKU WHERE SKU.`ENABLE` = '1'
+        AND ID IN
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item.skuId}
+        </foreach>
+    </select>
 </mapper>

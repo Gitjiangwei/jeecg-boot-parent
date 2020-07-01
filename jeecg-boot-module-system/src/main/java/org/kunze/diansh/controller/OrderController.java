@@ -210,4 +210,59 @@ public class OrderController {
         result.setSuccess(true);
         return result;
     }
+
+    /**
+     * 取消订单
+     * 订单只允许在未支付时取消
+     * @return
+     */
+    @ApiOperation("取消订单(只能取消未支付订单)")
+    @PostMapping(value = "/cancelOrder")
+    public Result cancelOrder(@RequestParam(name = "orderId")String orderId,
+                              @RequestParam(name = "userId")String userId){
+        Result result = new Result();
+        if(EmptyUtils.isEmpty(orderId)){
+            return result.error500("订单号参数不能为空！");
+        }
+        if(EmptyUtils.isEmpty(userId)){
+            return result.error500("用户id不能为空！");
+        }
+        Order order = orderService.selectById(orderId);
+        if(EmptyUtils.isEmpty(order)){
+            return result.error500("订单不存在！");
+        }
+        if(!"1".equals(order.getStatus().toString())){
+            return result.error500("当前订单状态不可取消！");
+        }else{
+            //从队列删除
+            OrderComsumer.removeToOrderDelayQueue(orderId);
+            orderService.updateOrderStatu("6",orderId);
+        }
+        return Result.ok("取消成功！");
+    }
+
+
+    @ApiOperation("再来一单时获取商品最新数据")
+    @AutoLog("再来一单时获取商品最新数据")
+    @PostMapping(value = "/againOrder")
+    public Result<Map<String,Object>> againOrder(@RequestParam(name = "orderId") String orderId,
+                                         @RequestParam(name = "userID")String userID,
+                                         @RequestParam(name = "shopID") String shopID){
+        Result<Map<String,Object>> result = new Result<Map<String,Object>>(){};
+
+        if(orderId == null || orderId.equals("")){
+            return result.error500("参数丢失");
+        }
+        if(shopID == null || shopID.equals("")){
+            return result.error500("参数丢失");
+        }
+        try{
+            Map<String,Object> map = orderService.againOrder(orderId,userID,shopID);
+            result.setResult(map);
+            result.setSuccess(true);
+        }catch (Exception e){
+            result.error500("获取数据时出现错误！");
+        }
+        return  result;
+    }
 }
