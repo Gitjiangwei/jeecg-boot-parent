@@ -30,4 +30,5 @@ public class DealInfo {
     private Date createTime; //创建时间
     private String shopId; //店铺id
     private String serviceChange; //手续费
+    private Integer dateFlag;//汇总信息类型 0月/1日
 }
