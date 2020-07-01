@@ -35,4 +35,17 @@ public class CalculationUtil {
             return newPrice.toString();
         }
     }
+
+    /***
+     * 计算手续手续费率（整数转换小数）
+     * @return
+     */
+    public static String ServiceCharge(String charge){
+        if(charge == null || charge.equals("")){
+            return "0";
+        }else {
+            BigDecimal serviceCharge = new BigDecimal(charge).divide(new BigDecimal("100"));
+            return serviceCharge.setScale(2).toString();
+        }
+    }
 }
