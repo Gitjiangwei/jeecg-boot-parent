@@ -494,14 +494,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         List<OrderDetail> odlist = orderMapper.selectOrderDetailById(order.getOrderId());
 
         List<Sku> skuList = skuMapper.getSkusByOrder(odlist);
-        for (int i=0;i<=odlist.size();i++){
-            if(odlist.get(i).getSkuId().equals(skuList.get(i).getId())){
 
+        List<Sku> result = new ArrayList<>();
+        for (OrderDetail od:odlist) {
+            for (Sku sku:skuList) {
+                if(od.getSkuId().equals(sku.getId())){
+                    sku.setNum(od.getNum());
+                    result.add(sku);
+                }
             }
         }
         //根据aid查找相关的地址信息
         Address address = addressMapper.selectAddressByID(order.getAddressId());
-        map.put("skuList",skuList);
+        map.put("skuList",result);
         map.put("address",address);
         return map;
     }

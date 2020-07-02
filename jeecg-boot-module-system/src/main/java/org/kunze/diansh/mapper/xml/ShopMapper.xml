@@ -303,17 +303,18 @@
             concat(date_format(now(),'%Y'),'-',date_format(now(),'%m')-1) as `occurrenceTime`
             FROM kz_shop shop
             LEFT JOIN kz_order ord ON shop.id = ord.shop_id AND (ord.`status` = '5' or ord.`status` = '7')
-            AND	(PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( ord.create_time, '%Y%m' ) ) =1)
+            AND	((PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( ord.end_time, '%Y%m' ) ) =1) OR
+            (PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( ord.refund_time, '%Y%m' ) ) =1))
             LEFT JOIN kz_charge charge ON shop.id = charge.shop_id
             LEFT JOIN (
             SELECT IFNULL(SUM(payment),0) as 'okPayment',count(1) as 'okTotal',o.shop_id FROM kz_order o WHERE  `status`= '5'
-            and (PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( o.create_time, '%Y%m' ) ) =1)
+            and (PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( o.end_time, '%Y%m' ) ) =1)
             GROUP BY o.shop_id
             ) ok ON shop.id = ok.shop_id
             LEFT JOIN
             (
             SELECT IFNULL(SUM(payment),0) as 'refundPayment',count(1) as 'refundTotal',o.shop_id FROM kz_order o WHERE `status` = '7'
-            and (PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( o.create_time, '%Y%m' ) ) =1)
+            and (PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( o.refund_time, '%Y%m' ) ) =1)
             GROUP BY o.shop_id
             ) refund ON shop.id = refund.shop_id
             where
@@ -336,7 +337,7 @@
             DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d') as 'occurrenceTime'
             FROM kz_shop shop
             LEFT JOIN kz_order ord ON shop.id = ord.shop_id AND (ord.`status` = '5' or ord.`status` = '7')
-            AND	(TO_DAYS( NOW() ) - TO_DAYS(ord.create_time) = 1)
+            AND	((TO_DAYS( NOW() ) - TO_DAYS(ord.end_time) = 1) OR (TO_DAYS( NOW() ) - TO_DAYS(ord.refund_time) = 1))
             LEFT JOIN kz_charge charge ON shop.id = charge.shop_id
             LEFT JOIN (
             SELECT IFNULL(SUM(payment),0) as 'okPayment',count(1) as 'okTotal',o.shop_id FROM kz_order o WHERE  `status`= '5'
@@ -346,7 +347,7 @@
             LEFT JOIN
             (
             SELECT IFNULL(SUM(payment),0) as 'refundPayment',count(1) as 'refundTotal',o.shop_id FROM kz_order o WHERE `status` = '7'
-            and (TO_DAYS( NOW() ) - TO_DAYS(o.create_time) = 1)
+            and (TO_DAYS( NOW() ) - TO_DAYS(o.refund_time) = 1)
             GROUP BY o.shop_id
             ) refund ON shop.id = refund.shop_id
             where
