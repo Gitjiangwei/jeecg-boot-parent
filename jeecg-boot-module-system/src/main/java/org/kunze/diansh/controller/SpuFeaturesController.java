@@ -1,6 +1,7 @@
 package org.kunze.diansh.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -128,6 +129,26 @@ public class SpuFeaturesController  {
                 result.success("删除成功！");
             }else {
                 result.error500("删除失败！");
+            }
+        }
+        return result;
+    }
+
+
+    @ApiOperation("检索同一天是否有相同的特卖商品")
+    @PostMapping(value = "/identical")
+    public Result<T> querySkuIdentical(@RequestBody JSONObject jsonObject){
+        Result<T> result = new Result<T>();
+        String skuId = jsonObject.getString("skuId");
+        String featuresTime = jsonObject.getString("featuresTime");
+        if(StringUtils.isEmpty(skuId)||StringUtils.isEmpty(featuresTime)){
+            result.error500("参数丢失！");
+        }else {
+            Boolean resultOk = spuFeaturesService.querySkuIdentical(skuId,featuresTime);
+            if(resultOk){
+                result.error500("同一天不能添加多条相同规格的特卖商品");
+            }else {
+                result.success("ok");
             }
         }
         return result;

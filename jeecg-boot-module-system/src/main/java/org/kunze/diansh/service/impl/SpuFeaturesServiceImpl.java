@@ -55,14 +55,7 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
         spuFeaturesList.add(spuFeatures);
         int result = spuFeaturesMapper.saveSpuFeatures(spuFeaturesList);
         if(result>0){
-            if(spuFeaturesBo.getSkuId()!=null && !spuFeaturesBo.getSkuId().equals("")){
-                List<String> stringList = new ArrayList<>();
-                stringList.add(spuFeaturesBo.getSkuId());
-                result = spuFeaturesMapper.updateSkuFeatures(stringList,"1");
-                if(result > 0){
-                    isFlag = true;
-                }
-            }
+            isFlag = true;
         }
         return isFlag;
     }
@@ -170,6 +163,23 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
             }
         }
         return isflag;
+    }
+
+    /**
+     * 检索同一天是否有相同的特卖商品 是返回true 否返回 false
+     *
+     * @param skuId
+     * @param featuresTime
+     * @return
+     */
+    @Override
+    public Boolean querySkuIdentical(String skuId, String featuresTime) {
+        Boolean isFlag = false;
+        int result = spuFeaturesMapper.querySkuIdentical(skuId,featuresTime);
+        if(result>0){
+            isFlag = true;
+        }
+        return isFlag;
     }
 
 

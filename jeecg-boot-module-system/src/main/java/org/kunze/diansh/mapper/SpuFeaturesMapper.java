@@ -86,4 +86,14 @@ public interface SpuFeaturesMapper extends BaseMapper<SpuFeatures> {
 
     @Select("SELECT * FROM kz_spu_features WHERE SKU_ID = #{skuId} and features_status = '1'")
     SpuFeatures selectFeatBySkuId(@Param("skuId")String skuId);
+
+
+    /**
+     * 检索同一天是否有相同的特卖商品
+     * @param skuId
+     * @param featuresTime
+     * jw
+     * @return
+     */
+    int querySkuIdentical(@Param("skuId") String skuId,@Param("featuresTime") String featuresTime);
 }

@@ -79,7 +79,6 @@
     </select>
 
     <select id="selectSkuNotState" resultType="String">
-
         SELECT id from kz_sku
         <trim prefix="where" prefixOverrides="and">
             is_features = '0'
@@ -126,5 +125,11 @@
             </if>
         </trim>
         order by feat.create_time desc
+    </select>
+
+    <select id="querySkuIdentical" resultType="int">
+        select count(1) from kz_spu_features
+        where sku_id = #{skuId}
+        AND DATE_FORMAT(specialstart_time,'%Y-%m-%d') = #{featuresTime} AND DATE_FORMAT(specialend_time,'%Y-%m-%d') = #{featuresTime}
     </select>
 </mapper>

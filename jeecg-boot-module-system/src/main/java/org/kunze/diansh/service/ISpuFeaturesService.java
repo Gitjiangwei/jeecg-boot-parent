@@ -52,4 +52,12 @@ public interface ISpuFeaturesService extends IService<SpuFeatures> {
      * @return
      */
     Boolean delFeatures(String ids);
+
+    /**
+     * 检索同一天是否有相同的特卖商品 是返回true 否返回 false
+     * @param skuId
+     * @param featuresTime
+     * @return
+     */
+    Boolean querySkuIdentical(String skuId,String featuresTime);
 }

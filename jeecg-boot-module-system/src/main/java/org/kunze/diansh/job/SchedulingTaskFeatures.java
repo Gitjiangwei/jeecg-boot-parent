@@ -35,6 +35,7 @@ public class SchedulingTaskFeatures implements Job {
             featList.add(item.getFeaturesId());
         }
         if (skuIds != null && skuIds.size()>0){
+            //查询没有修改状态的SKU
             List<String> notSkuIds = spuFeaturesMapper.selectSkuNotState(skuIds);
             if(notSkuIds != null && notSkuIds.size()>0){
                 spuFeaturesMapper.updateFeatures(featList,"1");
