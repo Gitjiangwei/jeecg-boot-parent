@@ -3,7 +3,9 @@ package org.kunze.diansh.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.jeecg.common.util.TreeUtil;
 import org.kunze.diansh.entity.Category;
+import org.kunze.diansh.entity.Collect;
 import org.kunze.diansh.mapper.NewCategoryMapper;
 import org.kunze.diansh.service.ICategoryService;
 import org.springframework.beans.BeanUtils;
@@ -11,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class CategoryServiceImpl extends ServiceImpl<NewCategoryMapper,Category> implements ICategoryService {
@@ -139,6 +138,20 @@ public class CategoryServiceImpl extends ServiceImpl<NewCategoryMapper,Category>
             e.printStackTrace();
         }
         return list;
+    }
+
+    /**
+     * 获取分类的全部数据
+     * @return
+     */
+    public Collection<Category> getAllCategory(){
+        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("is_flag","0")
+                .orderBy(true,true,"sort");
+        List<Category> categoryList = newCategoryMapper.selectList(queryWrapper);
+        Collection collection=TreeUtil.toTree(categoryList,"id","parentId","childrenList",Category.class);
+
+        return collection;
     }
 
 }

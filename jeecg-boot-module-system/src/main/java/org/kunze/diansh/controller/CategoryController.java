@@ -11,6 +11,7 @@ import org.kunze.diansh.service.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -27,21 +28,21 @@ public class CategoryController {
     /**
      * 查询商品分类菜单
      *
-     * @param pid 父级id 如果是顶级类则为0，默认为0
      * @return
      */
     @ApiOperation("商品分类菜单接口")
     @AutoLog("查询商品分类")
     @GetMapping(value = "/qryList")
-    public @ResponseBody Result<List<Category>> qryLists(@RequestParam(required = false, defaultValue = "0") String pid,
-                                    @RequestParam(required = false) String id) {
-        Result<List<Category>> result = new Result<>();
-        List<Category> categoryList = categoryService.qryList(pid, id);
-   /*     if(CollectionUtils.isEmpty(categoryList)){
-            throw new UdaiException(ExceptionEnums.CATEGORY_NOT_FIND);
-        }*/
-        result.setResult(categoryList);
-        result.setSuccess(true);
+    public @ResponseBody Result<Collection<Category>> qryList() {
+        Result<Collection<Category>> result = new Result<>();
+        try {
+            Collection<Category> categoryList = categoryService.getAllCategory();
+            result.setResult(categoryList);
+            result.setSuccess(true);
+        }catch (Exception e){
+            e.printStackTrace();
+            result.error500("获取菜单时出现错误！");
+        }
         return result;
     }
 
