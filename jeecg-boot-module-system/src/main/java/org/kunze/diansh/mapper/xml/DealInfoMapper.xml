@@ -14,7 +14,7 @@
             refund_total,
             total_payment,
             service_fee,
-            occurrenceTime,
+            occurrence_time,
             service_change
         FROM
             kz_dealinfo

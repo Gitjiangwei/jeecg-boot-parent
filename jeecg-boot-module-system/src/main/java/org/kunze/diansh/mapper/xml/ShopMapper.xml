@@ -97,16 +97,16 @@
         FROM kz_shop shop
         LEFT JOIN kz_order ord ON shop.id = ord.shop_id AND (ord.`status` = '5' or ord.`status` = '7')
         <if test="choiceTime == 1">
-           AND (to_days(ord.end_time) = to_days(now()) or to_days(ord.consign_time) = to_days(now()))
+           AND (to_days(ord.end_time) = to_days(now()) or to_days(ord.refund_time) = to_days(now()))
         </if>
         <if test="choiceTime == 2">
-            AND (YEARWEEK(date_format(ord.end_time,'%Y-%m-%d' )) = YEARWEEK(now()) or YEARWEEK(date_format(ord.consign_time,'%Y-%m-%d' )) = YEARWEEK(now()))
+            AND (YEARWEEK(date_format(ord.end_time,'%Y-%m-%d' )) = YEARWEEK(now()) or YEARWEEK(date_format(ord.refund_time,'%Y-%m-%d' )) = YEARWEEK(now()))
         </if>
         <if test="choiceTime == 3">
-            AND (DATE_FORMAT(ord.end_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m') OR DATE_FORMAT(ord.consign_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m'))
+            AND (DATE_FORMAT(ord.end_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m') OR DATE_FORMAT(ord.refund_time,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m'))
         </if>
         <if test="choiceTime == 4">
-            AND (YEAR(ord.end_time)= YEAR(NOW()) or YEAR(ord.consign_time)= YEAR(NOW()))
+            AND (YEAR(ord.end_time)= YEAR(NOW()) or YEAR(ord.refund_time)= YEAR(NOW()))
         </if>
         LEFT JOIN kz_charge charge ON shop.id = charge.shop_id
         LEFT JOIN (

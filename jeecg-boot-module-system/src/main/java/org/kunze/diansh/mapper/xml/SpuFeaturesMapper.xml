@@ -39,9 +39,7 @@
             AND feat.shop_id = #{shopId}
         </if>
         ORDER BY feat.create_time
-        <if test="more == 1 ">
-            LIMIT 1
-        </if>
+        LIMIT #{more}
     </select>
 
     <update id="updateSkuFeatures">
