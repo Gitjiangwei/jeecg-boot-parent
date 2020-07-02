@@ -237,7 +237,7 @@ public class MenuServiceImpl implements IMenuService {
                 informationVo.setCharge(serviceCharge);
                 serviceCharge = new BigDecimal(serviceCharge).divide(new BigDecimal("100")).toString();
                 informationVo.setChargeTotal(new BigDecimal(informationVo.getTotalMoney()).multiply(new BigDecimal(serviceCharge)).setScale(2, BigDecimal.ROUND_UP).toString());
-                informationVo.setTotalMoney(new BigDecimal(informationVo.getTotalMoney()).subtract(new BigDecimal(informationVo.getChargeTotal())).toString());
+                informationVo.setTotalMoney(new BigDecimal(informationVo.getTotalMoney()).subtract(new BigDecimal(informationVo.getChargeTotal())).subtract(new BigDecimal(informationVo.getRefundPayment())).toString());
             }else {
                 informationVo.setCharge("0");
                 informationVo.setChargeTotal("0");
@@ -257,10 +257,10 @@ public class MenuServiceImpl implements IMenuService {
             if(!serviceCharge.equals("0")){
                 //serviceCharge = new BigDecimal(serviceCharge).divide(new BigDecimal("100")).toString();
                 informationVo.setToDayChargeTotal(new BigDecimal(informationVo.getToDayMoney()).multiply(new BigDecimal(serviceCharge)).setScale(2, BigDecimal.ROUND_UP).toString());
-                informationVo.setToDayTotalPrice(new BigDecimal(informationVo.getToDayMoney()).subtract(new BigDecimal(informationVo.getToDayChargeTotal())).toString());
+                informationVo.setToDayTotalPrice(new BigDecimal(informationVo.getToDayMoney()).subtract(new BigDecimal(informationVo.getToDayChargeTotal())).subtract(new BigDecimal(informationVo.getToDayRefundPayment())).toString());
             }else {
                 informationVo.setToDayChargeTotal("0");
-                informationVo.setToDayTotalPrice(informationVo.getToDayMoney());
+                informationVo.setToDayTotalPrice(new BigDecimal(informationVo.getToDayMoney()).subtract(new BigDecimal(informationVo.getToDayRefundPayment())).toString());
             }
             informationVo.setOrderNum(shopMapper.selectTotalOrder(shopId));
             informationVo.setSpuNum(shopMapper.selectTotalSpuNum(shopId));
