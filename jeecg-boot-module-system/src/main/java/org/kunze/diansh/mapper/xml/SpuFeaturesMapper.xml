@@ -24,7 +24,7 @@
         '售罄'
         ELSE
         feat.features_stock
-        END  as 'featuresStock '
+        END  as 'featuresStock'
         FROM
         kz_spu_features feat
         LEFT JOIN kz_spu spu ON feat.spu_id = spu.id

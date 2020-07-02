@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class SpuFeaturesVo implements Serializable {
 
     /**id*/
-    private String id;
+    private String featuresId;
 
     /**SpuId*/
     private String spuId;
@@ -28,6 +28,6 @@ public class SpuFeaturesVo implements Serializable {
     /**商品原价格*/
     private String price;
 
-    /**热卖商品价格*/
+    /**热卖商品库存*/
     private String featuresStock;
 }
