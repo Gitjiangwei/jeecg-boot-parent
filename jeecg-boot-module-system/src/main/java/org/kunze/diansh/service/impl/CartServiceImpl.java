@@ -99,9 +99,13 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
             cart.setUserId(sysUser.getId());
 
             Sku sku = skuMapper.querySkuInfoById(skuId);
+            //如果是特卖商品，则存入特卖字段
+            //如果不是特卖商品并且有优惠价格，则存入优惠价格
             if(sku.getIsFeatures().equals("1")){
                 SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(skuId);
                 sku.setPrice(feat.getFeaturesPrice());
+            }else if (sku.getNewPrice()!= null && !sku.getNewPrice().equals("") && !sku.getNewPrice().equals("0")){
+                sku.setPrice(sku.getNewPrice());
             }
             cart.setImage(StringUtils.isBlank(sku.getImages())?"":sku.getImages().split(",")[0]);
             cart.setCartPrice(sku.getPrice());//商品价格
