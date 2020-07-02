@@ -99,7 +99,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
             cart.setUserId(sysUser.getId());
 
             Sku sku = skuMapper.querySkuInfoById(skuId);
-            if(null != sku.getIsFeatures() && sku.getIsFeatures().equals("1")){
+            if(sku.getIsFeatures().equals("1")){
                 SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(skuId);
                 sku.setPrice(feat.getFeaturesPrice());
             }
