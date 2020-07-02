@@ -56,7 +56,6 @@
         order by sort asc;
     </select>
 
-
     <insert id="saveCategory">
 
         insert into kz_category(`id`,name,parent_id,is_parent,sort)
