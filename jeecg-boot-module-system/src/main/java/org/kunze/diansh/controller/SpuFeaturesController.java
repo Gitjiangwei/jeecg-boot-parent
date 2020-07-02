@@ -56,7 +56,7 @@ public class SpuFeaturesController  {
     @AutoLog("首页查询每日特卖商品")
     @PostMapping(value = "/queryFeats")
     public Result<List<SpuFeaturesVo>> selectFeatures(@RequestParam(name = "shopId") String shopId,
-                                                      @RequestParam(name = "more",defaultValue = "1") String more){
+                                                      @RequestParam(name = "more",defaultValue = "8") String more){
         Result<List<SpuFeaturesVo>> result = new Result<List<SpuFeaturesVo>>();
         if(shopId==null || shopId.equals("")){
             result.error500("参数丢失！");

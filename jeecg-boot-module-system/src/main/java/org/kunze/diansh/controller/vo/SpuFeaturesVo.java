@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class SpuFeaturesVo implements Serializable {
 
     /**id*/
-    private String id;
+    private String featuresId;
 
     /**SpuId*/
     private String spuId;
