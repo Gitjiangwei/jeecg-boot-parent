@@ -1,5 +1,6 @@
 package org.kunze.diansh.service.impl;
 
+import com.alipay.api.domain.MaintainBizOrderGoods;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -16,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +49,10 @@ public class DealInfoServiceImpl extends ServiceImpl<DealInfoMapper, DealInfo> i
             dealInfoVo.setOkPaymentTotal(item.getOkTotal()+"单"+ CalculationUtil.FractionalConversion(item.getOkPayment())+"元");
             dealInfoVo.setRefundPaymentTotal(item.getRefundTotal()+"单"+CalculationUtil.FractionalConversion(item.getRefundPayment())+"元");
             dealInfoVo.setPayment(CalculationUtil.FractionalConversion(item.getPayment()));
-            dealInfoVo.setTotalPayment(CalculationUtil.FractionalConversion(item.getTotalPayment()));
             dealInfoVo.setServiceFee(CalculationUtil.FractionalConversion(item.getServiceFee()));
+            //计算利润
+            BigDecimal profit = new BigDecimal(dealInfoVo.getPayment()).subtract(new BigDecimal(CalculationUtil.FractionalConversion(item.getRefundPayment()))).subtract(new BigDecimal(dealInfoVo.getServiceFee()));
+            dealInfoVo.setTotalPayment(profit.toString());
             newDealInfoVos.add(dealInfoVo);
         }
         PageInfo<DealInfoVo> infoVoPageInfo = new PageInfo<DealInfoVo>(newDealInfoVos);
