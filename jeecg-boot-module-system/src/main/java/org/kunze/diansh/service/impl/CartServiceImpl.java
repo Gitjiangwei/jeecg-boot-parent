@@ -10,8 +10,11 @@ import org.apache.shiro.util.CollectionUtils;
 import org.jeecg.common.system.vo.LoginUser;
 import org.kunze.diansh.entity.Cart;
 import org.kunze.diansh.entity.Sku;
+import org.kunze.diansh.entity.SpuFeatures;
+import org.kunze.diansh.entity.modelData.SpuFeaturesModel;
 import org.kunze.diansh.mapper.CartMapper;
 import org.kunze.diansh.mapper.SkuMapper;
+import org.kunze.diansh.mapper.SpuFeaturesMapper;
 import org.kunze.diansh.service.ICartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
@@ -39,6 +42,9 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
 
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
+
+    @Autowired
+    private SpuFeaturesMapper spuFeaturesMapper;
 
 
 
@@ -93,6 +99,10 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
             cart.setUserId(sysUser.getId());
 
             Sku sku = skuMapper.querySkuInfoById(skuId);
+            if(null != sku.getIsFeatures() && sku.getIsFeatures().equals("1")){
+                SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(skuId);
+                sku.setPrice(feat.getFeaturesPrice());
+            }
             cart.setImage(StringUtils.isBlank(sku.getImages())?"":sku.getImages().split(",")[0]);
             cart.setCartPrice(sku.getPrice());//商品价格
             cart.setTitile(sku.getTitle()); //标题

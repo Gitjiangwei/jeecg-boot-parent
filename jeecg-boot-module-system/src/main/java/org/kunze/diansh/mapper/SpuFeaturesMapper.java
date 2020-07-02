@@ -2,6 +2,7 @@ package org.kunze.diansh.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.kunze.diansh.controller.vo.SkuFeaturesVo;
 import org.kunze.diansh.controller.vo.SpuFeaturesListVo;
 import org.kunze.diansh.controller.vo.SpuFeaturesVo;
@@ -81,4 +82,8 @@ public interface SpuFeaturesMapper extends BaseMapper<SpuFeatures> {
      * @return
      */
     List<SpuFeaturesListModel> queryFeatList(SpuFeaturesListVo spuFeaturesVo);
+
+
+    @Select("SELECT * FROM kz_spu_features WHERE SKU_ID = #{skuId} and features_status = '1'")
+    SpuFeatures selectFeatBySkuId(@Param("skuId")String skuId);
 }

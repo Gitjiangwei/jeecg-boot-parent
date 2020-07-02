@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.system.entity.SysCategory;
 import org.kunze.diansh.entity.Category;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ICategoryService extends IService<Category> {
@@ -56,4 +57,10 @@ public interface ICategoryService extends IService<Category> {
      * @return 查询到的数据
      */
     List<Category> qryCategoryByName(String name);
+
+    /**
+     * 获取分类的全部数据
+     * @return
+     */
+    Collection<Category> getAllCategory();
 }
