@@ -76,7 +76,7 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
     @Override
     public List<SpuFeaturesVo> selectFeatures(String shopId, String more) {
         if(shopId != null && !shopId.equals("")){
-            List<SpuFeaturesVo> spuFeaturesVos = spuFeaturesMapper.selectFeatures(shopId,more);
+            List<SpuFeaturesVo> spuFeaturesVos = spuFeaturesMapper.selectFeatures(shopId,Integer.valueOf(more));
             return spuFeaturesVos;
         }else {
             return null;

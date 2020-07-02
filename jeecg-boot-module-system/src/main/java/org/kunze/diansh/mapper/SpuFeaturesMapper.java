@@ -18,7 +18,7 @@ public interface SpuFeaturesMapper extends BaseMapper<SpuFeatures> {
 
     int saveSpuFeatures(@Param("list") List<SpuFeatures> spuFeatures);
 
-    List<SpuFeaturesVo> selectFeatures(@Param("shopId") String shopId,@Param("more") String more);
+    List<SpuFeaturesVo> selectFeatures(@Param("shopId") String shopId,@Param("more") Integer more);
 
     int updateSkuFeatures(@Param("list") List<String> skuIds,@Param("isFeatures") String isFeatures);
 
