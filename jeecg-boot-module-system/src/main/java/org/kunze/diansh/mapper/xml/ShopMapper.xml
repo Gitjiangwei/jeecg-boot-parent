@@ -45,8 +45,8 @@
     </select>
 
     <insert id="insertShop">
-        insert into kz_shop(id,shop_name,create_time,province,city,area,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time)
-        values (#{id},#{shopName},NOW(),#{province},#{city},#{area},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW())
+        insert into kz_shop(id,shop_name,create_time,province,city,area,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time,is_flag)
+        values (#{id},#{shopName},NOW(),#{province},#{city},#{area},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW(),#{isFlag})
     </insert>
 
     <update id="updateShop">
@@ -88,6 +88,9 @@
             </if>
             <if test="area != null and area >= 0">
                 area = #{area},
+            </if>
+            <if test="isFlag != null and isFlag != ''">
+                is_flag = #{isFlag},
             </if>
         </trim>
         where id = #{id}
