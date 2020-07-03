@@ -5,8 +5,8 @@
     <!-- 添加商品收藏记录 -->
     <insert id="insertCollect" parameterType="org.kunze.diansh.entity.Collect">
         INSERT INTO `kunze`.
-        `kz_collect` (`id`, `user_id`, `good_id`, `status`, `create_time`) VALUES
-        (#{collect.id}, #{collect.userId}, #{collect.goodId}, 0, NOW());
+        `kz_collect` (`id`, `user_id`, `good_id`, `status`, `create_time`, `shop_id`) VALUES
+        (#{collect.id}, #{collect.userId}, #{collect.goodId}, 0, NOW(),#{shopId});
     </insert>
     <!-- 删除商品收藏记录 -->
     <delete id="deleteCollect" parameterType="org.kunze.diansh.entity.Collect">
@@ -42,13 +42,15 @@
             KC.good_id = SPU.id
         WHERE
             KC.user_id = #{userId}
+            AND KC.shopId = #{shopId}
+        ORDER BY KC.CREATE_TIME DESC
     </select>
     <!-- 查询当前用户收藏商品总数 -->
     <select id="countCollectByUId" parameterType="java.lang.String" resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM KZ_COLLECT WHERE USER_ID = #{userId}
+        SELECT COUNT(1) FROM KZ_COLLECT WHERE USER_ID = #{userId} AND shop_id = #{shopId}
     </select>
     <!-- 查询当前商品是否被收藏 -->
     <select id="isCollect" parameterType="java.lang.String" resultType="org.kunze.diansh.entity.Collect">
-        SELECT * FROM KZ_COLLECT WHERE USER_ID = #{userId} AND GOOD_ID = #{spuId}
+        SELECT * FROM KZ_COLLECT WHERE USER_ID = #{userId} AND GOOD_ID = #{spuId} AND SHOP_ID = #{shopID}
     </select>
 </mapper>

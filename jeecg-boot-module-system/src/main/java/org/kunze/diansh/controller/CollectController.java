@@ -72,12 +72,12 @@ public class CollectController {
     @ApiOperation("查询当前用户的收藏商品")
     @AutoLog("查询当前用户的收藏商品")
     @PostMapping("/selectCollectByUId")
-    public Result selectCollectByUId(@RequestParam(name = "userId")String userId){
+    public Result selectCollectByUId(@RequestParam(name = "userId")String userId,@RequestParam(name = "shopId")String shopId){
         Result result = new Result();
         if(EmptyUtils.isEmpty(userId)){
             return Result.error("参数为空！");
         }
-        List<Map<String,Object>> resultMap = collectService.selectCollectByUId(userId);
+        List<Map<String,Object>> resultMap = collectService.selectCollectByUId(userId,shopId);
         if(EmptyUtils.isNotEmpty(resultMap))
             result.setResult(resultMap);
         return result;
@@ -86,12 +86,12 @@ public class CollectController {
     @ApiOperation("查询当前用户收藏商品总数")
     @AutoLog("查询当前用户收藏商品总数")
     @PostMapping("/countCollectByUId")
-    public Result countCollectByUId(@RequestParam(name = "userId")String userId){
+    public Result countCollectByUId(@RequestParam(name = "userId")String userId,@RequestParam(name = "shopId")String shopId){
         Result result = new Result();
         if(EmptyUtils.isEmpty(userId)){
             return Result.error("参数为空！");
         }
-        Integer countNum = collectService.countCollectByUId(userId);
+        Integer countNum = collectService.countCollectByUId(userId,shopId);
         result.setResult(countNum);
         return result;
     }
@@ -100,7 +100,8 @@ public class CollectController {
     @AutoLog("查询当前用户收藏商品总数")
     @PostMapping("/isCollect")
     public Result isCollect(@RequestParam(name = "userId")String userId,
-                            @RequestParam(name = "spuId")String spuId){
+                            @RequestParam(name = "spuId")String spuId,
+                            @RequestParam(name = "shopId")String shopId){
         Result result = new Result();
         if(EmptyUtils.isEmpty(userId)){
             return result.error500("用户id不能为空！");
@@ -108,7 +109,7 @@ public class CollectController {
         if(EmptyUtils.isEmpty(spuId)){
             return result.error500("商品id不能为空！");
         }
-        Collect collect = collectService.isCollect(userId,spuId);
+        Collect collect = collectService.isCollect(userId,spuId,shopId);
         if(EmptyUtils.isNotEmpty(collect)){
             result.setResult(collect.getId());
             result.setSuccess(true);

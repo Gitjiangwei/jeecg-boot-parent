@@ -23,4 +23,7 @@ public class Collect implements Serializable {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime; //创建时间
+
+    @NotBlank(message = "店铺id不能为空！")
+    private String shopId; //店铺id
 }

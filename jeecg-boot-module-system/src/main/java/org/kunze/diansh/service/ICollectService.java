@@ -25,16 +25,17 @@ public interface ICollectService extends IService<Collect> {
     /**
      * 查询当前用户的收藏商品
      * @param userId
+     * @param shopId
      * @return
      */
-    List<Map<String,Object>> selectCollectByUId(String userId);
+    List<Map<String,Object>> selectCollectByUId(String userId,String shopId);
 
     /**
      * 查询当前用户收藏商品总数
      * @param userId
      * @return
      */
-    Integer countCollectByUId(String userId);
+    Integer countCollectByUId(String userId,String shopId);
 
     /**
      * 查询当前商品是否被收藏
@@ -42,5 +43,5 @@ public interface ICollectService extends IService<Collect> {
      * @param userId
      * @return
      */
-    Collect isCollect(String userId,String spuId);
+    Collect isCollect(String userId,String spuId,String shopId);
 }

@@ -90,7 +90,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         //计算订单总价
         for (Sku s:cartList) {
-            BigDecimal unitPrice = new BigDecimal(s.getPrice());
+            BigDecimal unitPrice = new BigDecimal(EmptyUtils.isNotEmpty(s.getNewPrice())?s.getNewPrice():s.getPrice());
             BigDecimal num = new BigDecimal(s.getNum());
             BigDecimal price = unitPrice.multiply(num);
             totalPrice = totalPrice+price.intValue();

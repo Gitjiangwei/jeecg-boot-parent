@@ -46,11 +46,12 @@ public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> impl
     /**
      * 查询当前用户的收藏商品
      * @param userId
+     * @param shopId
      * @return
      */
     @Override
-    public List<Map<String, Object>> selectCollectByUId(String userId) {
-        return CommonUtil.toCamel(collectMapper.selectCollectByUId(userId));
+    public List<Map<String, Object>> selectCollectByUId(String userId,String shopId) {
+        return CommonUtil.toCamel(collectMapper.selectCollectByUId(userId,shopId));
     }
     /**
      * 查询当前用户收藏商品总数
@@ -58,8 +59,8 @@ public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> impl
      * @return
      */
     @Override
-    public Integer countCollectByUId(String userId) {
-        return collectMapper.countCollectByUId(userId);
+    public Integer countCollectByUId(String userId,String shopId) {
+        return collectMapper.countCollectByUId(userId,shopId);
     }
 
     /**
@@ -69,7 +70,7 @@ public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> impl
      * @return
      */
     @Override
-    public Collect isCollect(String userId,String spuId){
-        return collectMapper.isCollect(userId,spuId);
+    public Collect isCollect(String userId,String spuId,String shopId){
+        return collectMapper.isCollect(userId,spuId,shopId);
     }
 }

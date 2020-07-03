@@ -33,14 +33,14 @@ public interface CollectMapper extends BaseMapper<Collect> {
      * @param userId
      * @return
      */
-    List<Map<String,Object>> selectCollectByUId(@Param("userId") String userId);
+    List<Map<String,Object>> selectCollectByUId(@Param("userId") String userId,@Param("shopId") String shopId);
 
     /**
      * 查询当前用户收藏商品总数
      * @param userId
      * @return
      */
-    Integer countCollectByUId(@Param("userId") String userId);
+    Integer countCollectByUId(@Param("userId") String userId,@Param("shopId") String shopId);
 
     /**
      * 查询当前商品是否被收藏
@@ -48,5 +48,5 @@ public interface CollectMapper extends BaseMapper<Collect> {
      * @param userId
      * @return
      */
-    Collect isCollect(@Param("userId") String userId,@Param("spuId") String spuId);
+    Collect isCollect(@Param("userId") String userId,@Param("spuId") String spuId,@Param("shopId") String shopId);
 }
