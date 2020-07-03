@@ -19,6 +19,11 @@ public interface ShopMapper extends BaseMapper<KzShop> {
      */
     KzShop selectByKey(@Param("shopId") String id);
 
+    /**
+     * 查询超市列表
+     * @param shop
+     * @return
+     */
     List<ShopVo> queryShopList(KzShop shop);
 
 

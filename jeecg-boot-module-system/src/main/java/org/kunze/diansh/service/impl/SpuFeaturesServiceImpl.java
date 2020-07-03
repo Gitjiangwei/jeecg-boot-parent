@@ -87,6 +87,7 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
         if(featuresId == null || featuresId.equals("")){
             return null;
         }
+
         SpuFeaturesIdsModel spuFeaturesIdsModel = spuFeaturesMapper.selectByKey(featuresId);
         if(spuFeaturesIdsModel.getSpuId() == null || spuFeaturesIdsModel.getSpuId().equals("")){
             return null;
@@ -102,7 +103,7 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
         }
         spuFeaturesDetailVo.setImages(strings);
         SkuFeaturesVo skuFeaturesVo =  spuFeaturesMapper.selectFeaturesSku(spuFeaturesIdsModel.getSkuId());
-        skuFeaturesVo.setPrice(spuFeaturesIdsModel.getFeaturesPrice());
+        skuFeaturesVo.setFeaturesPrice(spuFeaturesIdsModel.getFeaturesPrice());
         skuFeaturesVo.setFeaturesStock(spuFeaturesIdsModel.getFeaturesStock());
         spuFeaturesDetailVo.setSkuFeaturesVo(skuFeaturesVo);
         return spuFeaturesDetailVo;
