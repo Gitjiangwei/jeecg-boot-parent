@@ -14,7 +14,7 @@
                 and shop_id = #{shopId}
             </if>
             <if test="isFlag != null and isFlag != ''">
-                and is_flag = #{isFlag}
+                and wheel.is_flag = #{isFlag}
             </if>
             <if test="wheelPort != null and wheelPort != ''">
                 and wheel_port = #{wheelPort}
@@ -91,7 +91,7 @@
                 and shop_id = #{shopId}
             </if>
             <if test="isFlag != null and isFlag != ''">
-                and is_flag = #{isFlag}
+                and wheel.is_flag = #{isFlag}
             </if>
             <if test="wheelPort != null and wheelPort != ''">
                 and wheel_port = #{wheelPort}

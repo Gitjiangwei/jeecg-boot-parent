@@ -58,4 +58,7 @@ public class ShopVo implements Serializable {
 
     /**地址集*/
     private String addressTotal;
+
+    /**超市上下架：0、下架 1、上架*/
+    private String isFlag;
 }

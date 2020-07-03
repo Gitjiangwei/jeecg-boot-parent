@@ -39,11 +39,6 @@ public class WheelServiceImpl extends ServiceImpl<WheelMapper, Wheel> implements
         if(wheelBo.getWheelPort()==null||wheelBo.getWheelPort().equals("")){
             return false;
         }
-        if(wheelBo.getIsFlag().equals("true")){
-            wheelBo.setIsFlag("0");
-        }else {
-            wheelBo.setIsFlag("1");
-        }
         Wheel wheel = new Wheel();
         BeanUtils.copyProperties(wheelBo,wheel);
         LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
@@ -90,11 +85,6 @@ public class WheelServiceImpl extends ServiceImpl<WheelMapper, Wheel> implements
         Boolean isFlag = false;
         if(wheelBo.getWheelId()!=null && !wheelBo.getWheelId().equals("")){
             Wheel wheel = new Wheel();
-            if(wheelBo.getIsFlag().equals("true")){
-                wheelBo.setIsFlag("0");
-            }else {
-                wheelBo.setIsFlag("1");
-            }
             BeanUtils.copyProperties(wheelBo,wheel);
             LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
             if (sysUser != null) {

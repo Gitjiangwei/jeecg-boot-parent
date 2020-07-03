@@ -166,9 +166,16 @@
 
     <select id="selectSpuTitleLike" resultType="org.kunze.diansh.controller.vo.BeSimilarSpuVo">
         select sku.id as 'skuId',spu.id as 'spuId',spu.title as 'spuTitle',spu.image as 'image',
-        sku.new_price as 'spuNewPrice',sku.price as 'spuPrice' from kz_spu spu
+        CASE sku.is_features
+        WHEN '1' THEN
+        feat.features_price
+        ELSE
+        sku.new_price
+        END AS 'spuNewPrice',
+        sku.price as 'spuPrice' from kz_spu spu
         LEFT JOIN kz_sku sku ON spu.id = sku.spu_id
-		where spu.title LIKE CONCAT('%',#{key},'%') and spu.shop_id = #{shopId}
+        LEFT JOIN kz_spu_features feat ON spu.id = feat.spu_id AND feat.features_status = '1'
+		where spu.title LIKE CONCAT('%',#{key},'%') and spu.shop_id = #{shopId} AND sku.`enable`= '1'
 		GROUP BY spu.id
         ORDER BY sku.new_price,sku.price
     </select>

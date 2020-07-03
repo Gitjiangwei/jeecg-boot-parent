@@ -12,13 +12,16 @@
 
 
     <select id="queryShopList" resultType="org.kunze.diansh.controller.vo.ShopVo">
-        select shop.id,shop_name,create_time,province,city,area,shop_address,CONCAT(reg.`name`,reg1.`name`,reg2.`name`,shop_address)as 'addressTotal',image,CONCAT(start_business,'-',end_business) as 'businessHours',person_charge,telphone,idenitiy,update_time,post_free
+        select shop.id,shop_name,create_time,province,city,area,shop_address,CONCAT(reg.`name`,reg1.`name`,reg2.`name`,shop_address)as 'addressTotal',image,CONCAT(start_business,'-',end_business) as 'businessHours',person_charge,telphone,idenitiy,update_time,post_free,shop.is_flag
         from kz_shop shop
         LEFT JOIN kz_region reg ON shop.province = reg.id
         LEFT JOIN kz_region reg1 ON shop.city = reg1.id
         LEFT JOIN kz_region reg2 ON shop.area = reg2.id
         <trim prefix="where" prefixOverrides="and">
             shop.status = '0'
+            <if test="isFlag != null and isFlag != ''">
+                and shop.is_flag = #{isFlag}
+            </if>
             <if test="shopName != null and shopName != ''">
                 and  shop_name like CONCAT('%',#{shopName},'%')
             </if>
@@ -42,8 +45,8 @@
     </select>
 
     <insert id="insertShop">
-        insert into kz_shop(id,shop_name,create_time,province,city,area,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time)
-        values (#{id},#{shopName},NOW(),#{province},#{city},#{area},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW())
+        insert into kz_shop(id,shop_name,create_time,province,city,area,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time,is_flag)
+        values (#{id},#{shopName},NOW(),#{province},#{city},#{area},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW(),#{isFlag})
     </insert>
 
     <update id="updateShop">
@@ -85,6 +88,9 @@
             </if>
             <if test="area != null and area >= 0">
                 area = #{area},
+            </if>
+            <if test="isFlag != null and isFlag != ''">
+                is_flag = #{isFlag},
             </if>
         </trim>
         where id = #{id}

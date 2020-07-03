@@ -29,13 +29,14 @@ public class ShopController {
     @Autowired
     private IShopService shopService;
 
-    @ApiOperation("查询所有超市信息")
+    @ApiOperation("客户端查询所有超市信息")
     @AutoLog("查询所有超市")
     @PostMapping(value = "/queryShops")
     public Result<PageInfo<ShopVo>> queryShopList(ShopVo shopVo,
                                                   @RequestParam(name = "pageNo") Integer pageNo,
                                                   @RequestParam(name = "pageSize") Integer pageSize){
         Result<PageInfo<ShopVo>> result = new Result<PageInfo<ShopVo>>();
+        shopVo.setIsFlag("1");
         PageInfo<ShopVo> shopVoPageInfo = shopService.queryShopList(shopVo,pageNo,pageSize);
         result.setSuccess(true);
         result.setResult(shopVoPageInfo);
@@ -43,7 +44,7 @@ public class ShopController {
     }
 
 
-    @AutoLog(value = "超市表-分页列表查询")
+    @AutoLog(value = "后台超市表-分页列表查询")
     @ApiOperation(value = "超市表-分页列表查询", notes = "超市表-分页列表查询")
     @GetMapping(value = "/list")
     public Result<PageInfo<ShopVo>> queryShList(ShopVo shop,

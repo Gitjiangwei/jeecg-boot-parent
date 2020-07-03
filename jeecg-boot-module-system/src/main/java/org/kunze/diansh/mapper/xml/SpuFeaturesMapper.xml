@@ -104,7 +104,7 @@
     </select>
 
     <select id="selectFeaturesSku" resultType="org.kunze.diansh.controller.vo.SkuFeaturesVo">
-        SELECT id as 'skuId',title,price,own_spec from kz_sku where id = #{skuId}
+        SELECT id as 'skuId',title,price,own_spec,images as 'skuImages' from kz_sku where id = #{skuId}
     </select>
 
 

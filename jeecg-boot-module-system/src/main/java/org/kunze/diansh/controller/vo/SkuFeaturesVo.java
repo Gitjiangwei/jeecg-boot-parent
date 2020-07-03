@@ -13,7 +13,15 @@ public class SkuFeaturesVo implements Serializable {
     //标题
     private String title;
 
-    //价格
+    /**
+     * sku图片
+     */
+    private String skuImages;
+
+    //特卖价格
+    private String featuresPrice;
+
+    //指导价格
     private String price;
 
     //规格参数
