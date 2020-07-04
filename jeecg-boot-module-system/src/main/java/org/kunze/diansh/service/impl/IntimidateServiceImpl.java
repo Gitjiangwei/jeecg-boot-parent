@@ -68,12 +68,13 @@ public class IntimidateServiceImpl implements IIntimidateService {
         String call = address.getConsignee()+sex;
         distributionVo.setCall(call);
         String tel = address.getTelphone()==null?"":address.getTelphone();
-        if(!tel.equals("")) {
+/*        if(!tel.equals("")) {
             tel = tel.substring(0, 3) + "****" + tel.substring(7, tel.length());
             distributionVo.setContact(tel);
         }else {
             distributionVo.setContact(tel);
-        }
+        }*/
+        distributionVo.setContact(tel);
         if(order.getPickUp().equals("2")){
             //6.1、根据pickUp来判断是商家配送还是自提
             salesTicketVo.setPickUp("商家配送");
