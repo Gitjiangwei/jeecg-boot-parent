@@ -504,6 +504,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         for (OrderDetail od:odlist) {
             for (Sku sku:skuList) {
                 if(od.getSkuId().equals(sku.getId())){
+                    if(sku.getIsFeatures().equals("1")){
+                        SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(sku.getId());
+                        sku.setPrice(feat.getFeaturesPrice());
+                    }else if (sku.getNewPrice()!= null && !sku.getNewPrice().equals("") && !sku.getNewPrice().equals("0")){
+                        sku.setPrice(sku.getNewPrice());
+                    }
                     sku.setNum(od.getNum());
                     result.add(sku);
                 }
