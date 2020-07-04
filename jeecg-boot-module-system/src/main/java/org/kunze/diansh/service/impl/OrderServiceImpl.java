@@ -141,7 +141,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             od.setNum(sku.getNum());
             od.setTitle(sku.getTitle());
             od.setOwnSpec(sku.getOwnSpec());
-            od.setPrice(Integer.parseInt(sku.getPrice()));
+            od.setPrice(Integer.parseInt(sku.getPrice().replace(".0","")));
             od.setImage(sku.getImages());
             Integer odRows = orderMapper.insertOrderDetail(od);
             odList.add(od);
