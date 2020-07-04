@@ -20,11 +20,7 @@ import org.kunze.diansh.controller.vo.OrderSpuVo;
 import org.kunze.diansh.controller.vo.OrderVo;
 import org.kunze.diansh.entity.*;
 import org.kunze.diansh.entity.modelData.OrderModel;
-import org.kunze.diansh.mapper.AddressMapper;
-import org.kunze.diansh.mapper.OrderMapper;
-import org.kunze.diansh.mapper.OrderRecordMapper;
-import org.kunze.diansh.mapper.ShopMapper;
-import org.kunze.diansh.mapper.SkuMapper;
+import org.kunze.diansh.mapper.*;
 import org.kunze.diansh.pust.Demo;
 import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.BeanUtils;
@@ -64,6 +60,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private SkuMapper skuMapper;
 
+    @Autowired
+    private SpuFeaturesMapper spuFeaturesMapper;
+
     /**
      * 创建订单
      * @param aid 地址id
@@ -90,7 +89,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         //计算订单总价
         for (Sku s:cartList) {
-            BigDecimal unitPrice = new BigDecimal(EmptyUtils.isNotEmpty(s.getNewPrice())?s.getNewPrice():s.getPrice());
+            if(s.getIsFeatures().equals("1")){
+                SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(s.getId());
+                s.setPrice(feat.getFeaturesPrice());
+            }else if (s.getNewPrice()!= null && !s.getNewPrice().equals("") && !s.getNewPrice().equals("0")){
+                s.setPrice(s.getNewPrice());
+            }
+            BigDecimal unitPrice = new BigDecimal(s.getPrice());
             BigDecimal num = new BigDecimal(s.getNum());
             BigDecimal price = unitPrice.multiply(num);
             totalPrice = totalPrice+price.intValue();
