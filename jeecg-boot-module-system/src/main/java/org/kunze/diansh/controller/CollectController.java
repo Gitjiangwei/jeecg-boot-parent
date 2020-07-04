@@ -42,6 +42,10 @@ public class CollectController {
                     .orElse("输入参数有误！");
             throw new IllegalArgumentException(messages);
         }
+        Collect collect1 = collectService.isCollect(collect.getUserId(),collect.getGoodId(),collect.getShopId());
+        if(EmptyUtils.isNotEmpty(collect1)){
+            return result.error500("该商品已加入收藏！");
+        }
         String resultStr = collectService.insertCollect(collect);
         if(EmptyUtils.isNotEmpty(resultStr)){
             result.success("添加成功！");
@@ -75,6 +79,9 @@ public class CollectController {
     public Result selectCollectByUId(@RequestParam(name = "userId")String userId,@RequestParam(name = "shopId")String shopId){
         Result result = new Result();
         if(EmptyUtils.isEmpty(userId)){
+            return Result.error("参数为空！");
+        }
+        if(EmptyUtils.isEmpty(shopId)){
             return Result.error("参数为空！");
         }
         List<Map<String,Object>> resultMap = collectService.selectCollectByUId(userId,shopId);
