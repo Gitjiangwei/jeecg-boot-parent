@@ -141,6 +141,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             od.setNum(sku.getNum());
             od.setTitle(sku.getTitle());
             od.setOwnSpec(sku.getOwnSpec());
+            //TODO .0替换只是暂时处理方式 格式需要统一 全部为分  之后要去掉
+            if(sku.getIsFeatures().equals("1")){
+                SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(sku.getId());
+                sku.setPrice(feat.getFeaturesPrice());
+            }else if (sku.getNewPrice()!= null && !sku.getNewPrice().equals("") && !sku.getNewPrice().equals("0")){
+                sku.setPrice(sku.getNewPrice());
+            }
             od.setPrice(Integer.parseInt(sku.getPrice().replace(".0","")));
             od.setImage(sku.getImages());
             Integer odRows = orderMapper.insertOrderDetail(od);
