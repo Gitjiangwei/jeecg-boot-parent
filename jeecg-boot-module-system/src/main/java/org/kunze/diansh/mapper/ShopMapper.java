@@ -7,6 +7,7 @@ import org.kunze.diansh.entity.KzShop;
 import org.kunze.diansh.entity.modelData.MonthMenuModel;
 import org.kunze.diansh.entity.modelData.SalesModel;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -155,4 +156,11 @@ public interface ShopMapper extends BaseMapper<KzShop> {
      * @return
      */
    List<String> selectShopIds();
+
+    /**
+     * 通过超市id查询超市信息
+     * @param shopId
+     * @return
+     */
+   List<Map<String,Object>> selectShopInfoById(@Param("shopId")String shopId);
 }

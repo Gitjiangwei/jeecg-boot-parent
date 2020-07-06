@@ -447,4 +447,11 @@
     <select id="selectShopIds" resultType="java.lang.String">
         SELECT ID FROM KZ_SHOP
     </select>
+
+    <!-- 通过超市id查询超市信息 -->
+    <select id="selectShopInfoById" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT * FROM KZ_SHOP WHERE ID = #{shopId}
+        AND IS_FLAG = '1'
+        AND `STATUS` = '0'
+    </select>
 </mapper>

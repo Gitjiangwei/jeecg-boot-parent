@@ -62,5 +62,5 @@ public interface ICategoryService extends IService<Category> {
      * 获取分类的全部数据
      * @return
      */
-    Collection<Category> getAllCategory();
+    Collection<Category> getAllCategory(String cateId);
 }

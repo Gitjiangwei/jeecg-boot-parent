@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.jeecg.common.util.CommonUtil;
 import org.kunze.diansh.controller.vo.ShopVo;
+import org.kunze.diansh.entity.Commodity;
 import org.kunze.diansh.entity.KzShop;
 import org.kunze.diansh.mapper.ShopMapper;
 import org.kunze.diansh.service.IShopService;
@@ -15,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -120,5 +119,15 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, KzShop> implements 
 
         }
         return isflag;
+    }
+
+    /**
+     * 通过超市id查询超市信息
+     * @param shopId
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> selectShopInfoById(String shopId) {
+        return CommonUtil.toCamel(shopMapper.selectShopInfoById(shopId));
     }
 }

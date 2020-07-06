@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.entity.Category;
 import org.kunze.diansh.service.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,14 @@ public class CategoryController {
      */
     @ApiOperation("商品分类菜单接口")
     @AutoLog("查询商品分类")
-    @GetMapping(value = "/qryList")
-    public @ResponseBody Result<Collection<Category>> qryList() {
+    @PostMapping(value = "/qryList")
+    public @ResponseBody Result<Collection<Category>> qryList(@RequestParam(name = "cateId")String cateId) {
         Result<Collection<Category>> result = new Result<>();
+        if(EmptyUtils.isEmpty(cateId)){
+            cateId = "0";
+        }
         try {
-            Collection<Category> categoryList = categoryService.getAllCategory();
+            Collection<Category> categoryList = categoryService.getAllCategory(cateId);
             result.setResult(categoryList);
             result.setSuccess(true);
         }catch (Exception e){

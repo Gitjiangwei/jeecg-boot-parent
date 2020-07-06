@@ -18,7 +18,7 @@ public class TreeUtil {
      * @return 转换后的树形结构
      */
     public static <T> Collection<T> toTree(@NotNull Collection<T> collection, @NotNull Class<T> clazz) {
-        return toTree(collection, null, null, null, clazz);
+        return toTree(collection, null, null, null, clazz,null);
     }
 
     /**
@@ -29,14 +29,16 @@ public class TreeUtil {
      * @param parent     父节点编号字段名称
      * @param children   子节点集合属性名称
      * @param clazz      集合元素类型
+     * @param value      父节点的值
      * @return           转换后的树形结构
      */
-    public static <T> Collection<T> toTree(@NotNull Collection<T> collection, String id, String parent, String children, @NotNull Class<T> clazz) {
+    public static <T> Collection<T> toTree(@NotNull Collection<T> collection, String id, String parent, String children, @NotNull Class<T> clazz,String value) {
         try {
             if (collection == null || collection.isEmpty()) return null;// 如果目标集合为空,直接返回一个空树
             if (StringUtils.isEmpty(id)) id = "id";                     // 如果被依赖字段名称为空则默认为id
             if (StringUtils.isEmpty(parent)) parent = "parent";         // 如果依赖字段为空则默认为parent
             if (StringUtils.isEmpty(children)) children = "children";   // 如果子节点集合属性名称为空则默认为children
+            if (StringUtils.isEmpty(children)) value = "0";             // 如果父节点的值为空则默认为0
 
             // 初始化根节点集合, 支持 Set 和 List
             Collection<T> roots;
@@ -78,7 +80,7 @@ public class TreeUtil {
             // 找出所有的根节点
             for (T c : collection) {
                 Object parentId = parentField.get(c);
-                if (isRootNode(parentId)) {
+                if (isRootNode(parentId,value)) {
                     roots.add(c);
                 }
             }
@@ -138,15 +140,14 @@ public class TreeUtil {
     /**
      * 判断是否是根节点, 判断方式为: 父节点编号为空或为 0, 则认为是根节点. 此处的判断应根据自己的业务数据而定.
      * @param parentId      父节点编号
+     * @param value         父节点的值
      * @return              是否是根节点
      */
-    private static boolean isRootNode(Object parentId) {
+    private static boolean isRootNode(Object parentId,String value) {
         boolean flag = false;
         if (parentId == null) {
             flag = true;
-        } else if (parentId instanceof String && (StringUtils.isEmpty(parentId) || parentId.equals("0"))) {
-            flag = true;
-        } else if (parentId instanceof Integer && Integer.valueOf(0).equals(parentId)) {
+        } else if (parentId instanceof String && (StringUtils.isEmpty(parentId) || parentId.equals(value))) {
             flag = true;
         }
         return flag;

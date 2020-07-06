@@ -2,10 +2,13 @@ package org.kunze.diansh.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.vo.ShopVo;
 import org.kunze.diansh.entity.KzShop;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface IShopService extends IService<KzShop> {
 
@@ -41,4 +44,11 @@ public interface IShopService extends IService<KzShop> {
      * @return
      */
     Boolean delShops(String shopId);
+
+    /**
+     * 通过超市id查询超市信息
+     * @param shopId
+     * @return
+     */
+    List<Map<String,Object>> selectShopInfoById(String shopId);
 }

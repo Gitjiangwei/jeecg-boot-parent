@@ -145,7 +145,7 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
     public Collection selectRegionInfo(){
         QueryWrapper<Region> queryWrapper = new QueryWrapper<>();
         List<Region> regionList = regionMapper.selectList(queryWrapper);
-        Collection collection = TreeUtil.toTree(regionList,"id","pid","children", Region.class);
+        Collection collection = TreeUtil.toTree(regionList,"id","pid","children", Region.class,"0");
         return collection;
     }
 }

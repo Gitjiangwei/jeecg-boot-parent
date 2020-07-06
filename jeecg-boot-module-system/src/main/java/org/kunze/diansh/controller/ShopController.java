@@ -10,6 +10,8 @@ import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.common.util.CommonUtil;
+import org.jeecg.common.util.EmptyUtils;
 import org.jeecg.modules.system.entity.SysPosition;
 import org.kunze.diansh.controller.vo.ShopVo;
 import org.kunze.diansh.entity.KzShop;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Api(tags = "超市管理")
 @RestController
@@ -125,4 +128,19 @@ public class ShopController {
         }
         return result;
     }
+
+    @ApiOperation("通过超市id查询超市信息")
+    @AutoLog("通过超市id查询超市信息")
+    @DeleteMapping(value = "/selectShopInfoById")
+    public Result selectShopInfoById(@RequestParam(name = "shopId") String shopId){
+        Result result = new Result();
+        if(EmptyUtils.isEmpty(shopId)){
+            return result.error500("参数为空！");
+        }
+        List<Map<String,Object>> map = shopService.selectShopInfoById(shopId);
+        result.setResult(map);
+        return result;
+    }
+
+
 }

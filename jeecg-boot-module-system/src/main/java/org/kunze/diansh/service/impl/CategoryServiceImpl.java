@@ -142,14 +142,15 @@ public class CategoryServiceImpl extends ServiceImpl<NewCategoryMapper,Category>
 
     /**
      * 获取分类的全部数据
+     * @param cateId 分类id默认为 0
      * @return
      */
-    public Collection<Category> getAllCategory(){
+    public Collection<Category> getAllCategory(String cateId){
         QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("is_flag","0")
                 .orderBy(true,true,"sort");
         List<Category> categoryList = newCategoryMapper.selectList(queryWrapper);
-        Collection collection=TreeUtil.toTree(categoryList,"id","parentId","childrenList",Category.class);
+        Collection collection=TreeUtil.toTree(categoryList,"id","parentId","childrenList",Category.class,cateId);
 
         return collection;
     }
