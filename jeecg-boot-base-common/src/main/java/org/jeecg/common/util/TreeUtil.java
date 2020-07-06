@@ -147,7 +147,7 @@ public class TreeUtil {
         boolean flag = false;
         if (parentId == null) {
             flag = true;
-        } else if (parentId instanceof String && (StringUtils.isEmpty(parentId) || parentId.equals(value))) {
+        } else if ((StringUtils.isEmpty(parentId) || parentId.toString().equals(value))) {
             flag = true;
         }
         return flag;
