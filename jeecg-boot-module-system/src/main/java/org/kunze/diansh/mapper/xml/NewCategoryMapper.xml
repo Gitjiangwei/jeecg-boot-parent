@@ -120,4 +120,14 @@
     <select id="qryCategoryByName" resultType="org.kunze.diansh.entity.Category">
         SELECT id,name,image,parent_id,is_parent,sort,index,is_flag FROM kz_category WHERE NAME LIKE '%#{name}%'
     </select>
+
+
+    <select id="queryCid1" resultType="Map">
+        select id,name from kz_category
+        where parent_id = '0' and is_flag = '0'
+        <if test="name != null and name != ''">
+           and name like CONCAT('%',#{name},'%')
+        </if>
+        order by sort
+    </select>
 </mapper>

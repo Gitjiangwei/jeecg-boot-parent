@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.HomeShopMapper">
+
+    <select id="queryHomeShop" resultType="org.kunze.diansh.controller.vo.HomeShopVo">
+        SELECT hs.id,page.homg_name,page.image,hs.create_time,hs.update_time,hs.remarks FROM kz_home_shop hs
+        LEFT JOIN kz_home_page page ON hs.`home_page_id` = page.id
+        <trim prefix="where" prefixOverrides="and">
+            hs.shop_id = #{homeShop.shopId}
+            <if test="homgName != null and homgName != ''">
+               and homg_name like CONCAT('%',#{homgName},'%')
+            </if>
+        </trim>
+        order by hs.update_time desc,hs.create_time
+    </select>
+
+    <insert id="saveHomeShop">
+        insert into kz_home_shop(id,home_page_id,shop_id,create_time,update_time,remarks)
+        values (#{id},#{homePageId},#{shopId},NOW(),NOW(),#{remarks})
+    </insert>
+
+    <update id="editHomeShop">
+        update kz_home_shop
+        <trim prefix="set" suffixOverrides=",">
+            update_time = NOW(),
+            <if test="homePageId != null and homePageId != ''">
+                home_page_id = #{homePageId},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks = #{remarks},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="delHomeShop">
+        delete from kz_home_shop
+        where id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="queryNotHomeShop" resultType="int">
+        select count(1) from kz_home_shop
+        where home_page_id = #{homePageId} and shop_id = #{shopId}
+    </select>
+</mapper>
