@@ -232,7 +232,10 @@ public class MenuServiceImpl implements IMenuService {
             informationVo.setRefundTotal(refundTotal.toString());
             //计算手续费
             Map<String,String> map = chargeMapper.selectCharge(shopId);
-            String serviceCharge = map.get("service_charge")==null?"0":map.get("service_charge");
+            String serviceCharge = "0";
+            if(map != null) {
+                serviceCharge = map.get("service_charge") == null ? "0" : map.get("service_charge");
+            }
             if(!serviceCharge.equals("0")){
                 informationVo.setCharge(serviceCharge);
                 serviceCharge = new BigDecimal(serviceCharge).divide(new BigDecimal("100")).toString();
