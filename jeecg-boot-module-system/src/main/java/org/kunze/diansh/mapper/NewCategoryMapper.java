@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.entity.Category;
 
 import java.util.List;
+import java.util.Map;
 
 public interface NewCategoryMapper extends BaseMapper<Category> {
 
@@ -37,4 +38,10 @@ public interface NewCategoryMapper extends BaseMapper<Category> {
      */
     List<Category> qryCategoryByName(@Param("name")String name);
 
+    /**
+     * 查询全部一级分类
+     * @param name
+     * @return
+     */
+    List<Map<String,String>> queryCid1(@Param("name") String name);
 }

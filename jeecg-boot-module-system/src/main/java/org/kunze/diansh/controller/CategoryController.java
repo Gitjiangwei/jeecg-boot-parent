@@ -1,6 +1,7 @@
 package org.kunze.diansh.controller;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -155,6 +157,18 @@ public class CategoryController {
         }else{
             result.error500("名字不能为空！");
         }
+        return result;
+    }
+
+    @ApiOperation("查询全部一级分类ID")
+    @GetMapping(value = "/queryCid1")
+    public Result<PageInfo<Map<String,String>>> queryCid1(@RequestParam(name = "name",required = false) String name,
+                                                            @RequestParam(name = "pageNo") String pageNo,
+                                                            @RequestParam(name = "pageSize") String pageSize){
+        Result<PageInfo<Map<String,String>>> result = new Result<PageInfo<Map<String, String>>>();
+        PageInfo<Map<String,String>> mapPageInfo = categoryService.queryCid1(name,Integer.valueOf(pageNo),Integer.valueOf(pageSize));
+        result.setSuccess(true);
+        result.setResult(mapPageInfo);
         return result;
     }
 }

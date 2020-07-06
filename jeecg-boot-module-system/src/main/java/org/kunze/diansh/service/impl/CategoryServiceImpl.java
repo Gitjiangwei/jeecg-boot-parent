@@ -3,6 +3,9 @@ package org.kunze.diansh.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.jeecg.common.util.TreeUtil;
 import org.kunze.diansh.entity.Category;
 import org.kunze.diansh.entity.Collect;
@@ -153,6 +156,21 @@ public class CategoryServiceImpl extends ServiceImpl<NewCategoryMapper,Category>
         Collection collection=TreeUtil.toTree(categoryList,"id","parentId","childrenList",Category.class,cateId);
 
         return collection;
+    }
+
+    /**
+     * 查询全部一级分类
+     *
+     * @param name
+     * @return
+     */
+    @Override
+    public PageInfo<Map<String, String>> queryCid1(String name,Integer pageNo,Integer pageSize) {
+        Page page = PageHelper.startPage(pageNo,pageSize);
+        List<Map<String,String>> mapList = newCategoryMapper.queryCid1(name);
+        PageInfo<Map<String,String>> mapPageInfo = new PageInfo<Map<String,String>>(mapList);
+        mapPageInfo.setTotal(page.getTotal());
+        return mapPageInfo;
     }
 
 }
