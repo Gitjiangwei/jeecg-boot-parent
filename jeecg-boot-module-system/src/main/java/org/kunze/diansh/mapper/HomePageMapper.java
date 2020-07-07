@@ -43,5 +43,10 @@ public interface HomePageMapper extends BaseMapper<HomePage> {
     List<String> queryHomeImage(@Param("ids") List<String> ids);
 
 
-
+    /**
+     * 检索正在使用的专区
+     * @param homePageIds
+     * @return
+     */
+    int queryNotPage(@Param("list") List<String> homePageIds);
 }

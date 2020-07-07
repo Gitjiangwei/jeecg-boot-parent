@@ -35,4 +35,12 @@ public interface IHomePageService extends IService<HomePage> {
      * @return
      */
     Boolean delHomgPage(String ids);
+
+
+    /**
+     * 检索当前分区是否使用
+     * @param homePageId
+     * @return
+     */
+    Boolean queryNotPage(String homePageId);
 }

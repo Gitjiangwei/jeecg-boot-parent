@@ -1,5 +1,6 @@
 package org.kunze.diansh.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -102,6 +103,29 @@ public class HomePageController {
                 result.success("删除成功！");
             }else {
                 result.error500("删除失败！");
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 检索正在使用的专区
+     * @param jsonObject
+     * @return
+     */
+    @ApiOperation("检索正在使用的专区")
+    @PostMapping(value = "/queryNotPage")
+    public Result<T> queryNotPage(@RequestBody JSONObject jsonObject){
+        Result<T> result = new Result<T>();
+        String homePageId = jsonObject.getString("homePageId");
+        if(StringUtils.isEmpty(homePageId)){
+            result.error500("参数丢失！");
+        }else {
+            Boolean resultOk = homePageService.queryNotPage(homePageId);
+            if(resultOk){
+                result.error500("您删除的专区正在使用，无法删除");
+            }else {
+                result.success("ok");
             }
         }
         return result;

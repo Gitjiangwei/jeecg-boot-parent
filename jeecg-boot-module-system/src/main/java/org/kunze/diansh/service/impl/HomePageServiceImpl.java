@@ -9,6 +9,7 @@ import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.DelFileUtils;
 import org.kunze.diansh.entity.HomePage;
 import org.kunze.diansh.mapper.HomePageMapper;
+import org.kunze.diansh.mapper.HomeShopMapper;
 import org.kunze.diansh.service.IHomePageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -119,6 +120,37 @@ public class HomePageServiceImpl extends ServiceImpl<HomePageMapper, HomePage> i
             delFileImage(stringList);
             int result = homePageMapper.delHomgPage(stringList);
             if(result>0){
+                isFlag = true;
+            }
+        }
+        return isFlag;
+    }
+
+    /**
+     * 检索当前分区是否已使用
+     *
+     * @param homePageId
+     * @return
+     */
+    @Override
+    public Boolean queryNotPage(String homePageId) {
+        Boolean isFlag = false;
+        if(homePageId != null && !homePageId.equals("")){
+            char a = homePageId.charAt(homePageId.length()-1);
+            if(a == ','){
+                homePageId = homePageId.substring(0,homePageId.length()-1);
+            }
+            if(homePageId == null || homePageId.equals("")){
+                return false;
+            }
+            List<String> stringList = new ArrayList<String>();
+            if(homePageId.contains(",")){
+                stringList = new ArrayList<String>(Arrays.asList(homePageId.split(",")));
+            }else {
+                stringList.add(homePageId);
+            }
+            int result = homePageMapper.queryNotPage(stringList);
+            if (result>0){
                 isFlag = true;
             }
         }

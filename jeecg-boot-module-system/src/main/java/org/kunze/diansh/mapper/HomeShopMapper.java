@@ -6,6 +6,7 @@ import org.kunze.diansh.controller.vo.HomeShopVo;
 import org.kunze.diansh.entity.HomeShop;
 
 import java.util.List;
+import java.util.Map;
 
 public interface HomeShopMapper extends BaseMapper<HomeShop> {
 
@@ -48,5 +49,12 @@ public interface HomeShopMapper extends BaseMapper<HomeShop> {
      * @return
      */
     int queryNotHomeShop(@Param("homePageId") String homePageId,@Param("shopId") String shopId);
+
+    /**
+     * 前台获取首页菜单数据
+     * @param shopId 店铺id
+     * @return
+     */
+    List<Map<String,Object>> qryHomeMenu(@Param("shopId")String shopId);
 
 }

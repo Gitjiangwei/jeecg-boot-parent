@@ -12,7 +12,7 @@
         <trim prefix="set" suffixOverrides=",">
             update_time = NOW(),
             <if test="homgName != null and homgName != ''">
-                home_name = #{homgName},
+                homg_name = #{homgName},
             </if>
             <if test="image != null and image != ''">
                 image = #{image},
@@ -48,10 +48,19 @@
         </foreach>
     </delete>
 
-    <select id="queryHomeImage" resultType="List">
-        select image from kz_homg_image where id in
+    <select id="queryHomeImage" resultType="String">
+        select image from kz_home_page where id in
         <foreach collection="ids" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>
+    </select>
+
+    <select id="queryNotPage" resultType="int">
+        select count(1) from kz_home_shop
+        where home_page_id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+
     </select>
 </mapper>

@@ -7,6 +7,7 @@ import org.kunze.diansh.controller.vo.HomeShopVo;
 import org.kunze.diansh.entity.HomeShop;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IHomeShopService extends IService<HomeShop> {
 
@@ -48,4 +49,11 @@ public interface IHomeShopService extends IService<HomeShop> {
      * @return
      */
     Boolean queryNotHomeShop(String homePageId,String shopId);
+
+    /**
+     * 前台获取首页菜单数据
+     * @param shopId
+     * @return
+     */
+    List<Map<String,Object>> qryHomeMenu(String shopId);
 }

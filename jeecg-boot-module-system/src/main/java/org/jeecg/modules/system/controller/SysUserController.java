@@ -131,7 +131,7 @@ public class SysUserController {
             user.setPassword(passwordEncode);
             user.setStatus(1);
             user.setDelFlag("0");
-            String shopId = jsonObject.getString("superShop");
+            String shopId = jsonObject.getString("shopId");
             String shopStatus = jsonObject.getString("staterShop");
             SysUserShop sysUserShop = new SysUserShop();
             sysUserShop.setShopId(shopId);
@@ -164,7 +164,7 @@ public class SysUserController {
                 user.setPassword(sysUser.getPassword());
                 String roles = jsonObject.getString("selectedroles");
                 String departs = jsonObject.getString("selecteddeparts");
-                String shopId = jsonObject.getString("superShop");
+                String shopId = jsonObject.getString("shopId");
                 String shopStatus = jsonObject.getString("staterShop");
                 if(shopId == null || shopId.equals("")){
                     userShopService.delSysUserShop(user.getId());

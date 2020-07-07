@@ -43,6 +43,16 @@
 
     <select id="queryNotHomeShop" resultType="int">
         select count(1) from kz_home_shop
-        where home_page_id = #{homePageId} and shop_id = #{shopId}
+        where home_page_id = #{homePageId}
+        and shop_id = #{shopId}
+    </select>
+
+    <!-- 前台获取首页菜单数据 -->
+    <select id="qryHomeMenu" resultType="java.util.Map" parameterType="java.lang.String">
+        SELECT PAGE.CID1 AS 'cateId',PAGE.IMAGE AS 'image' FROM KZ_HOME_SHOP SHOP
+        LEFT JOIN KZ_HOME_PAGE PAGE
+        ON SHOP.HOME_PAGE_ID = PAGE.ID
+        WHERE SHOP.SHOP_ID = #{shopId}
+        ORDER BY SHOP.UPDATE_TIME DESC,SHOP.CREATE_TIME
     </select>
 </mapper>

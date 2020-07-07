@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class HomeShopServiceImpl extends ServiceImpl<HomeShopMapper, HomeShop> implements IHomeShopService {
@@ -128,5 +125,14 @@ public class HomeShopServiceImpl extends ServiceImpl<HomeShopMapper, HomeShop> i
             isFlag = true;
         }
         return isFlag;
+    }
+
+    /**
+     * 前台获取首页菜单数据
+     * @param shopId
+     * @return
+     */
+    public List<Map<String,Object>> qryHomeMenu(String shopId){
+        return homeShopMapper.qryHomeMenu(shopId);
     }
 }

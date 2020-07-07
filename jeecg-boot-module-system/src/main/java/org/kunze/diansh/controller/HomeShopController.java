@@ -9,12 +9,16 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.controller.vo.HomeShopVo;
 import org.kunze.diansh.entity.HomeShop;
 import org.kunze.diansh.service.IHomeShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Api(tags = "超市分类专区管理")
@@ -142,6 +146,18 @@ public class HomeShopController {
                 result.error500("ok");
             }
         }
+        return result;
+    }
+
+    @ApiOperation("前台获取首页菜单数据")
+    @PostMapping(value = "/qryHomeMenu")
+    public Result qryHomeMenu(@RequestParam(name = "shopId")String shopId){
+        Result result = new Result();
+        if(EmptyUtils.isEmpty(shopId)){
+            return result.error500("参数丢失！");
+        }
+        List<Map<String,Object>> resultList = homeShopService.qryHomeMenu(shopId);
+        result.setResult(resultList);
         return result;
     }
 }
