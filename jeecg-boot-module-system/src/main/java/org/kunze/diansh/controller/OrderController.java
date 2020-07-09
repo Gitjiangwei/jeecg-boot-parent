@@ -1,11 +1,7 @@
 package org.kunze.diansh.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageInfo;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import io.micrometer.core.instrument.util.JsonUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -16,18 +12,17 @@ import org.jeecg.OrderComsumer;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.util.EmptyUtils;
-import org.jeecg.common.util.OrderCodeUtils;
-import org.kunze.diansh.controller.bo.OrderBo;
+import org.kunze.diansh.controller.bo.OrderParams;
 import org.kunze.diansh.controller.vo.OrderDetailVo;
 import org.kunze.diansh.controller.vo.OrderVo;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -62,38 +57,23 @@ public class OrderController {
             @ApiImplicitParam(name="cids",value = "购物车商品的集合"),
             @ApiImplicitParam(name="payType",value = "付款类型 0.微信 1.支付宝")
     })
-    public Result<Order> createOrder(@RequestBody JSONObject params){
+    public Result<Order> createOrder(@RequestBody @Valid OrderParams params,BindingResult bindingResult){
         Result<Order> orderResult = new Result<Order>();
-        String userID = params.get("userID").toString();
-        String shopId = params.get("shopId").toString();
-        String aid = params.get("aid").toString();
-        String pick_up = params.get("pick_up").toString();
-        String postFree = params.getString("postFree");
-        JSONArray cids = params.getJSONArray("cids");
-        Integer payType = params.getIntValue("payType");
-        String buyerMessage = params.getString("buyerMessage");
-
-        if(EmptyUtils.isEmpty(cids)){
-            return orderResult.error500("cids参数丢失！");
+        //参数校验
+        if(bindingResult.hasErrors()){
+            String messages = bindingResult.getAllErrors()
+                    .stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .reduce((m1,m2)->","+m2)
+                    .orElse("输入参数有误！");
+            throw new IllegalArgumentException(messages);
         }
-        if(EmptyUtils.isEmpty(shopId)){
-            return orderResult.error500("店铺参数丢失！");
-        }
-        if(EmptyUtils.isEmpty(userID)){
-            return orderResult.error500("用户参数丢失！");
-        }
-        if(EmptyUtils.isEmpty(pick_up)){
-            return orderResult.error500("配送参数丢失！");
-        }
-        if(EmptyUtils.isEmpty(postFree)){
-            return orderResult.error500("配送费不能为空！");
-        }
-
-        Boolean flag = orderService.selectOrderByUserId(userID,shopId);
+        Boolean flag = orderService.selectOrderByUserId(params.getUserID(),params.getShopId());
         if(flag){
             return orderResult.error500("您有未支付的订单，请勿重复支付！");
         }
-        Order order = orderService.createOrder(aid,cids,shopId,userID,pick_up,postFree,payType,buyerMessage);
+
+        Order order = orderService.createOrder(params);
         if(null != order){
             orderResult.success("创建成功！");
             orderResult.setResult(order);

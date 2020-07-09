@@ -1,10 +1,12 @@
 package org.kunze.diansh.service.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.jeecg.common.util.CommonUtil;
+import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.controller.vo.ShopVo;
 import org.kunze.diansh.entity.Commodity;
 import org.kunze.diansh.entity.KzShop;
@@ -79,6 +81,10 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, KzShop> implements 
             BigDecimal postFree = new BigDecimal(shop.getPostFree());
             BigDecimal newPostFree = postFree.multiply(new BigDecimal(100));
             shop.setPostFree(newPostFree.intValue());
+        }
+        if(EmptyUtils.isNotEmpty(shop.getMinPrice())){
+            BigDecimal newMinPrice = NumberUtil.mul(shop.getMinPrice().toString(),"100");
+            shop.setMinPrice(newMinPrice.intValue());
         }
         if(shop.getId() != null && !shop.getId().equals("")){
             int result =  shopMapper.updateShop(shop);

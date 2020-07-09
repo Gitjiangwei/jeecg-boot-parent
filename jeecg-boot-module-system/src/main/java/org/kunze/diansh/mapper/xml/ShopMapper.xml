@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.kunze.diansh.mapper.ShopMapper">
     <select id="selectByKey" resultType="org.kunze.diansh.entity.KzShop">
-         select shop.id,shop_name,create_time,status,reg.`name` as 'province',reg1.`name` as 'city',reg2.`name` as 'area' ,shop_address,image
+         select shop.id,shop.min_price,shop_name,create_time,status,reg.`name` as 'province',reg1.`name` as 'city',reg2.`name` as 'area' ,shop_address,image
         from kz_shop shop
         LEFT JOIN kz_region reg ON shop.province = reg.id
         LEFT JOIN kz_region reg1 ON shop.city = reg1.id
@@ -91,6 +91,9 @@
             </if>
             <if test="isFlag != null and isFlag != ''">
                 is_flag = #{isFlag},
+            </if>
+            <if test="minPrice != null and minPrice != ''">
+                min_price = #{minPrice},
             </if>
         </trim>
         where id = #{id}

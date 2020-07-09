@@ -9,11 +9,10 @@ import org.jeecg.common.util.EmptyUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.aspectj.weaver.ast.Or;
 import org.jeecg.common.util.OrderCodeUtils;
 import org.jeecg.modules.message.mapper.SysUserShopMapper;
 import org.jeecg.modules.message.websocket.WebSocket;
-import org.kunze.diansh.controller.bo.OrderBo;
+import org.kunze.diansh.controller.bo.OrderParams;
 import org.kunze.diansh.controller.vo.DistributionVo;
 import org.kunze.diansh.controller.vo.OrderDetailVo;
 import org.kunze.diansh.controller.vo.OrderSpuVo;
@@ -33,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.*;
 
 @Service
@@ -63,68 +61,62 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private SpuFeaturesMapper spuFeaturesMapper;
 
+    @Override
+    public Order createOrder(String aid, JSONArray cids, String shopId, String userID, String pick_up, String postFree, Integer payType, String buyerMessage) {
+        return null;
+    }
+
     /**
      * 创建订单
-     * @param aid 地址id
-     * @param cids 购物车集合
-     * @param shopId 店铺id
-     * @param userID 用户id
-     * @param pick_up 配送方式 1.自提 2.商家配送
-     * @param postFree 配送费
-     * @param buyerMessage 备注
+//     * @param aid 地址id
+//     * @param cids 购物车集合
+//     * @param shopId 店铺id
+//     * @param userID 用户id
+//     * @param pick_up 配送方式 1.自提 2.商家配送
+//     * @param postFree 配送费
+//     * @param buyerMessage 备注
      */
     @Override
     @Transactional
-    public Order createOrder(String aid, JSONArray cids, String shopId, String userID,String pick_up,String postFree,Integer payType,String buyerMessage) {
+    public Order createOrder(OrderParams params) {
         //当前时间
         Date date = new Date();
         //根据aid查找相关的地址信息
-        Address address = addressMapper.selectAddressByID(aid);
+        Address address = addressMapper.selectAddressByID(params.getAid());
 
         //根据cids获取购买的物品的信息
-        List<Sku> cartList = this.selectSkuList(cids);
+        List<Sku> cartList = this.selectSkuList(params.getCids());
 
         //总价格
-        Integer totalPrice = 0;
-
-        //计算订单总价
-        for (Sku s:cartList) {
-            if(s.getIsFeatures().equals("1")){
-                SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(s.getId());
-                s.setPrice(feat.getFeaturesPrice());
-            }else if (s.getNewPrice()!= null && !s.getNewPrice().equals("") && !s.getNewPrice().equals("0")){
-                s.setPrice(s.getNewPrice());
-            }
-            BigDecimal unitPrice = new BigDecimal(s.getPrice());
-            BigDecimal num = new BigDecimal(s.getNum());
-            BigDecimal price = unitPrice.multiply(num);
-            totalPrice = totalPrice+price.intValue();
-        }
+        Integer totalPrice = this.getTotalPrice(cartList);
 
         //店铺当天的订单数
-        Integer orderNum = orderMapper.selectShopOrderNum(shopId);
+        Integer orderNum = orderMapper.selectShopOrderNum(params.getShopId());
 
         //订单
         Order order = new Order();
-        KzShop shop = shopMapper.selectByKey(shopId);
+        KzShop shop = shopMapper.selectByKey(params.getShopId());
         if(shop == null){
             return  null;
         }
+        if(totalPrice < shop.getMinPrice()){
+            return null;
+        }
         //生成订单号
         order.setOrderId(OrderCodeUtils.orderCode(shop.getShopName(),orderNum.toString()));
-        order.setShopId(shopId); //店铺id
-        order.setUserID(userID); //用户id
-        order.setPickUp(pick_up); //配送方式
-        order.setAddressId(EmptyUtils.isEmpty(aid)?"":aid); //地址
+        order.setShopId(params.getShopId()); //店铺id
+        order.setUserID(params.getUserID()); //用户id
+        order.setPickUp(params.getPick_up()); //配送方式
+        order.setAddressId(EmptyUtils.isEmpty(params.getAid())?"":params.getAid()); //地址
         order.setCreateTime(date);//创建时间
         order.setCancelTime(OrderCodeUtils.createCancelTime(date)); //取消时间 订单的生命周期
         order.setUpdateTime(date);//更新时间
         order.setAmountPayment(totalPrice.toString()); //应付金额
-        order.setPostFree(postFree);//配送费
+        order.setPostFree(params.getPostFree());//配送费
         order.setPayment("0"); //实付金额
         order.setStatus(1); //订单状态 未付款
-        order.setPayType(payType); //付款类型
-        order.setBuyerMessage(buyerMessage);//备注
+        order.setPayType(params.getPayType()); //付款类型
+        order.setBuyerMessage(params.getBuyerMessage());//备注
 
         //插入订单数据
         Integer rows = orderMapper.insertOrder(order);
@@ -141,14 +133,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             od.setNum(sku.getNum());
             od.setTitle(sku.getTitle());
             od.setOwnSpec(sku.getOwnSpec());
-            //TODO .0替换只是暂时处理方式 格式需要统一 全部为分  之后要去掉
             if(sku.getIsFeatures().equals("1")){
                 SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(sku.getId());
                 sku.setPrice(feat.getFeaturesPrice());
             }else if (sku.getNewPrice()!= null && !sku.getNewPrice().equals("") && !sku.getNewPrice().equals("0")){
                 sku.setPrice(sku.getNewPrice());
             }
-            od.setPrice(Integer.parseInt(sku.getPrice().replace(".0","")));
+            od.setPrice(Integer.parseInt(sku.getPrice()));
             od.setImage(sku.getImages());
             Integer odRows = orderMapper.insertOrderDetail(od);
             odList.add(od);
@@ -157,6 +148,42 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             }
         }
         return order;
+    }
+
+    /**
+     * 计算订单总价
+     * @param cartList
+     * @return
+     */
+    private Integer getTotalPrice(List<Sku> cartList){
+        Integer totalPrice = Integer.parseInt("0");
+        for (Sku s:cartList) {
+            if(s.getIsFeatures().equals("1")){
+                //如果是特卖则获取特卖价格
+                SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(s.getId());
+                s.setPrice(feat.getFeaturesPrice());
+            }else if (s.getNewPrice()!= null && !s.getNewPrice().equals("") && !s.getNewPrice().equals("0")){
+                //最新价格
+                s.setPrice(s.getNewPrice());
+            }
+            BigDecimal price = NumberUtil.mul(s.getPrice(),s.getNum().toString());
+            totalPrice = totalPrice+price.intValue();
+        }
+        return totalPrice;
+    }
+
+    /**
+     * 查询选中商品的详细数据
+     * @return
+     */
+    private List<Sku> selectSkuList(List<Map<String,Object>> cids){
+        List<Sku> skuList = new ArrayList<>();
+        for (Map map:cids) {
+            Sku sku = skuMapper.querySkuInfoById(map.get("skuId").toString());
+            sku.setNum(Integer.parseInt(map.get("num").toString()));
+            skuList.add(sku);
+        }
+        return skuList;
     }
 
     /**
@@ -296,21 +323,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             totalPrice = NumberUtil.add(totalPrice,price);
         }
         return totalPrice.toString();
-    }
-
-    /**
-     * 查询选中商品的详细数据
-     * @return
-     */
-    private List<Sku> selectSkuList(JSONArray cids){
-        List<Sku> skuList = new ArrayList<>();
-        for(int i=0;i<cids.size();i++){
-            JSONObject obj = cids.getJSONObject(i);
-            Sku sku = skuMapper.querySkuInfoById(obj.getString("skuId"));
-            sku.setNum(obj.getInteger("num"));
-            skuList.add(sku);
-        }
-        return skuList;
     }
 
     /***

@@ -5,6 +5,7 @@ package org.jeecg;
 import org.apache.lucene.spatial3d.geom.Tools;
 import org.jeecg.common.util.EmptyUtils;
 import org.jeecg.common.util.OrderCodeUtils;
+import org.jeecg.common.util.RedisUtil;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class OrderComsumer extends Thread implements ApplicationRunner {
     public static IOrderService iOrderService;
 
     @Autowired
+    public RedisUtil redisUtil;
+
+    @Autowired
     public void setiOrderService(IOrderService iOrderService) {
         OrderComsumer.iOrderService = iOrderService;
     }
@@ -41,6 +45,7 @@ public class OrderComsumer extends Thread implements ApplicationRunner {
                 System.out.println("预计取消时间"+ order.getCancelTime().toString());
                 String resultInfo = iOrderService.updateOrderStatu("6",order.getOrderId());
                 if("ok".equals(resultInfo)){
+
                     System.out.println("订单取消，当前时间"+ new Date().toString());
                 }else{
                     System.out.println("订单取消失败");

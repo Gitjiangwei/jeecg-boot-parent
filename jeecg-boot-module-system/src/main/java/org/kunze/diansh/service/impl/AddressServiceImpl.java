@@ -141,7 +141,6 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
      * 用Tree格式返回
      * @return
      */
-
     public Collection selectRegionInfo(){
         QueryWrapper<Region> queryWrapper = new QueryWrapper<>();
         List<Region> regionList = regionMapper.selectList(queryWrapper);

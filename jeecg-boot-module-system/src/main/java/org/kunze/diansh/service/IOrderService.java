@@ -3,8 +3,7 @@ package org.kunze.diansh.service;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
-import org.apache.ibatis.annotations.Param;
-import org.kunze.diansh.controller.bo.OrderBo;
+import org.kunze.diansh.controller.bo.OrderParams;
 import org.kunze.diansh.controller.vo.OrderDetailVo;
 import org.kunze.diansh.controller.vo.OrderVo;
 import org.kunze.diansh.entity.Order;
@@ -27,6 +26,8 @@ public interface IOrderService extends IService<Order> {
      * @param buyerMessage 备注
      */
     Order createOrder(String aid, JSONArray cids, String shopId, String userID, String pick_up,String postFree,Integer payType,String buyerMessage);
+
+    Order createOrder(OrderParams params);
 
     /**
      * 根据订单状态查询订单数据
