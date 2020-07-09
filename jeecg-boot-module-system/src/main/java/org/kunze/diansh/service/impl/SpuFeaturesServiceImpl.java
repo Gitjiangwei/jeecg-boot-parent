@@ -21,11 +21,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFeatures> implements ISpuFeaturesService {
@@ -53,9 +52,23 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
         }
         List<SpuFeatures> spuFeaturesList = new ArrayList<SpuFeatures>();
         spuFeaturesList.add(spuFeatures);
-        int result = spuFeaturesMapper.saveSpuFeatures(spuFeaturesList);
+       int result = spuFeaturesMapper.saveSpuFeatures(spuFeaturesList);
         if(result>0){
-            isFlag = true;
+            Date date = new Date();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            String featTime = format.format(spuFeatures.getSpecialstartTime());
+            String newTime = format.format(date);
+            if(featTime.equals(newTime)){
+                List<String> featList = new ArrayList<String>();
+                List<String> notSkuIds = new ArrayList<String>();
+                featList.add(spuFeatures.getFeaturesId());
+                notSkuIds.add(spuFeatures.getSkuId());
+                spuFeaturesMapper.updateFeatures(featList,"1");
+                spuFeaturesMapper.updateSkuFeatures(notSkuIds,"1");
+                isFlag = true;
+            }else {
+                isFlag = true;
+            }
         }
         return isFlag;
     }

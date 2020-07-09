@@ -66,4 +66,7 @@ public class KzShop implements Serializable {
     /**超市上下架：0、下架 1、上架*/
     private String isFlag;
 
+    /**售后联系方式*/
+    private String afterSale;
+
 }
