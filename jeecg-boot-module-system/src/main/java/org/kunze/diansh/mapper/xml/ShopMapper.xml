@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.kunze.diansh.mapper.ShopMapper">
     <select id="selectByKey" resultType="org.kunze.diansh.entity.KzShop">
-         select shop.id,shop.min_price,shop_name,create_time,status,reg.`name` as 'province',reg1.`name` as 'city',reg2.`name` as 'area' ,shop_address,image
+         select shop.id,shop.min_price,shop_name,create_time,status,reg.`name` as 'province',reg1.`name` as 'city',reg2.`name` as 'area' ,shop_address,image,after_sale
         from kz_shop shop
         LEFT JOIN kz_region reg ON shop.province = reg.id
         LEFT JOIN kz_region reg1 ON shop.city = reg1.id
@@ -12,7 +12,7 @@
 
 
     <select id="queryShopList" resultType="org.kunze.diansh.controller.vo.ShopVo">
-        select shop.id,shop_name,create_time,province,city,area,shop_address,CONCAT(reg.`name`,reg1.`name`,reg2.`name`,shop_address)as 'addressTotal',image,CONCAT(start_business,'-',end_business) as 'businessHours',person_charge,telphone,idenitiy,update_time,post_free,shop.is_flag
+        select shop.id,shop_name,create_time,province,city,area,shop_address,CONCAT(reg.`name`,reg1.`name`,reg2.`name`,shop_address)as 'addressTotal',image,CONCAT(start_business,'-',end_business) as 'businessHours',person_charge,telphone,idenitiy,update_time,post_free,shop.is_flag,after_sale
         from kz_shop shop
         LEFT JOIN kz_region reg ON shop.province = reg.id
         LEFT JOIN kz_region reg1 ON shop.city = reg1.id
@@ -45,8 +45,8 @@
     </select>
 
     <insert id="insertShop">
-        insert into kz_shop(id,shop_name,create_time,province,city,area,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time,is_flag)
-        values (#{id},#{shopName},NOW(),#{province},#{city},#{area},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW(),#{isFlag})
+        insert into kz_shop(id,shop_name,create_time,province,city,area,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time,is_flag,after_sale)
+        values (#{id},#{shopName},NOW(),#{province},#{city},#{area},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW(),#{isFlag},#{afterSale})
     </insert>
 
     <update id="updateShop">
@@ -94,6 +94,9 @@
             </if>
             <if test="minPrice != null and minPrice != ''">
                 min_price = #{minPrice},
+            </if>
+            <if test="afterSale != null and afterSale != ''">
+                after_sale = #{afterSale},
             </if>
         </trim>
         where id = #{id}
@@ -387,7 +390,7 @@
     </select>
 
     <select id="selectTotalOrder" resultType="String">
-        SELECT COUNT(1) FROM kz_order o WHERE shop_id = #{shopId} AND (`status`='3' OR `status` = '4' OR `status` = '5')
+        SELECT COUNT(1) FROM kz_order o WHERE shop_id = #{shopId} AND (`status`='2' OR `status`='3' OR `status` = '4' OR `status` = '5' OR `status` = '7')
     </select>
 
 
@@ -454,7 +457,6 @@
     <!-- 通过超市id查询超市信息 -->
     <select id="selectShopInfoById" parameterType="java.lang.String" resultType="java.util.Map">
         SELECT * FROM KZ_SHOP WHERE ID = #{shopId}
-        AND IS_FLAG = '1'
         AND `STATUS` = '0'
     </select>
 </mapper>
