@@ -387,7 +387,7 @@
     </select>
 
     <select id="selectTotalOrder" resultType="String">
-        SELECT COUNT(1) FROM kz_order o WHERE shop_id = #{shopId} AND (`status`='3' OR `status` = '4' OR `status` = '5')
+        SELECT COUNT(1) FROM kz_order o WHERE shop_id = #{shopId} AND (`status`='2' OR `status`='3' OR `status` = '4' OR `status` = '5' OR `status` = '7')
     </select>
 
 
