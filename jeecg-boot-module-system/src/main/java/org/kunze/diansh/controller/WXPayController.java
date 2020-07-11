@@ -293,9 +293,9 @@ public class WXPayController {
     public Result doRefund(@RequestParam(name = "orderNo")String orderNo,@RequestParam(name = "amount")Integer amount){
         Result result = new Result();
         try {
-            result = iwxPayService.doRefund(orderNo,amount);
+            result = iwxPayService.doRefund(orderNo,amount,"7");
         }catch (Exception e){
-
+            result.error500("退款出现异常！");
         }
         return result;
     }

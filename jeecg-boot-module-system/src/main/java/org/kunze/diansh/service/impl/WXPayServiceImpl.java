@@ -264,9 +264,10 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
      * 微信小程序退款
      * @param orderNo 商户订单id
      * @param amount  金额
+     * @param orderStatus 订单状态
      * @return 返回map（已做过签名验证），具体数据参见微信退款API
      */
-    public Result doRefund(String orderNo, Integer amount) {
+    public Result doRefund(String orderNo, Integer amount,String orderStatus) {
         Result result = new Result(){};
         HashMap<String, String> data = new HashMap<>();
         data.put("appid", weChatPayProperties.getWxAppAppId());
@@ -288,7 +289,7 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
             if(resultMap.get("return_code").equals(WXPayConstants.SUCCESS)&& resultMap.get("result_code").equals(WXPayConstants.SUCCESS)){
                 //退款成功时，在此处更新退款状态
                 //更新订单状态为已退款
-                orderService.updateOrderStatu("7",resultMap.get("out_trade_no"));
+                orderService.updateOrderStatu(orderStatus,resultMap.get("out_trade_no"));
                 result.setSuccess(true);
                 result.setMessage("退款成功！");
             }else{

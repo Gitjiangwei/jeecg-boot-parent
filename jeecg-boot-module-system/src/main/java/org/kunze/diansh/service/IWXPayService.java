@@ -22,7 +22,8 @@ public interface IWXPayService  extends IService<Order> {
      * 微信小程序退款
      * @param orderNo 商户订单id
      * @param amount  金额
+     * @param orderStatus 订单状态
      * @return 返回map（已做过签名验证），具体数据参见微信退款API
      */
-    Result doRefund(String orderNo, Integer amount);
+    Result doRefund(String orderNo, Integer amount,String orderStatus);
 }
