@@ -89,6 +89,9 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/kunze/menu/queryOrderRecordTotal","anon"); //消息提醒
 		filterChainDefinitionMap.put("/kunze/menu/queryOrderRecordTotal","anon"); //消息提醒
 		filterChainDefinitionMap.put("/kunze/homeShop/qryHomeMenu","anon"); //首页分类菜单
+		filterChainDefinitionMap.put("/kunze/spu/template/**","anon");//商品图片上传
+
+
 
 		filterChainDefinitionMap.put("/sys/getCheckCode", "anon"); //登录验证码接口排除
 		filterChainDefinitionMap.put("/sys/randomImage/**", "anon"); //登录验证码接口排除
@@ -133,7 +136,9 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/swagger**/**", "anon");
 		filterChainDefinitionMap.put("/webjars/**", "anon");
 		filterChainDefinitionMap.put("/v2/**", "anon");
-		
+
+
+
 		//性能监控
 		filterChainDefinitionMap.put("/actuator/metrics/**", "anon");
 		filterChainDefinitionMap.put("/actuator/httptrace/**", "anon");

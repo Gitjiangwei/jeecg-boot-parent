@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.KzSpuTemplateMapper">
+
+    <select id="qryTemplateListById" resultType="org.kunze.diansh.entity.modelData.KzSpuTemplateModel">
+
+        select id,cid1,cid2,cid3,title,images,image from kz_spu_template
+        <where>
+            <if test="cid3 != null and cid3 != '' ">
+                 cid3 = #{cid}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="addsTemplate" parameterType="org.kunze.diansh.entity.modelData.KzSpuTemplateModel">
+        insert into kz_spu(
+            id,
+            title,
+            sub_title,
+            cid1,
+            cid2,
+            cid3,
+            brand_id,
+            create_time,
+            last_update_time,
+            update_name,
+            images,
+            image,
+            shop_id)
+            values
+        <foreach collection="list" item="template" index="index" separator=",">
+            (
+            (SELECT REPLACE(UUID(),'-','') AS id),
+            #{template.title},
+            #{template.subTitle},
+            #{template.cid1},
+            #{template.cid2},
+            #{template.cid3},
+            #{template.brandId},
+            NOW(),
+            NOW(),
+            #{template.updateName},
+            #{template.images},
+            #{template.image},
+            #{template.shopId})
+        </foreach>
+    </insert>
+
+</mapper>
