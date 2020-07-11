@@ -288,6 +288,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"用户收到商品，订单完成","1",shopId));
         }else if(status.equals("7")){
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"订单已退款！","1",shopId));
+        }else if(status.equals("8")){
+            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"拒绝接单！","1",shopId));
         }else {
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"异常订单，订单关闭","1",shopId));
         }
