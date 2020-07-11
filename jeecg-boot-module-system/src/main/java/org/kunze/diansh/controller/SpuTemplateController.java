@@ -57,9 +57,9 @@ public class SpuTemplateController {
         Result<KzSpuTemplatelBo> result = new Result<KzSpuTemplatelBo>();
         int resultFlag = kzSpuTemplateService.addsTemplate(kzSpuTemplatelBo);
         if(resultFlag>0){
-            result.success("修改成功");
+            result.success("add success！");
         }else{
-            result.error500("修改失败！");
+            result.error500("add fail！");
         }
         return result;
     }

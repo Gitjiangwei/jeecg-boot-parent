@@ -1,6 +1,7 @@
 package org.kunze.diansh.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.controller.bo.KzSpuTemplatelBo;
 import org.kunze.diansh.entity.KzSpuTemplate;
 import org.kunze.diansh.entity.modelData.KzSpuTemplateModel;
@@ -15,12 +16,12 @@ public interface KzSpuTemplateMapper extends BaseMapper<KzSpuTemplate> {
      * @return
      */
 
-    List<KzSpuTemplateModel> qryTemplateListById(String cid);
+    List<KzSpuTemplateModel> qryTemplateListById(@Param("cid") String cid);
 
     /**
      *
      * 批量上传图片
      *
      * **/
-    int addsTemplate(List<KzSpuTemplatelBo> list);
+    int addsTemplate(@Param("list") List<KzSpuTemplatelBo> list);
 }

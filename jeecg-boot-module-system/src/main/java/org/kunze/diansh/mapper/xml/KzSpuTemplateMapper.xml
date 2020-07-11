@@ -5,11 +5,9 @@
     <select id="qryTemplateListById" resultType="org.kunze.diansh.entity.modelData.KzSpuTemplateModel">
 
         select id,cid1,cid2,cid3,title,images,image from kz_spu_template
-        <where>
-            <if test="cid3 != null and cid3 != '' ">
+         where
                  cid3 = #{cid}
-            </if>
-        </where>
+
     </select>
 
 
