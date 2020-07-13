@@ -25,5 +25,5 @@ public interface IKzSpuTemplateService extends IService<KzSpuTemplate> {
      *
      * **/
 
-    int addsTemplate(List<KzSpuTemplatelBo> kzSpuTemplatelBo);
+    int addsTemplate(List<KzSpuTemplateModel> kzSpuTemplatelBo);
 }

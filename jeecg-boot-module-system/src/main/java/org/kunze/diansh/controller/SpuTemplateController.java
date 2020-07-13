@@ -50,11 +50,10 @@ public class SpuTemplateController {
     @ApiOperation("批量添加图片")
     @AutoLog("批量添加图片")
     @PostMapping(value = "/add")
-
-    public  Result  addsTemplate(List<KzSpuTemplatelBo> kzSpuTemplatelBo)
+    public  Result  addsTemplate(@RequestBody List<KzSpuTemplateModel> kzSpuTemplatelBo)
     {
 
-        Result<KzSpuTemplatelBo> result = new Result<KzSpuTemplatelBo>();
+        Result<KzSpuTemplateModel> result = new Result<KzSpuTemplateModel>();
         int resultFlag = kzSpuTemplateService.addsTemplate(kzSpuTemplatelBo);
         if(resultFlag>0){
             result.success("add success！");

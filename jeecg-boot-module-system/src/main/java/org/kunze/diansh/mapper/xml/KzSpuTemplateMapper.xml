@@ -4,9 +4,24 @@
 
     <select id="qryTemplateListById" resultType="org.kunze.diansh.entity.modelData.KzSpuTemplateModel">
 
-        select id,cid1,cid2,cid3,title,images,image from kz_spu_template
-         where
-                 cid3 = #{cid}
+        select
+        id,
+        title,
+        sub_title,
+        cid1,
+        cid2,
+        cid3,
+        create_time,
+        last_update_time,
+        update_name,
+        images,
+        image,
+        is_flag,
+        saleable,
+        brand_id
+        from kz_spu_template
+        where
+        cid3 = #{cid}
 
     </select>
 
@@ -19,13 +34,16 @@
             cid1,
             cid2,
             cid3,
-            brand_id,
             create_time,
             last_update_time,
             update_name,
             images,
             image,
-            shop_id)
+            shop_id,
+            is_flag,
+            saleable,
+            brand_id
+            )
             values
         <foreach collection="list" item="template" index="index" separator=",">
             (
@@ -35,13 +53,15 @@
             #{template.cid1},
             #{template.cid2},
             #{template.cid3},
-            #{template.brandId},
             NOW(),
             NOW(),
             #{template.updateName},
             #{template.images},
             #{template.image},
-            #{template.shopId})
+            #{template.shopId},
+            0,
+            0,
+            "")
         </foreach>
     </insert>
 

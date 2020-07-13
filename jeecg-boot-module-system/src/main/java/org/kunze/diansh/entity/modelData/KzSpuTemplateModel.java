@@ -13,11 +13,17 @@ public class KzSpuTemplateModel implements Serializable {
 
     private String id; //spu Id
 
+    private String cid1;
+
+    private String cid2;
+
+    private String cid3;
+
     private String title;// 标题
 
     private String subTitle;// 子标题
 
-    private String saleable;// 是否上架
+    private Integer saleable;// 是否上架
 
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
@@ -30,18 +36,16 @@ public class KzSpuTemplateModel implements Serializable {
 
     private String updateName; //修改/创建人
 
-    private String cName; //商品分类名称
-
-    private String bName; //商品品牌名称
-
     private String image; //图片
 
     private String images; //图片
 
-    private String newPrice; //优惠价格
+    private String shopId;
 
-    private String price; //价格
+    private Integer isFlag;// 是否有效，逻辑删除用
 
-    private String stock; //库存
+    private String brandId;
+
+
 
 }

@@ -23,5 +23,5 @@ public interface KzSpuTemplateMapper extends BaseMapper<KzSpuTemplate> {
      * 批量上传图片
      *
      * **/
-    int addsTemplate(@Param("list") List<KzSpuTemplatelBo> list);
+    int addsTemplate(@Param("list") List<KzSpuTemplateModel> list);
 }

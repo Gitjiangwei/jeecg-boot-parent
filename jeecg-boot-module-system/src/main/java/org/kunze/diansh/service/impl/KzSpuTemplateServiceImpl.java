@@ -46,9 +46,8 @@ public class KzSpuTemplateServiceImpl extends ServiceImpl<KzSpuTemplateMapper,Kz
      * @param kzSpuTemplatelBo
      * @return
      * **/
-    @Transactional
     @Override
-    public int addsTemplate(List<KzSpuTemplatelBo> kzSpuTemplatelBo) {
+    public int addsTemplate(List<KzSpuTemplateModel> kzSpuTemplatelBo) {
 
         try{
             return kzSpuTemplateMapper.addsTemplate(kzSpuTemplatelBo);
