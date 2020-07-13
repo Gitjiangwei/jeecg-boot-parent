@@ -25,6 +25,10 @@ public class SpuFeaturesListModel implements Serializable {
     /**特卖商品库存*/
     private String featuresStock;
 
+    /**原始商品库存*/
+    private String originalStock;
+
+
     /**特卖商品状态 0：未开始 1：售卖中 2：已结束*/
     private String featuresStatus;
 

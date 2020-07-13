@@ -30,4 +30,7 @@ public class SpuFeaturesVo implements Serializable {
 
     /**热卖商品库存*/
     private String featuresStock;
+
+    /**原始库存*/
+    private String originalStock;
 }
