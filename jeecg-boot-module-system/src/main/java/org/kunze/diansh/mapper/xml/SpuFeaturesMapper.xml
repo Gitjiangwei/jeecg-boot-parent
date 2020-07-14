@@ -3,10 +3,10 @@
 <mapper namespace="org.kunze.diansh.mapper.SpuFeaturesMapper">
 
     <insert id="saveSpuFeatures">
-        insert into kz_spu_features(features_id,spu_id,features_flag,create_time,create_name,features_weight,remarks,shop_id,specialstart_time,specialend_time,sku_id,features_stock,features_price)
+        insert into kz_spu_features(features_id,spu_id,features_flag,create_time,create_name,features_weight,remarks,shop_id,specialstart_time,specialend_time,sku_id,features_stock,original_stock,features_price)
         values
         <foreach collection="list" item="item" separator=",">
-            (#{item.featuresId},#{item.spuId},#{item.featuresFlag},NOW(),#{item.createName},#{item.featuresWeight},#{item.remarks},#{item.shopId},#{item.specialstartTime},#{item.specialendTime},#{item.skuId},#{item.featuresStock},#{item.featuresPrice})
+            (#{item.featuresId},#{item.spuId},#{item.featuresFlag},NOW(),#{item.createName},#{item.featuresWeight},#{item.remarks},#{item.shopId},#{item.specialstartTime},#{item.specialendTime},#{item.skuId},#{item.featuresStock},#{item.featuresStock},#{item.featuresPrice})
         </foreach>
     </insert>
 
@@ -19,6 +19,7 @@
         spu.image,
         feat.features_price,
         sku.price,
+        original_stock,
         CASE feat.features_stock
         WHEN '0' THEN
         '售罄'
@@ -100,7 +101,7 @@
     <select id="selectFeaturesDetail" resultType="org.kunze.diansh.entity.modelData.SpuFeaturesDetailModel">
         SELECT spu.id as 'spuId',spu.cid3,spu.images,image,deta.specifications,deta.packing_list,deta.after_service FROM kz_spu spu
         LEFT JOIN kz_spu_detail deta ON spu.id = deta.spu_id
-        WHERE spu.id = #{spuId} and spu.is_flag = '0' and spu.saleable ='1'
+        WHERE spu.id = #{spuId} and spu.is_flag = '0'
     </select>
 
     <select id="selectFeaturesSku" resultType="org.kunze.diansh.controller.vo.SkuFeaturesVo">

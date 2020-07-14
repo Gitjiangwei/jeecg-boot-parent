@@ -57,6 +57,9 @@ public class SpuFeatures implements Serializable {
     /**热卖库存*/
     private String featuresStock;
 
+    /**原始库存*/
+    private String originalStock;
+
     /**状态：0：未开始 1：售卖中 2：已接收*/
     private String featuresStatus;
 }
