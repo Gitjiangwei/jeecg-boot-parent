@@ -1,16 +1,24 @@
 package org.kunze.diansh.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.ApiOperation;
+import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.controller.bo.KzSpuTemplatelBo;
+import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.entity.*;
 import org.kunze.diansh.entity.modelData.KzSpuTemplateModel;
 import org.kunze.diansh.mapper.KzSpuTemplateMapper;
 import org.kunze.diansh.service.IKzSpuTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -47,6 +55,7 @@ public class KzSpuTemplateServiceImpl extends ServiceImpl<KzSpuTemplateMapper,Kz
      * @return
      * **/
     @Override
+    @Transactional
     public int addsTemplate(List<KzSpuTemplateModel> kzSpuTemplatelBo) {
 
         try{
@@ -58,6 +67,23 @@ public class KzSpuTemplateServiceImpl extends ServiceImpl<KzSpuTemplateMapper,Kz
         }
 
 
+    }
+
+
+    /**
+     * 删除商品
+     * @param spuList
+     * @return
+     */
+    @Override
+    @Transactional
+    public Boolean deleteSpu(List spuList) {
+        boolean resultFlag = false;
+        Integer delNum = kzSpuTemplateMapper.deleteSpu("",spuList);
+        if(delNum>0){
+           return true;
+        }
+        return resultFlag;
     }
 
 }

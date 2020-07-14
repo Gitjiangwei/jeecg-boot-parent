@@ -24,4 +24,11 @@ public interface KzSpuTemplateMapper extends BaseMapper<KzSpuTemplate> {
      *
      * **/
     int addsTemplate(@Param("list") List<KzSpuTemplateModel> list);
+
+
+    /**
+     *
+     * 批量 删除
+     * **/
+    int deleteSpu(String userName,@Param("spuList")List spuList);
 }

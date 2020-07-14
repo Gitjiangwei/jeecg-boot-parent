@@ -1,12 +1,15 @@
 package org.kunze.diansh.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.controller.bo.KzSpuTemplatelBo;
+import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.entity.modelData.KzSpuTemplateModel;
 import org.kunze.diansh.service.IKzSpuTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,5 +65,27 @@ public class SpuTemplateController {
         }
         return result;
     }
+
+
+    @ApiOperation("图片上传删除")
+    @AutoLog("图片上传删除")
+    @PostMapping(value = "/deletes")
+    public Result<SpuBo> deleteSpu(@RequestBody JSONArray spuList){
+        Result<SpuBo> result = new Result<SpuBo>();
+        if(EmptyUtils.isEmpty(spuList)){
+            return result.error500("参数不能为空！");
+        }
+        Boolean resultFlag = kzSpuTemplateService.deleteSpu(spuList);
+        if (resultFlag){
+            result.setSuccess(true);
+            result.setMessage("删除成功！");
+        }else{
+            result.setSuccess(false);
+            result.setMessage("删除失败！");
+        }
+        return result;
+    }
+
+
 
 }

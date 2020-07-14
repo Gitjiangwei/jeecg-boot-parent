@@ -65,4 +65,11 @@
         </foreach>
     </insert>
 
+    <delete id="deleteSpu" parameterType="org.kunze.diansh.entity.Spu">
+        update kz_spu set is_flag = 1,last_update_time=NOW(),update_name = #{userName} where id in
+        <foreach collection="spuList" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
 </mapper>

@@ -26,4 +26,12 @@ public interface IKzSpuTemplateService extends IService<KzSpuTemplate> {
      * **/
 
     int addsTemplate(List<KzSpuTemplateModel> kzSpuTemplatelBo);
+
+
+    /**
+     * 根据商品id删除商品信息
+     * @param spuList
+     * @return
+     */
+    Boolean deleteSpu(List spuList);
 }
