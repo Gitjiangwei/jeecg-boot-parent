@@ -96,7 +96,10 @@ public class CommonController {
 		}else{
 			savePath = sysBaseAPI.upload(file,bizPath,uploadType);
 		}
-		if(oConvertUtils.isNotEmpty(savePath)){
+		if("NotFormat".equals(savePath)){
+			result.setMessage("图片格式不正确，只能上传png或者jpg格式的图片");
+			result.setSuccess(false);
+		}else if (oConvertUtils.isNotEmpty(savePath)){
 			result.setMessage(savePath);
 			result.setSuccess(true);
 		}else {
@@ -119,6 +122,11 @@ public class CommonController {
 			File file = new File(ctxPath + File.separator + bizPath + File.separator );
 			if (!file.exists()) {
 				file.mkdirs();// 创建文件根目录
+			}
+			int lastIndexOf = mf.getOriginalFilename().lastIndexOf(".");
+			String suffixs = mf.getOriginalFilename().substring(lastIndexOf);
+			if(!suffixs.equals(".jpg")&&!suffixs.equals(".png")){
+				return "NotFormat";
 			}
 			String uuid = UUID.randomUUID().toString().replace("-","");
 			uuid = uuid.substring(0,8);
