@@ -290,10 +290,12 @@ public class WXPayController {
     @ApiOperation("微信小程序退款")
     @AutoLog("微信小程序退款")
     @PostMapping(value = "/doRefund")
-    public Result doRefund(@RequestParam(name = "orderNo")String orderNo,@RequestParam(name = "amount")Integer amount){
+    public Result doRefund(@RequestParam(name = "orderNo")String orderNo,
+                           @RequestParam(name = "amount")Integer amount,
+                           @RequestParam(name = "orderStatus")String orderStatus){
         Result result = new Result();
         try {
-            result = iwxPayService.doRefund(orderNo,amount,"7");
+            result = iwxPayService.doRefund(orderNo,amount,orderStatus);
         }catch (Exception e){
             result.error500("退款出现异常！");
         }
