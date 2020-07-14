@@ -133,4 +133,20 @@
         where sku_id = #{skuId}
         AND DATE_FORMAT(specialstart_time,'%Y-%m-%d') = #{featuresTime} AND DATE_FORMAT(specialend_time,'%Y-%m-%d') = #{featuresTime}
     </select>
+
+    <update id="updateSpuFeatures">
+        update kz_spu_features
+        <trim prefix="set" suffixOverrides=",">
+            <if test="featuresPrice != null and featuresPrice != ''">
+                features_price = #{featuresPrice},
+            </if>
+            <if test="featuresStock != null and featuresStock != ''">
+                features_stock = #{featuresStock},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks = #{remarks},
+            </if>
+        </trim>
+        where features_id = #{featuresId}
+    </update>
 </mapper>

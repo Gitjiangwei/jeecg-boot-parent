@@ -16,6 +16,7 @@ import org.kunze.diansh.entity.modelData.SpuFeaturesIdsModel;
 import org.kunze.diansh.entity.modelData.SpuFeaturesListModel;
 import org.kunze.diansh.entity.modelData.SpuFeaturesModel;
 import org.kunze.diansh.mapper.SpuFeaturesMapper;
+import org.kunze.diansh.mapper.StockMapper;
 import org.kunze.diansh.service.ISpuFeaturesService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
 
     @Autowired
     private SpuFeaturesMapper spuFeaturesMapper;
+
+    @Autowired
+    private StockMapper stockMapper;
 
     /***
      * 插入商品类型
@@ -54,6 +58,8 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
         spuFeaturesList.add(spuFeatures);
        int result = spuFeaturesMapper.saveSpuFeatures(spuFeaturesList);
         if(result>0){
+            //减去原始库存
+            //stockMapper.updateStockNum(Integer.valueOf(spuFeatures.getFeaturesStock()),spuFeatures.getSkuId());
             Date date = new Date();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             String featTime = format.format(spuFeatures.getSpecialstartTime());
@@ -191,6 +197,25 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
         Boolean isFlag = false;
         int result = spuFeaturesMapper.querySkuIdentical(skuId,featuresTime);
         if(result>0){
+            isFlag = true;
+        }
+        return isFlag;
+    }
+
+    /**
+     * 修改特卖商品
+     *
+     * @param spuFeaturesBo
+     * @return
+     */
+    @Override
+    public Boolean updateSpuFeatures(SpuFeaturesBo spuFeaturesBo) {
+        Boolean isFlag = false;
+        spuFeaturesBo.setFeaturesPrice(new BigDecimal(spuFeaturesBo.getFeaturesPrice()).multiply(new BigDecimal("100")).toString());
+        SpuFeatures spuFeatures = new SpuFeatures();
+        BeanUtils.copyProperties(spuFeaturesBo,spuFeatures);
+        int result = spuFeaturesMapper.updateSpuFeatures(spuFeatures);
+        if (result>0){
             isFlag = true;
         }
         return isFlag;
