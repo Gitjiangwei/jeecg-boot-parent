@@ -33,4 +33,12 @@ public interface StockMapper extends BaseMapper<Stock> {
      * @return
      */
     int updateStockJia(@Param("stock") Stock stock,@Param("stockNum") Integer stockNum);
+
+
+    /***
+     * 根据sku查询记录是否存在
+     * @param skuId
+     * @return
+     */
+    int queryStockNot(@Param("skuId") String skuId);
 }

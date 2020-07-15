@@ -62,4 +62,8 @@
         </trim>
         where sku_id = #{stock.skuId}
     </update>
+
+    <select id="queryStockNot" resultType="int">
+        select count(1) from kz_stock where sku_id = #{skuId}
+    </select>
 </mapper>
