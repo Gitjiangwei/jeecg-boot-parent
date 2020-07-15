@@ -37,4 +37,13 @@ public class Rider implements Serializable {
 
     /**县/区*/
     private String area;
+
+    /**最后修改时间*/
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String updateTime;
+
+
+    /**是否删除 0：未删除 1：已删除*/
+    private String isFlag;
 }

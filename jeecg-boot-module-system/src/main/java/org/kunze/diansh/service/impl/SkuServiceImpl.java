@@ -105,10 +105,14 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements ISkuS
             BeanUtils.copyProperties(skuVo,sku);
             sku.setId(UUID.randomUUID().toString().replace("-",""));
             sku.setUpdateName(userName);
+            sku.setPrice(CalculationUtil.MetaconversionScore(sku.getPrice()));
+            sku.setNewPrice(CalculationUtil.MetaconversionScore(sku.getNewPrice()));
             stock.setSkuId(sku.getId());
             stock.setStock(sku.getStock());
             List<Sku> skuList = new ArrayList<Sku>();
+            skuList.add(sku);
             List<Stock> stockList = new ArrayList<Stock>();
+            stockList.add(stock);
             int result = skuMapper.saveSku(skuList);
             int resultStock = stockMapper.saveStock(stockList);
             if(result>0&&resultStock>0){

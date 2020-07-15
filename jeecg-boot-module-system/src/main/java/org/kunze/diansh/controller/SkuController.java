@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-
+@Api(tags = "SKU")
 @RestController
 @RequestMapping(value = "/kunze/sku")
 public class SkuController {
@@ -31,7 +31,7 @@ public class SkuController {
     private IStockService stockService;
 
     @PostMapping(value = "/qrySkuBySpuId")
-    public Result qrySkuBySpuId(@RequestParam(value = "spuId",required = false) String spuId){
+    public Result<List<Map<String,Object>>> qrySkuBySpuId(@RequestParam(value = "spuId",required = false) String spuId){
         Result result = new Result();
         if (EmptyUtils.isEmpty(spuId)){
             return result.error500("参数丢失！");

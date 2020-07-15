@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.RiderMapper">
+
+    <insert id="saveRider">
+        insert into kz_rider(id,rider_name,telphone,idenitiy,create_time,province,city,area,update_time)
+        values (#{id},#{riderName},#{telphone},#{idenitiy},NOW(),#{province},#{city},#{area},NOW())
+    </insert>
+
+    <update id="editRider">
+        update kz_rider
+        <trim prefix="set" suffixOverrides=",">
+            update_time = NOW(),
+            <if test="riderName != null and riderName != ''">
+                rider_name = #{riderName},
+            </if>
+            <if test="telphone != null and telphone != ''">
+                telphone = #{telphone},
+            </if>
+            <if test="idenitiy != null and idenitiy != '' ">
+                idenitiy = #{idenitiy},
+            </if>
+            <if test="province != null and province != ''">
+                province = #{province},
+            </if>
+            <if test="city != null and city != ''">
+                city = #{city},
+            </if>
+            <if test="area != null and area != ''">
+                area = #{area},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+
+    <select id="queryRiderList" resultType="org.kunze.diansh.controller.vo.RiderVo">
+        SELECT rid.id,rider_name,telphone,idenitiy,order_number,create_time,CONCAT(reg.name,reg1.name,reg2.name) as 'address',update_time FROM kz_rider rid
+        LEFT JOIN kz_region reg ON rid.province = reg.id
+        LEFT JOIN kz_region reg1 ON rid.city = reg1.id
+        LEFT JOIN kz_region reg2 ON rid.area = reg2.id
+        <trim prefix="where" prefixOverrides="and">
+            rid.is_flag = '0'
+            <if test="riderName != null and riderName != ''">
+               and rider_name like CONCAT('%',#{riderName},'%')
+            </if>
+            <if test="telphone != null and telphone != ''">
+               and telphone like CONCAT('%',#{telphone},'%')
+            </if>
+            <if test="area != null and area != ''">
+               and area = #{area},
+            </if>
+        </trim>
+        order by update_time desc,create_time desc
+    </select>
+
+    <update id="delRider">
+        update kz_rider set is_flag = '1',update_time = NOW() where id in
+        <foreach collection="list" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+    </update>
+</mapper>
