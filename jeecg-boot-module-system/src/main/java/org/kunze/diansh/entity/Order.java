@@ -106,7 +106,7 @@ public class Order implements Serializable,Delayed {
     private Date cancelTime;
 
     //取货码
-    private String pickNO;
+    private String pickNo;
 
 
 

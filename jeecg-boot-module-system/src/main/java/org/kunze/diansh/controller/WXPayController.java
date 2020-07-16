@@ -59,6 +59,7 @@ public class WXPayController {
         String shopId = request.getParameter("shopId");
         String code = request.getParameter("code");
         String money = request.getParameter("money");
+        Result result = new Result(){};
 
         Order order = iOrderService.selectOrderById(orderId,userId,shopId);
         if(null == order){
@@ -68,19 +69,9 @@ public class WXPayController {
         if(!money.equals(totalPrice.toString())){
             return Result.error("非法访问，请求已关闭！");
         }
-
         if(order.getStatus() != 1){
             return Result.ok("此订单已支付！");
         }
-
-
-
-        //获取订单参数
-        //处理订单参数是否正确
-        //组装统一下单id
-        //业务层请求微信服务
-       // iwxPayService.wxAppCreatePayOrder(orderId,money,openId);
-        Result result = new Result(){};
         Map<String,String> resultMap = iwxPayService.wxAppCreatePayOrder(orderId,money,code);
         result.setResult(resultMap);
         return result;

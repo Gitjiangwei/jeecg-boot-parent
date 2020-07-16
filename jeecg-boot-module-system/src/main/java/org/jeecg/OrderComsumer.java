@@ -8,6 +8,7 @@ import org.jeecg.common.util.OrderCodeUtils;
 import org.jeecg.common.util.RedisUtil;
 import org.kunze.diansh.entity.Order;
 import org.kunze.diansh.service.IOrderService;
+import org.kunze.diansh.service.IStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -28,6 +29,9 @@ public class OrderComsumer extends Thread implements ApplicationRunner {
 
     @Autowired
     public RedisUtil redisUtil;
+
+    @Autowired
+    private IStockService stockService;
 
     @Autowired
     public void setiOrderService(IOrderService iOrderService) {
@@ -72,6 +76,8 @@ public class OrderComsumer extends Thread implements ApplicationRunner {
 //        }
         //启动线程
         oc.start();
+        //初始化库存信息
+        stockService.initStockInfo();
     }
 
     /**加入延迟消息队列**/

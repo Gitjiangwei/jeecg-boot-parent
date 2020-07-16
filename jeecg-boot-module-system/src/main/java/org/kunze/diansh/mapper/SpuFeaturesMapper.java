@@ -84,6 +84,11 @@ public interface SpuFeaturesMapper extends BaseMapper<SpuFeatures> {
     List<SpuFeaturesListModel> queryFeatList(SpuFeaturesListVo spuFeaturesVo);
 
 
+    /**
+     * 查询特卖商品信息 通过skuId
+     * @param skuId
+     * @return
+     */
     @Select("SELECT * FROM kz_spu_features WHERE SKU_ID = #{skuId} and features_status = '1'")
     SpuFeatures selectFeatBySkuId(@Param("skuId")String skuId);
 
@@ -105,5 +110,12 @@ public interface SpuFeaturesMapper extends BaseMapper<SpuFeatures> {
      */
     int updateSpuFeatures(SpuFeatures spuFeatures);
 
+    /**
+     * 减少特卖库存
+     * @param featuresId 主键
+     * @param stockNum 数量
+     * @return
+     */
+    Integer updateFeatStock(@Param("featuresId")String featuresId, @Param("stockNum") Integer stockNum);
 
 }

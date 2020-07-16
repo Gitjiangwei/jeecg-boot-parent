@@ -51,6 +51,6 @@
 
     <!-- 统计某个用户的收货地址的数量 -->
     <select id="countByUid" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM KZ_ADDRESS WHERE USER_ID=#{userID}
+        SELECT COUNT(*) FROM KZ_ADDRESS WHERE USER_ID=#{userID}  AND `STATUS` = '0'
     </select>
 </mapper>

@@ -3,6 +3,7 @@ package org.kunze.diansh.service;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
+import org.jeecg.common.api.vo.Result;
 import org.kunze.diansh.controller.bo.OrderParams;
 import org.kunze.diansh.controller.vo.OrderDetailVo;
 import org.kunze.diansh.controller.vo.OrderVo;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 public interface IOrderService extends IService<Order> {
 
+
     /**
      * 创建订单
      * @param aid 地址id
@@ -25,9 +27,7 @@ public interface IOrderService extends IService<Order> {
      * @param postFree 配送费
      * @param buyerMessage 备注
      */
-    Order createOrder(String aid, JSONArray cids, String shopId, String userID, String pick_up,String postFree,Integer payType,String buyerMessage);
-
-    Order createOrder(OrderParams params);
+    Result createOrder(OrderParams params);
 
     /**
      * 根据订单状态查询订单数据

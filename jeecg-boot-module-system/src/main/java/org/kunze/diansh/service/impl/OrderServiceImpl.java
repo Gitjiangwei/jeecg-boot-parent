@@ -1,15 +1,19 @@
 package org.kunze.diansh.service.impl;
 
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.util.CalculationUtil;
 import org.jeecg.common.util.EmptyUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.jeecg.common.util.OrderCodeUtils;
+import org.jeecg.common.util.RedisUtil;
 import org.jeecg.modules.message.mapper.SysUserShopMapper;
 import org.jeecg.modules.message.websocket.WebSocket;
 import org.kunze.diansh.controller.bo.OrderParams;
@@ -22,12 +26,14 @@ import org.kunze.diansh.entity.modelData.OrderModel;
 import org.kunze.diansh.mapper.*;
 import org.kunze.diansh.pust.Demo;
 import org.kunze.diansh.service.IOrderService;
+import org.kunze.diansh.service.IStockService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,67 +67,87 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private SpuFeaturesMapper spuFeaturesMapper;
 
-    @Override
-    public Order createOrder(String aid, JSONArray cids, String shopId, String userID, String pick_up, String postFree, Integer payType, String buyerMessage) {
-        return null;
-    }
+    @Autowired
+    private IStockService stockService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 创建订单
-//     * @param aid 地址id
-//     * @param cids 购物车集合
-//     * @param shopId 店铺id
-//     * @param userID 用户id
-//     * @param pick_up 配送方式 1.自提 2.商家配送
-//     * @param postFree 配送费
-//     * @param buyerMessage 备注
+     * @param aid 地址id
+     * @param cids 购物车集合
+     * @param shopId 店铺id
+     * @param userID 用户id
+     * @param pick_up 配送方式 1.自提 2.商家配送
+     * @param postFree 配送费
+     * @param buyerMessage 备注
      */
-    @Override
     @Transactional
-    public Order createOrder(OrderParams params) {
+    @Override
+    public Result createOrder(OrderParams params) {
+        Result result = new Result();
+        String shopId = params.getShopId();
+        String userId = params.getUserID();
+        String pickUp = params.getPick_up();
+        String postFree = params.getPostFree();
+        String buyerMessage = params.getBuyerMessage();
+        String aid = params.getAid();
+        Integer payType = params.getPayType();
         //当前时间
         Date date = new Date();
         //根据aid查找相关的地址信息
-        Address address = addressMapper.selectAddressByID(params.getAid());
+        Address address = addressMapper.selectAddressByID(aid);
 
         //根据cids获取购买的物品的信息
         List<Sku> cartList = this.selectSkuList(params.getCids());
 
+        Boolean stockFlag = this.costStockInfo(cartList);
+        if(stockFlag){
+            return result.error500("库存不足！");
+        }
         //总价格
         Integer totalPrice = this.getTotalPrice(cartList);
 
         //店铺当天的订单数
-        Integer orderNum = orderMapper.selectShopOrderNum(params.getShopId());
+        Integer orderNum = orderMapper.selectShopOrderNum(shopId);
 
         //订单
         Order order = new Order();
-        KzShop shop = shopMapper.selectByKey(params.getShopId());
+        KzShop shop = shopMapper.selectByKey(shopId);
         if(shop == null){
-            return  null;
+            return result.error500("店铺为空！");
         }
         if(totalPrice < shop.getMinPrice()){
-            return null;
+            return result.error500("订单价格不足最低起送价！");
         }
         //生成订单号
         order.setOrderId(OrderCodeUtils.orderCode(shop.getShopName(),orderNum.toString()));
-        order.setShopId(params.getShopId()); //店铺id
-        order.setUserID(params.getUserID()); //用户id
-        order.setPickUp(params.getPick_up()); //配送方式
-        order.setAddressId(EmptyUtils.isEmpty(params.getAid())?"":params.getAid()); //地址
+        order.setShopId(shopId); //店铺id
+        order.setUserID(userId); //用户id
+        order.setPickUp(pickUp); //配送方式
+        order.setAddressId(EmptyUtils.isEmpty(aid)?"":aid); //地址
         order.setCreateTime(date);//创建时间
         order.setCancelTime(OrderCodeUtils.createCancelTime(date)); //取消时间 订单的生命周期
         order.setUpdateTime(date);//更新时间
         order.setAmountPayment(totalPrice.toString()); //应付金额
-        order.setPostFree(params.getPostFree());//配送费
+        if(Integer.parseInt(pickUp) == 1){
+            //自提不计配送费
+            order.setPostFree("0");
+        }else {
+            order.setPostFree(postFree);//配送费
+        }
         order.setPayment("0"); //实付金额
         order.setStatus(1); //订单状态 未付款
-        order.setPayType(params.getPayType()); //付款类型
-        order.setBuyerMessage(params.getBuyerMessage());//备注
+        order.setPayType(payType); //付款类型
+        order.setBuyerMessage(buyerMessage);//备注
+        order.setPickNo(RandomUtil.randomNumbers(4)); //取货码
 
         //插入订单数据
         Integer rows = orderMapper.insertOrder(order);
         if (rows != 1){
             new Exception("创建订单失败！插入订单时出现未知错误");
+            return result.error500("创建订单失败！插入订单时出现未知错误!");
         }
 
         List<OrderDetail> odList = new ArrayList<OrderDetail>();
@@ -145,10 +171,38 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             odList.add(od);
             if (odRows != 1){
                 new Exception("创建订单失败！插入订单时出现未知错误");
+                return result.error500("创建订单失败！插入订单时出现未知错误!");
             }
         }
-        return order;
+        result.setResult(order);
+        return result;
     }
+
+
+    /**
+     * 预占库存
+     * @param skuList
+     * @return
+     */
+    public Boolean costStockInfo(List<Sku> skuList){
+        Boolean flag = false;
+        for(Sku sku:skuList){
+            if(stockService.contrastStockBySkuId(sku.getId(),sku.getNum().toString())){
+                flag = true;
+                return flag;
+            }
+        }
+        //预占库存
+        for (Sku s:skuList) {
+            Double decrValue= redisUtil.hdecr(IStockService.StockType.STOCK_PREFIX,s.getId(),s.getNum());
+            if(decrValue < 0){
+                flag = true;
+                redisUtil.hincr(IStockService.StockType.STOCK_PREFIX,s.getId(),s.getNum());
+            }
+        }
+        return flag;
+    }
+
 
     /**
      * 计算订单总价
@@ -290,8 +344,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"订单已退款！","1",shopId));
         }else if(status.equals("8")){
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"拒绝接单！","1",shopId));
+            //回滚redis库存
+            List<OrderDetail> odList= orderMapper.selectOrderDetailById(orderId);
+            stockService.rollBackStock(odList);
         }else {
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"异常订单，订单关闭","1",shopId));
+            //回滚redis库存
+            List<OrderDetail> odList= orderMapper.selectOrderDetailById(orderId);
+            stockService.rollBackStock(odList);
+
         }
         if(isSuccess>0){
             flag = "ok";
@@ -365,7 +426,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                     }
                 }
                 orderVo.setConsigneeSex(orderModels.get(i).getConsignee()==null?"":orderModels.get(i).getConsignee()+sex);
-                orderVo.setPayment(new BigDecimal(orderModels.get(i).getPayment()).divide(new BigDecimal("100")).setScale(2).toString());
+                orderVo.setPayment(new BigDecimal(orderModels.get(i).getPayment()).divide(new BigDecimal("100")).setScale(2, RoundingMode.HALF_UP).toString());
                 orderVos.add(orderVo);
             }
             PageInfo pageInfo = new PageInfo<OrderVo>(orderVos);
@@ -499,7 +560,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public Boolean selectOrderByUserId(String userId,String shopId) {
         Integer num = orderMapper.selectOrderByUserId(userId,shopId);
-        if(num>1){
+        if(num >= 1){
             return true;
         }
         return false;
@@ -542,5 +603,4 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         map.put("address",address);
         return map;
     }
-
 }

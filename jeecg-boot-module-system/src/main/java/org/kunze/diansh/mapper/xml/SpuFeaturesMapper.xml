@@ -149,4 +149,9 @@
         </trim>
         where features_id = #{featuresId}
     </update>
+
+    <!-- 减特卖库存库存 -->
+    <update id="updateFeatStock" parameterType="java.lang.String">
+        UPDATE KZ_SPU_FEATURES SET FEATURES_STOCK = FEATURES_STOCK-#{stockNum} WHERE FEATURES_ID = #{featuresId}
+    </update>
 </mapper>

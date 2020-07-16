@@ -26,6 +26,7 @@ import org.kunze.diansh.mapper.SpuDetailMapper;
 import org.kunze.diansh.mapper.SpuMapper;
 import org.kunze.diansh.mapper.StockMapper;
 import org.kunze.diansh.service.ISpuService;
+import org.kunze.diansh.service.IStockService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,9 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
 
     @Autowired
     private StockMapper stockMapper;
+
+    @Autowired
+    private IStockService stockService;
 
     /**
      * 商品查询
@@ -185,6 +189,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             }
             int resultSku = skuMapper.saveSku(skuList);
             int resultStock = stockMapper.saveStock(stockList);
+            stockService.addStock(stockList); //同步添加redis中的库存
             if(resultSpuDetail > 0 && resultSku > 0 && resultStock > 0){
                 flag = true;
             }
@@ -261,6 +266,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
                 }else {
                     resultStock = stockMapper.saveStock(stockList);
                 }
+                stockService.addStock(stockList); //同步修改redis中的库存
                 if(resultSku > 0 && resultStock > 0){
                     isFlag = true;
                 }

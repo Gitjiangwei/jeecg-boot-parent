@@ -73,14 +73,12 @@ public class OrderController {
             return orderResult.error500("您有未支付的订单，请勿重复支付！");
         }
 
-        Order order = orderService.createOrder(params);
-        if(null != order){
+        orderResult = orderService.createOrder(params);
+        if(orderResult.isSuccess()){
             orderResult.success("创建成功！");
-            orderResult.setResult(order);
+            orderResult.setResult(orderResult.getResult());
             //创建订单成功后加入队列
-            OrderComsumer.queue.put(order);
-        }else{
-            orderResult.error500("创建失败！");
+            OrderComsumer.queue.put(orderResult.getResult());
         }
         return orderResult;
     }

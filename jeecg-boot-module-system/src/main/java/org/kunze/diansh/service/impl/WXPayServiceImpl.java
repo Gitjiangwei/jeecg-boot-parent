@@ -90,53 +90,43 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
             return resultMap;
         }
 
-
-
         //生成支付金额，开发环境处理支付金额数到0.01、0.02、0.03元
         double payAmount = 0.01;
-        //添加或更新支付记录(参数跟进自己业务需求添加)
-        //int flag = this.addOrUpdatePaymentRecord(orderNum, payAmount,.....);
-        int flag = 1;
-        if(flag < 0){
-            resultMap.put("returnCode", "FAIL");
-            resultMap.put("returnMsg", "此订单已支付！");
-            out.println("【小程序支付】 此订单已支付！");
-        }else if(flag == 0){
-            resultMap.put("returnCode", "FAIL");
-            resultMap.put("returnMsg", "支付记录生成或更新失败！");
-            out.println("【小程序支付】 支付记录生成或更新失败！");
+        Map<String,String> resMap = null;
+        try {
+            resMap = this.xcxUnifieldOrder(orderId, weChatPayProperties.TRADE_TYPE_JSAPI, money,openId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(WXPayConstants.SUCCESS.equals(resMap.get("return_code")) && WXPayConstants.SUCCESS.equals(resMap.get("result_code"))){
+            resultMap.put("appId", weChatPayProperties.getWxAppAppId());
+            resultMap.put("timeStamp", Long.toString(WXPayUtil.getCurrentTimestamp()));
+            resultMap.put("nonceStr", WXPayUtil.generateNonceStr());
+            resultMap.put("package", "prepay_id="+resMap.get("prepay_id"));
+            resultMap.put("signType", "MD5");
+            resultMap.put("sign", createSign(resultMap,weChatPayProperties.getApiKey()));
+            resultMap.put("returnCode", "SUCCESS");
+            resultMap.put("returnMsg", "OK");
+            out.println("【小程序支付】统一下单成功，返回参数:"+resultMap);
         }else{
-            Map<String,String> resMap = null;
-            try {
-                resMap = this.xcxUnifieldOrder(orderId, weChatPayProperties.TRADE_TYPE_JSAPI, money,openId);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if(WXPayConstants.SUCCESS.equals(resMap.get("return_code")) && WXPayConstants.SUCCESS.equals(resMap.get("result_code"))){
-                resultMap.put("appId", weChatPayProperties.getWxAppAppId());
-                resultMap.put("timeStamp", Long.toString(WXPayUtil.getCurrentTimestamp()));
-                resultMap.put("nonceStr", WXPayUtil.generateNonceStr());
-                resultMap.put("package", "prepay_id="+resMap.get("prepay_id"));
-                resultMap.put("signType", "MD5");
-                resultMap.put("sign", createSign(resultMap,weChatPayProperties.getApiKey()));
-                resultMap.put("returnCode", "SUCCESS");
-                resultMap.put("returnMsg", "OK");
-                out.println("【小程序支付】统一下单成功，返回参数:"+resultMap);
-            }else{
-                resultMap.put("returnCode", resMap.get("return_code"));
-                resultMap.put("returnMsg", resMap.get("return_msg"));
-                out.println("【小程序支付】统一下单失败，失败原因:"+resMap.get("return_msg"));
-            }
+            resultMap.put("returnCode", resMap.get("return_code"));
+            resultMap.put("returnMsg", resMap.get("return_msg"));
+            out.println("【小程序支付】统一下单失败，失败原因:"+resMap.get("return_msg"));
         }
         return resultMap;
     }
 
 
-
     /**
      * 小程序支付统一下单
+     * @param orderId 订单号
+     * @param tradeType 交易类型
+     * @param money 金额
+     * @param openid
+     * @return
+     * @throws Exception
      */
-    private Map<String,String> xcxUnifieldOrder(String orderNum,String tradeType, String money,String openid) throws Exception{
+    private Map<String,String> xcxUnifieldOrder(String orderId,String tradeType, String money,String openid) throws Exception{
         Instant now = Instant.now();
         Date nowDate = Date.from(now);
         // 支付有限时间为14分钟30秒
@@ -149,8 +139,8 @@ public class WXPayServiceImpl extends ServiceImpl<OrderMapper,Order> implements 
         paramMap.put("nonce_str", WXPayUtil.generateNonceStr());
         paramMap.put("time_start", DateUtils.date2Str(nowDate,new SimpleDateFormat("yyyyMMddHHmmss")));
         paramMap.put("time_expire", DateUtils.date2Str(endDate,new SimpleDateFormat("yyyyMMddHHmmss")));
-        paramMap.put("body", "TEST ORDER");
-        paramMap.put("out_trade_no", orderNum);
+        paramMap.put("body", "小程序快捷支付");
+        paramMap.put("out_trade_no", orderId);
         paramMap.put("total_fee", money);
         paramMap.put("spbill_create_ip", "127.0.0.1");
         paramMap.put("notify_url", weChatPayProperties.WX_PAY_NOTIFY_URL);

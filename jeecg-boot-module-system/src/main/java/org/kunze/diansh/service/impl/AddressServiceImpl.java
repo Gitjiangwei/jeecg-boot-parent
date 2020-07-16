@@ -40,9 +40,6 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
     public void insertAddress(Address address) throws AddressException {
         //统计用户的地址数量
         Integer count = addressMapper.countByUid(address.getUserId());
-        if(count > addressMaxSizi){
-            throw new AddressException("添加收获地址失败，您的收货地址已达到上限"+addressMaxSizi+"条！");
-        }
 
         if(count > 0){
             if(address.getIsDefault().equals("1")){
