@@ -60,4 +60,12 @@ public interface ISpuFeaturesService extends IService<SpuFeatures> {
      * @return
      */
     Boolean querySkuIdentical(String skuId,String featuresTime);
+
+
+    /**
+     * 修改特卖商品
+     * @param spuFeaturesBo
+     * @return
+     */
+    Boolean updateSpuFeatures(SpuFeaturesBo spuFeaturesBo);
 }

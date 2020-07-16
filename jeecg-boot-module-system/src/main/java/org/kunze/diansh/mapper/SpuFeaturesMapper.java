@@ -96,4 +96,14 @@ public interface SpuFeaturesMapper extends BaseMapper<SpuFeatures> {
      * @return
      */
     int querySkuIdentical(@Param("skuId") String skuId,@Param("featuresTime") String featuresTime);
+
+
+    /**
+     * 修改特卖商品
+     * @param spuFeatures
+     * @return
+     */
+    int updateSpuFeatures(SpuFeatures spuFeatures);
+
+
 }

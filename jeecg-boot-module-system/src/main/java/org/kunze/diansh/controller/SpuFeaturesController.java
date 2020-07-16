@@ -153,4 +153,22 @@ public class SpuFeaturesController  {
         }
         return result;
     }
+
+    @ApiOperation("修改特卖信息")
+    @AutoLog("修改特卖信息")
+    @PostMapping(value = "/updateFeat")
+    public Result<T> updateSpuFeatures(@RequestBody SpuFeaturesBo spuFeaturesBo){
+        Result<T> result = new Result<T>();
+        if (StringUtils.isEmpty(spuFeaturesBo.getFeaturesId())){
+            result.error500("参数丢失！");
+        }else {
+            Boolean resultOk = spuFeaturesService.updateSpuFeatures(spuFeaturesBo);
+            if (resultOk){
+                result.success("修改成功");
+            }else {
+                result.error500("修改失败！");
+            }
+        }
+        return result;
+    }
 }

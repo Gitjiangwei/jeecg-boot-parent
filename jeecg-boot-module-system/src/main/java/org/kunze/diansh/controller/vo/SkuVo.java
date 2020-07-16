@@ -10,6 +10,8 @@ public class SkuVo implements Serializable {
     //sku Id
     private String id;
 
+    private String title;
+
     //spu Id
     private String spuId;
 
