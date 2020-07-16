@@ -105,6 +105,9 @@ public class Order implements Serializable,Delayed {
     //取消时间
     private Date cancelTime;
 
+    //取货码
+    private String pickNO;
+
 
 
     @Override
