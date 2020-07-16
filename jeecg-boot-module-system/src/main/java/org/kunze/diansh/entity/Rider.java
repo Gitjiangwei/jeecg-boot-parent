@@ -46,4 +46,7 @@ public class Rider implements Serializable {
 
     /**是否删除 0：未删除 1：已删除*/
     private String isFlag;
+
+    /**是否正在配送 0：否 1：是*/
+    private String status;
 }

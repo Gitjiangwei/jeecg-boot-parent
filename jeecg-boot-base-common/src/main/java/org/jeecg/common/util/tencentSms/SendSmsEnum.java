@@ -9,7 +9,10 @@ public enum SendSmsEnum {
     //修改密码
     FORGET_PASSWORD_TEMPLATE_CODE("642066","山西乾森网络科技有限公司","code","1400388965"),
     //注册
-    REGISTER_TEMPLATE_CODE("642064","山西乾森网络科技有限公司","code","1400388965");
+    REGISTER_TEMPLATE_CODE("642064","山西乾森网络科技有限公司","code","1400388965"),
+
+    //通知配送
+    NOTIC_DISTRIBUTION_RIDER("664433","山西乾森网络科技有限公司","code","1400388965");
 
     /**
      * 短信模板编码

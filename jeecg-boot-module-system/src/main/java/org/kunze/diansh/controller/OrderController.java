@@ -16,8 +16,10 @@ import org.kunze.diansh.controller.bo.OrderParams;
 import org.kunze.diansh.controller.vo.OrderDetailVo;
 import org.kunze.diansh.controller.vo.OrderVo;
 import org.kunze.diansh.entity.Order;
+import org.kunze.diansh.service.IDistributionService;
 import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +37,11 @@ public class OrderController {
     @Autowired
     private IOrderService orderService;
 
+    @Value("${hoho.deliveryFee}")
+    private String deliveryFee;
+
+    @Autowired
+    private IDistributionService distributionService;
 
     /**
      * 创建订单
@@ -169,6 +176,13 @@ public class OrderController {
         JSONObject jsonObject = JSONObject.parseObject(orderStatus);
         String status = jsonObject.getString("status");
         String orderId = jsonObject.getString("orderId");
+        if("4".equals(status)){
+            Boolean resultOK = distributionService.saveDistribution(orderId,this.deliveryFee);
+            if (!resultOK){
+                result.error500("error");
+                return result;
+            }
+        }
         String resultOk = orderService.updateOrderStatu(status,orderId);
         if(resultOk.equals("ok")){
             result.success("ok");
