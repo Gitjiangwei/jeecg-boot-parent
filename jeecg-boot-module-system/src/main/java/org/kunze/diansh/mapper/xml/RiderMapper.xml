@@ -35,7 +35,7 @@
 
 
     <select id="queryRiderList" resultType="org.kunze.diansh.controller.vo.RiderVo">
-        SELECT rid.id,rider_name,telphone,idenitiy,order_number,create_time,CONCAT(reg.name,reg1.name,reg2.name) as 'address',update_time FROM kz_rider rid
+        SELECT rid.id,rider_name,telphone,idenitiy,order_number,create_time,CONCAT(reg.name,reg1.name,reg2.name) as 'address',update_time,status FROM kz_rider rid
         LEFT JOIN kz_region reg ON rid.province = reg.id
         LEFT JOIN kz_region reg1 ON rid.city = reg1.id
         LEFT JOIN kz_region reg2 ON rid.area = reg2.id
@@ -48,7 +48,10 @@
                and telphone like CONCAT('%',#{telphone},'%')
             </if>
             <if test="area != null and area != ''">
-               and area = #{area},
+               and area = #{area}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
             </if>
         </trim>
         order by update_time desc,create_time desc
@@ -59,5 +62,19 @@
         <foreach collection="list" open="(" close=")" item="item" separator=",">
             #{item}
         </foreach>
+    </update>
+
+
+    <update id="editRiderNum">
+        update kz_rider
+        <trim prefix="set" suffixOverrides=",">
+            <if test="orderNumber != null and orderNumber != ''">
+                order_number = #{orderNumber},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+        </trim>
+        where id = #{id}
     </update>
 </mapper>

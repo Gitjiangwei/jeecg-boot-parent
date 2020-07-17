@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.jeecg.common.util.CalculationUtil;
 import org.jeecg.common.util.CommonUtil;
 import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.controller.vo.ShopVo;
@@ -135,5 +136,25 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, KzShop> implements 
     @Override
     public List<Map<String, Object>> selectShopInfoById(String shopId) {
         return CommonUtil.toCamel(shopMapper.selectShopInfoById(shopId));
+    }
+
+    /**
+     * 修改商家配送方式
+     *
+     * @param shopId
+     * @param distModel
+     * @param postFree
+     * @return
+     */
+    @Override
+    public Boolean editShopDistModel(String shopId, String distModel, String postFree) {
+        Boolean isFlag = false;
+        if(!StringUtils.isEmpty(shopId)){
+            int result = shopMapper.editShopDistModel(shopId,distModel,Integer.valueOf(CalculationUtil.MetaconversionScore(postFree)));
+            if(result>0){
+                isFlag = true;
+            }
+        }
+        return isFlag;
     }
 }

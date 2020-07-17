@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
   tomcat:
     max-swallow-size: -1
   servlet:
@@ -96,7 +96,7 @@ spring:
         connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
       datasource:
         master:
-          url: jdbc:mysql://150.158.181.66:3306/kunze?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowMultiQueries=true
+          url: jdbc:mysql://124.70.2.47:3306/kunze?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowMultiQueries=true
           username: root
           password: honghongdaojia
           driver-class-name: com.mysql.jdbc.Driver
@@ -109,7 +109,7 @@ spring:
   #redis 配置
   redis:
     database: 0
-    host: 150.158.181.66
+    host: 127.0.0.1
     lettuce:
       pool:
         max-active: 8   #最大连接数据库连接数,设 0 为没有限制
@@ -117,7 +117,7 @@ spring:
         max-wait: -1ms  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
         min-idle: 0     #最小等待连接中的数量,设 0 为没有限制
       shutdown-timeout: 100ms
-    password: honghongdaojia
+    password: ''
     port: 6379
   data:
     elasticsearch:
@@ -196,5 +196,13 @@ WeChatPay:
     mch_id: 1591431581
     apiKey: gqyky9uZ4KLoA1OGxwrgY0kbi9PVCu5s
     appSecret: 05fba7f7a91f94072b4b637f5b500877
+
+#APP包获取路径
+app:
+  version:
+    path: D://opt//app/
+
+hoho:
+  deliveryFee: 2
 
 

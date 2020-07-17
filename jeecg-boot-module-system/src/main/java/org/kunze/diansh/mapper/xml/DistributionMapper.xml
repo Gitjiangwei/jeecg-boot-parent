@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.DistributionMapper">
+
+    <insert id="saveDistribution">
+        insert into kz_distribution(id,order_id,address,delivery_fee,rider_id,shop_id,create_time)
+        values (#{id},#{orderId},#{address},#{deliveryFee},#{riderId},#{shopId},NOW())
+    </insert>
+
+    <update id="editDistribution">
+        update kz_distribution set settlement = '1',settlement_time = NOW()
+        <foreach collection="ids" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="queryDistList" resultType="org.kunze.diansh.controller.vo.RiderDistVo">
+        SELECT dis.id,dis.order_id,dis.address,dis.delivery_fee,rid.rider_name,sh.shop_name,dis.create_time,settlement,settlement_time,dis.pick_no FROM kz_distribution dis
+        LEFT JOIN kz_order o ON dis.order_id = o.order_id
+        LEFT JOIN kz_shop sh ON dis.shop_id = sh.id
+        LEFT JOIN kz_rider rid ON dis.rider_id = rid.id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="orderId != null and orderId != ''">
+               and dis.order_id = #{orderId}
+            </if>
+            <if test="riderName !=null and riderName != ''">
+                and rid.rider_name = #{riderName}
+            </if>
+            <if test="shopId != null and shopId != ''">
+                and dis.shop_id = #{shopId}
+            </if>
+            <if test="settlement != null and settlement != ''">
+                and settlement = #{settlement}
+            </if>
+        </trim>
+        order by dis.create_time desc
+    </select>
+
+    <select id="queryRiderAndroid" resultType="org.kunze.diansh.controller.vo.RiderAndroidVo">
+        SELECT o.order_id,dis.address,sh.shop_name,rid.rider_name,dis.create_time,o.status,dis.delivery_fee FROM kz_distribution dis
+        LEFT JOIN kz_order o ON dis.order_id = o.order_id
+        LEFT JOIN kz_shop sh ON dis.shop_id = sh.id
+        LEFT JOIN kz_rider rid ON dis.rider_id = rid.id
+        WHERE o.order_id = #{orderId}
+    </select>
+
+    <select id="queryByOrder" resultType="String">
+        select rider_id from kz_distribution where order_id = #{orderId}
+    </select>
+</mapper>

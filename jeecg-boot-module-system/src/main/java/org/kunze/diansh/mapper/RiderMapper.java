@@ -41,4 +41,11 @@ public interface RiderMapper extends BaseMapper<Rider> {
      */
     int delRider(@Param("list") List<String> stringList);
 
+
+    /***
+     * 修改骑手接单数
+     * @param id
+     * @return
+     */
+    int editRiderNum(@Param("status") String status,@Param("orderNumber") Integer orderNumber, @Param("id") String id);
 }

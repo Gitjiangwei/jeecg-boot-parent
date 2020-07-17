@@ -163,4 +163,15 @@ public interface ShopMapper extends BaseMapper<KzShop> {
      * @return
      */
    List<Map<String,Object>> selectShopInfoById(@Param("shopId")String shopId);
+
+
+    /***
+     * 检索当前超市是骑手配送还是商家配送
+     * @param shopId
+     * @return
+     */
+   String queryShopDistributionModel(@Param("shopId") String shopId);
+
+
+   int editShopDistModel(@Param("shopId") String shopId,@Param("distributionModel") String distributionModel,@Param("postFree") Integer postFree);
 }
