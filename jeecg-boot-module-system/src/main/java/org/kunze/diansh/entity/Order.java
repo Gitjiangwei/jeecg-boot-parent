@@ -93,6 +93,9 @@ public class Order implements Serializable,Delayed {
     //买家昵称
     private String buyerNick;
 
+    //买家预留手机号
+    private Long buyerPhone;
+
     //买家是否已经评价,0未评价，1已评价
     private int buyerRate;
 

@@ -32,6 +32,8 @@ public class OrderParams {
     @NotEmpty(message = "cids不能为空！")
     private List<Map<String,Object>> cids; //购物车商品的集合 包含skuid 和商品数量
 
+    private String buyerNick; //买家昵称
+    private Long buyerPhone; //买家预留手机号
     private Integer payType; //付款类型 0.微信 1.支付宝
     private String buyerMessage; //备注
 }

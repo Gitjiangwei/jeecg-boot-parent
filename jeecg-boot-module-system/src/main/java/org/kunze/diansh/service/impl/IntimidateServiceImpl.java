@@ -75,6 +75,7 @@ public class IntimidateServiceImpl implements IIntimidateService {
             distributionVo.setContact(tel);
         }*/
         distributionVo.setContact(tel);
+
         if(order.getPickUp().equals("2")){
             //6.1、根据pickUp来判断是商家配送还是自提
             salesTicketVo.setPickUp("商家配送");
@@ -82,7 +83,8 @@ public class IntimidateServiceImpl implements IIntimidateService {
             distributionVo.setShippingAddress(addres);
         }else {
             salesTicketVo.setPickUp("自提");
-            distributionVo.setShippingAddress("");
+            String addres = address.getProvince()+address.getCity()+address.getCounty()+address.getStreet();
+            distributionVo.setShippingAddress(addres);
         }
         salesTicketVo.setDistributionVo(distributionVo);
         //7、填充商品信息

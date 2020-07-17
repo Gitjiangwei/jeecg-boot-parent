@@ -94,6 +94,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         String buyerMessage = params.getBuyerMessage();
         String aid = params.getAid();
         Integer payType = params.getPayType();
+        Long buyerPhone = params.getBuyerPhone();
+        String buyerNick = params.getBuyerNick();
+
         //当前时间
         Date date = new Date();
         //根据aid查找相关的地址信息
@@ -134,6 +137,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         if(Integer.parseInt(pickUp) == 1){
             //自提不计配送费
             order.setPostFree("0");
+            order.setBuyerPhone(buyerPhone);
+            order.setBuyerNick(buyerNick);
         }else {
             order.setPostFree(postFree);//配送费
         }
