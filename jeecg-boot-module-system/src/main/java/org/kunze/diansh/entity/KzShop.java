@@ -72,4 +72,7 @@ public class KzShop implements Serializable {
     //起送价
     private Integer minPrice;
 
+    /**配送方式*/
+    private String distributionModel;
+
 }

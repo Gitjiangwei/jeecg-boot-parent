@@ -176,13 +176,13 @@ public class OrderController {
         JSONObject jsonObject = JSONObject.parseObject(orderStatus);
         String status = jsonObject.getString("status");
         String orderId = jsonObject.getString("orderId");
-        if("4".equals(status)){
+/*        if("4".equals(status)){
             Boolean resultOK = distributionService.saveDistribution(orderId,this.deliveryFee);
             if (!resultOK){
                 result.error500("error");
                 return result;
             }
-        }
+        }*/
         String resultOk = orderService.updateOrderStatu(status,orderId);
         if(resultOk.equals("ok")){
             result.success("ok");

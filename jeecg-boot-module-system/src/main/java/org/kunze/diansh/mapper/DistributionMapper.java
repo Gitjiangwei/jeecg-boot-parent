@@ -42,4 +42,12 @@ public interface DistributionMapper extends BaseMapper<Distribution> {
      * @return
      */
     RiderAndroidVo queryRiderAndroid(@RequestParam("orderId") String orderId);
+
+
+    /***
+     * 根据订单信息查询骑手id
+     * @param orderId
+     * @return
+     */
+    String queryByOrder(@RequestParam("orderId") String orderId);
 }

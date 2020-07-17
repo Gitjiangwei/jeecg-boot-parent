@@ -190,3 +190,6 @@ WeChatPay:
     mch_id: 1591431581
     apiKey: gqyky9uZ4KLoA1OGxwrgY0kbi9PVCu5s
     appSecret: 05fba7f7a91f94072b4b637f5b500877
+
+hoho:
+  deliveryFee: 2

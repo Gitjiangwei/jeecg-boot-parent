@@ -45,4 +45,12 @@ public interface IDistributionService extends IService<Distribution> {
      * @return
      */
     RiderAndroidVo queryRiderAndroid(String orderId);
+
+
+    /***
+     * 骑手修改配送状态
+     * @param orderId
+     * @return
+     */
+    Boolean editRiderOrderStatus(String orderId);
 }

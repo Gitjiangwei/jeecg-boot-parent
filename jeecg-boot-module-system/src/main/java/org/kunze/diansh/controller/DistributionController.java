@@ -84,4 +84,28 @@ public class DistributionController {
         result.setResult(riderAndroidVo);
         return result;
     }
+
+    /***
+     * 骑手查询订单信息
+     * jw
+     * @param orderId
+     * @return
+     */
+    @ApiOperation("骑手修改配送状态")
+    @AutoLog("骑手修改配送状态")
+    @PostMapping(value = "/editRiderStatus")
+    public Result<T> editRiderOrderStatus(@RequestParam(name = "orderId") String orderId){
+        Result<T> result = new Result<T>();
+        if (StringUtils.isEmpty(orderId)){
+            result.error500("参数丢失！");
+        }else {
+            Boolean resultOk = distributionService.editRiderOrderStatus(orderId);
+            if (resultOk){
+                result.success("配送完成");
+            }else {
+                result.error500("修改失败！");
+            }
+        }
+        return result;
+    }
 }

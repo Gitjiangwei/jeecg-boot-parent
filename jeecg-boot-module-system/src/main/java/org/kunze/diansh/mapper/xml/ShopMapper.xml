@@ -459,4 +459,15 @@
         SELECT * FROM KZ_SHOP WHERE ID = #{shopId}
         AND `STATUS` = '0'
     </select>
+
+    <!--检索当前超市是商家配送还是骑手配送-->
+    <select id="queryShopDistributionModel" resultType="String">
+        select distribution_model from kz_shop
+        where id = #{shopId}
+    </select>
+
+    <update id="editShopDistModel">
+        update kz_shop set distribution_model = #{distributionModel},post_free = #{postFree}
+        where id = #{shopId}
+    </update>
 </mapper>

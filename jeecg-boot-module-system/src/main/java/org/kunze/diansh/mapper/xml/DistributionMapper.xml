@@ -43,4 +43,8 @@
         LEFT JOIN kz_rider rid ON dis.rider_id = rid.id
         WHERE o.order_id = #{orderId}
     </select>
+
+    <select id="queryByOrder" resultType="String">
+        select rider_id from kz_distribution where order_id = #{orderId}
+    </select>
 </mapper>

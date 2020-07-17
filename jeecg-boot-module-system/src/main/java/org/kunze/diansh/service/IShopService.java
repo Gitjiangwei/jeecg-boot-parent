@@ -51,4 +51,14 @@ public interface IShopService extends IService<KzShop> {
      * @return
      */
     List<Map<String,Object>> selectShopInfoById(String shopId);
+
+
+    /**
+     * 修改商家配送方式
+     * @param shopId
+     * @param distModel
+     * @param postFree
+     * @return
+     */
+    Boolean editShopDistModel(String shopId,String distModel,String postFree);
 }

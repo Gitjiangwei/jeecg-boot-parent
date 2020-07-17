@@ -17,6 +17,7 @@ import org.kunze.diansh.controller.vo.ShopVo;
 import org.kunze.diansh.entity.*;
 import org.kunze.diansh.mapper.*;
 import org.kunze.diansh.service.IDistributionService;
+import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,9 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionMapper, Dis
 
     @Autowired
     private RiderMapper riderMapper;
+
+    @Autowired
+    private IOrderService orderService;
 
     /**
      * 通知配送人员
@@ -169,5 +173,28 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionMapper, Dis
             return riderAndroidVo;
         }
 
+    }
+
+    /***
+     * 骑手修改配送状态
+     * @param orderId
+     * @return
+     */
+    @Override
+    public Boolean editRiderOrderStatus(String orderId) {
+        Boolean isFlag = false;
+        RiderDistBo distBo = new RiderDistBo();
+        distBo.setOrderId(orderId);
+        List<RiderDistVo> riderDistVoList = distributionMapper.queryDistList(distBo);
+        RiderDistVo riderDistVo = riderDistVoList.get(0);
+        //1、修改订单状态
+        String orderOk = orderService.updateOrderStatu("5",orderId);
+        //2、修改骑手接单数
+        String riderId = distributionMapper.queryByOrder(orderId);
+        int result = riderMapper.editRiderNum("0",1,riderId);
+        if(result>0){
+            isFlag = true;
+        }
+        return isFlag;
     }
 }

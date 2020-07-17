@@ -92,7 +92,8 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/kunze/spu/template/**","anon");//商品图片上传
 
 
-
+		filterChainDefinitionMap.put("/kunze/dist/editRiderStatus","anon"); //骑手确认订单
+		filterChainDefinitionMap.put("/kunze/dist/androidDist","anon"); //骑手查询订单
 		filterChainDefinitionMap.put("/sys/getCheckCode", "anon"); //登录验证码接口排除
 		filterChainDefinitionMap.put("/sys/randomImage/**", "anon"); //登录验证码接口排除
 		filterChainDefinitionMap.put("/sys/login", "anon"); //登录接口排除

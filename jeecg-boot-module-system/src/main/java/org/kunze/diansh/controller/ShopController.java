@@ -1,5 +1,6 @@
 package org.kunze.diansh.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -17,6 +18,8 @@ import org.kunze.diansh.controller.vo.ShopVo;
 import org.kunze.diansh.entity.KzShop;
 import org.kunze.diansh.service.IShopService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +34,10 @@ public class ShopController {
 
     @Autowired
     private IShopService shopService;
+
+    @Value("${hoho.deliveryFee}")
+    private String postFee;
+
 
     @ApiOperation("客户端查询所有超市信息")
     @AutoLog("查询所有超市")
@@ -142,5 +149,28 @@ public class ShopController {
         return result;
     }
 
+    @ApiOperation("修改配送方式")
+    @AutoLog("修改配送方式")
+    @PostMapping(value = "/editShopDist")
+    public Result<T> editShopDistModel(@RequestBody JSONObject jsonObject){
+        Result<T> result = new Result<T>();
+        String shopId = jsonObject.getString("shopId");
+        if(StringUtils.isEmpty(shopId)){
+            result.error500("超市参数丢失");
+        }else {
+            String distModel = jsonObject.getString("distModel");
+            String postFee = this.postFee;
+            if ("1".equals(distModel)) {
+                postFee = jsonObject.getString("postFee");
+            }
+            Boolean resultOk = shopService.editShopDistModel(shopId, distModel, postFee);
+            if (resultOk){
+                result.success("修改成功");
+            }else {
+                result.error500("修改失败");
+            }
+        }
+        return result;
+    }
 
 }
