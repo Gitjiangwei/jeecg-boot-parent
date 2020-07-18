@@ -12,8 +12,10 @@ public enum SendSmsEnum {
     REGISTER_TEMPLATE_CODE("642064","山西乾森网络科技有限公司","code","1400388965"),
 
     //通知配送
-    NOTIC_DISTRIBUTION_RIDER("664433","山西乾森网络科技有限公司","code","1400388965");
+    NOTIC_DISTRIBUTION_RIDER("663323","山西乾森网络科技有限公司","code","1400388965"),
 
+    //通知用户自提
+    NOTICE_USER_SELF("665333","山西乾森网络科技有限公司","code","1400388965");
     /**
      * 短信模板编码
      */
