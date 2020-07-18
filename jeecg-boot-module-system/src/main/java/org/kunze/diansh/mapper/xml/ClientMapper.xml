@@ -18,9 +18,6 @@
 
     <insert id="addClient" parameterType="org.kunze.diansh.entity.Client" >
 
-        <selectKey  keyProperty="id" order="AFTER" resultType="int">
-            select LAST_INSERT_ID()
-        </selectKey>>
         insert into kz_client(
         id,
         client,
@@ -31,7 +28,7 @@
         is_update
         )
         value(
-        #{id,jdbcType=INTEGER},
+        (SELECT REPLACE(UUID(),'-','') AS id),
         client,
         version,
         address,
