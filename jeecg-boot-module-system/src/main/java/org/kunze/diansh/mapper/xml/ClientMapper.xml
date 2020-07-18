@@ -16,8 +16,10 @@
       ORDER BY create_time
   </select>
 
-    <insert id="addClient" parameterType="org.kunze.diansh.entity.Client">
+    <insert id="addClient" parameterType="org.kunze.diansh.entity.Client" useGeneratedKeys="true" keyProperty="id">
+
         insert into kz_client(
+        id,
         client,
         version,
         address,
@@ -26,6 +28,7 @@
         is_update
         )
         value(
+        #{id,jdbcType=INTEGER}
         client,
         version,
         address,
