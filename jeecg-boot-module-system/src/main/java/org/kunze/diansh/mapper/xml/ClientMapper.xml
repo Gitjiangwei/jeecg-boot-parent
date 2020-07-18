@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.ClientMapper">
+
+  <select id="qryClientList" resultType="org.kunze.diansh.entity.Client">
+      id,
+      select
+      id,
+      client,
+      version,
+      address
+      from kz_client
+      where
+           and client=2
+           and is_update=0
+      ORDER BY create_time
+  </select>
+
+    <insert id="addClient" parameterType="org.kunze.diansh.entity.Client">
+        insert into kz_client(
+        client,
+        version,
+        address,
+        create_time,
+        update_time,
+        is_update
+        )
+        value(
+        client,
+        version,
+        address,
+        now(),
+        now(),
+        0
+        )
+    </insert>
+
+
+    <update id="updateClient" parameterType="org.kunze.diansh.entity.Client">
+
+         update kz_client t
+                <trim prefix="set" suffixOverrides=",">
+                    <if test="client != null and client != ''">  
+                    t.client = #{client},
+                  </if>
+                  <if test="version != null and version != ''">  
+                       t.version = #{version},
+                  </if>
+                  <if test="address != null and address != ''">  
+                       t.address = #{address},
+                  </if>
+                  t.create_time = now(),
+                  t.update_time=now(),
+                   t.is_update=1
+                  </trim>
+                 where t.id = #{id}
+    </update>
+
+    <update id="deleteClient">
+        update kz_client set is_update=1
+    </update>
+</mapper>
