@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.kunze.diansh.entity.Client;
@@ -93,6 +94,15 @@ public class ClientController {
         return result;
     }
 
-
+    @ApiOperation("客户端查询版本号")
+    @AutoLog("客户端查询版本号")
+    @PostMapping(value = "/qryClient")
+    public Result<Client> qryClient(@RequestParam(name = "client")String client){
+        Result<Client> result = new Result<Client>();
+        Client client1 = clientService.qryClient(client);
+        result.setResult(client1);
+        result.setSuccess(true);
+        return result;
+    }
 
 }

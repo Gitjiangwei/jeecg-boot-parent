@@ -3,23 +3,39 @@
 <mapper namespace="org.kunze.diansh.mapper.ClientMapper">
 
   <select id="qryClientList" resultType="org.kunze.diansh.entity.Client">
-      id,
       select
+      id,
+      client,
+      version,
+      address,
+      create_time,
+      update_time
+      from kz_client
+      where
+            client=2
+           and is_update=0
+      ORDER BY create_time
+  </select>
+
+    <select id="qryClient" resultType="org.kunze.diansh.entity.Client">
+     select
       id,
       client,
       version,
       address
       from kz_client
-      where
-           and client=2
-           and is_update=0
-      ORDER BY create_time
-  </select>
-
+      <trim prefix="where" prefixOverrides="and">
+         is_update=0
+         <if test="client != null and client != ''">
+            and client = #{client}
+         </if>
+      </trim>
+      ORDER BY create_time LIMIT 1
+    </select>
     <insert id="addClient" parameterType="org.kunze.diansh.entity.Client" >
 
         insert into kz_client(
-        id,
+
         client,
         version,
         address,
@@ -27,11 +43,10 @@
         update_time,
         is_update
         )
-        value(
-        (SELECT REPLACE(UUID(),'-','') AS id),
-        client,
-        version,
-        address,
+        values(
+        #{client},
+        #{version},
+        #{address},
         now(),
         now(),
         0

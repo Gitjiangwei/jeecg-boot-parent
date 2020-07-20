@@ -20,11 +20,11 @@ public class Client implements Serializable {
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String create_time;//创建时间
+    private String createTime;//创建时间
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String update_time;//修改时间
+    private String updateTime;//修改时间
 
     private  int isUpdate;//是否修改
 

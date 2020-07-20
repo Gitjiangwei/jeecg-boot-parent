@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang.StringUtils;
 import org.kunze.diansh.entity.Client;
 import org.kunze.diansh.mapper.ClientMapper;
 import org.kunze.diansh.service.IClientService;
@@ -37,8 +38,25 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client>  implem
         try {
             return clientMapper.addClient(client);
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("插入失败");
             return 0;
+        }
+    }
+
+    /**
+     * 安卓查询
+     *
+     * @param client
+     * @return
+     */
+    @Override
+    public Client qryClient(String client) {
+        if (StringUtils.isEmpty(client)){
+            return null;
+        }else {
+            Client client1 = clientMapper.qryClient(client);
+            return client1;
         }
     }
 

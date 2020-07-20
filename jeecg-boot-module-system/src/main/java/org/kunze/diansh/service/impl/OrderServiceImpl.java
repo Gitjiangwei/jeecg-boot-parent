@@ -342,7 +342,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         if(status.equals("3")){
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"商家接单","1",shopId));
         }else if(status.equals("4")){
-            orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"配货完成，开始配送","1",shopId));
+            Order order = orderMapper.selectById(orderId);
+            if ("1".equals(order.getPickUp())){
+                orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"已经通知用户取货","1",shopId));
+            }else {
+                orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"配货完成，开始配送","1",shopId));
+            }
         }else if(status.equals("5")){
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"用户收到商品，订单完成","1",shopId));
         }else if(status.equals("7")){
@@ -424,7 +429,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 BeanUtils.copyProperties(orderModels.get(i),orderVo);
                 String sex = "";
                 if(orderModels.get(i).getConsigneeSex() != null && !orderModels.get(i).getConsigneeSex().equals("")) {
-                    if (orderModels.get(i).getConsigneeSex().equals("2")) {
+                    if (orderModels.get(i).getConsigneeSex().equals("0")) {
                         sex = "女士";
                     } else {
                         sex = "先生";
