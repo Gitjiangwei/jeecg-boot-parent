@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class Client implements Serializable {
 
 
-    private Integer id;//主键ID
+    private String id;//主键ID
 
     private String client;//客户端(1.pc 2.android 3.ios)
 
