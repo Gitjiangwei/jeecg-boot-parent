@@ -1,11 +1,6 @@
 package org.jeecg.common.system.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -21,10 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.HandlerMapping;
@@ -97,7 +90,7 @@ public class CommonController {
 			savePath = sysBaseAPI.upload(file,bizPath,uploadType);
 		}
 		if("NotFormat".equals(savePath)){
-			result.setMessage("图片格式不正确，只能上传png或者jpg格式的图片");
+			result.setMessage("图片格式不正确，只能上传png或者jpg格式的");
 			result.setSuccess(false);
 		}else if (oConvertUtils.isNotEmpty(savePath)){
 			result.setMessage(savePath);
@@ -119,30 +112,42 @@ public class CommonController {
 		try {
 			String ctxPath = uploadpath;
 			String fileName = null;
-			File file = new File(ctxPath + File.separator + bizPath + File.separator );
+			int lastIndexOf = mf.getOriginalFilename().lastIndexOf(".");
+			String suffixs = mf.getOriginalFilename().substring(lastIndexOf);
+			String path = ctxPath + File.separator + bizPath + File.separator;
+			if (".apk".equals(suffixs)){
+				path = ctxPath + File.separator +"temp"+File.separator+"apk"+File.separator;
+			}
+			File file = new File(path);
 			if (!file.exists()) {
 				file.mkdirs();// 创建文件根目录
 			}
-			int lastIndexOf = mf.getOriginalFilename().lastIndexOf(".");
-			String suffixs = mf.getOriginalFilename().substring(lastIndexOf);
-			if(!suffixs.equals(".jpg")&&!suffixs.equals(".png")){
+			if(!suffixs.equals(".jpg")&&!suffixs.equals(".png")&&!suffixs.equals(".apk")){
 				return "NotFormat";
 			}
 			String uuid = UUID.randomUUID().toString().replace("-","");
 			uuid = uuid.substring(0,8);
 			String orgName = mf.getOriginalFilename();// 获取文件名
+			if (!".apk".equals(suffixs)){
 			String suffix = orgName.substring(orgName.lastIndexOf("."));
-			orgName = uuid + suffix;
-			long timeMillis = System.currentTimeMillis();
-			fileName = orgName.substring(0, orgName.lastIndexOf(".")) + String.valueOf(timeMillis).substring(6) + orgName.substring(orgName.indexOf("."));
+				orgName = uuid + suffix;
+				long timeMillis = System.currentTimeMillis();
+				fileName = orgName.substring(0, orgName.lastIndexOf(".")) + String.valueOf(timeMillis).substring(6) + orgName.substring(orgName.indexOf("."));
+			}else {
+				fileName = orgName;
+			}
 			String savePath = file.getPath() + File.separator + fileName;
 			File savefile = new File(savePath);
 			FileCopyUtils.copy(mf.getBytes(), savefile);
 			String dbpath = null;
-			if(oConvertUtils.isNotEmpty(bizPath)){
-				dbpath = bizPath + File.separator + fileName;
-			}else{
-				dbpath = fileName;
+			if (".apk".equals(suffixs)){
+				dbpath = "apk"+File.separator+fileName;
+			}else {
+				if (oConvertUtils.isNotEmpty(bizPath)) {
+					dbpath = bizPath + File.separator + fileName;
+				} else {
+					dbpath = fileName;
+				}
 			}
 			if (dbpath.contains("\\")) {
 				dbpath = dbpath.replace("\\", "/");
@@ -202,6 +207,9 @@ public class CommonController {
 	public void view(HttpServletRequest request, HttpServletResponse response) {
 		// ISO-8859-1 ==> UTF-8 进行编码转换
 		String imgPath = extractPathFromPattern(request);
+		if (StringUtils.isEmpty(imgPath)){
+			imgPath = "temp/apk/release-code2-v1.1.apk";
+		}
 		// 其余处理略
 		InputStream inputStream = null;
 		OutputStream outputStream = null;
@@ -326,4 +334,41 @@ public class CommonController {
 		return new AntPathMatcher().extractPathWithinPattern(bestMatchPattern, path);
 	}
 
+
+
+
+	@GetMapping(value = "/download")
+	public void download(HttpServletRequest request, HttpServletResponse response) {
+		try {
+
+			String path = "temp/apk/honghong-release.apk";
+			String uploadpaths = uploadpath.replace("\\","/");
+			path = uploadpaths + "/" + path;
+			// path是指欲下载的文件的路径。
+			File file = new File(path);
+			// 取得文件名。
+			String filename = file.getName();
+			// 取得文件的后缀名。
+			//String ext = filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
+
+			// 以流的形式下载文件。
+			InputStream fis = new BufferedInputStream(new FileInputStream(path));
+			byte[] buffer = new byte[fis.available()];
+			fis.read(buffer);
+			fis.close();
+			// 清空response
+			response.reset();
+			// 设置response的Header
+			response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes("GBK"),"ISO-8859-1"));
+			response.addHeader("Content-Length", "" + file.length());
+			OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
+			response.setContentType("application/octet-stream");
+			toClient.write(buffer);
+			toClient.flush();
+			response.flushBuffer();
+			toClient.close();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
 }
