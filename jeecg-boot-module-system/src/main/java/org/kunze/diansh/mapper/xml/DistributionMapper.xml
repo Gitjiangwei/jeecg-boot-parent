@@ -41,7 +41,7 @@
         LEFT JOIN kz_order o ON dis.order_id = o.order_id
         LEFT JOIN kz_shop sh ON dis.shop_id = sh.id
         LEFT JOIN kz_rider rid ON dis.rider_id = rid.id
-        WHERE o.order_id = #{orderId}
+        WHERE o.order_id = #{orderId} AND (o.`status` = '4' OR o.`status` = '5' OR o.`status` = '7')
     </select>
 
     <select id="queryByOrder" resultType="String">
