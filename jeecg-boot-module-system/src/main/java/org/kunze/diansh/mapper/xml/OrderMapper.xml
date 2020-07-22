@@ -108,7 +108,7 @@
     </select>
 
     <select id="selectOrder" resultType="org.kunze.diansh.entity.modelData.OrderModel">
-        SELECT o.order_id,o.payment,address.consignee,address.consignee_sex,address.telphone,o.create_time,o.`status`,o.pick_up,o.buyer_message,o.end_time FROM kz_order o
+        SELECT o.order_id,o.payment,address.consignee,address.consignee_sex,address.telphone,o.create_time,o.`status`,o.pick_up,o.buyer_message,o.end_time,o.pick_no FROM kz_order o
         LEFT JOIN kz_address  address ON o.address_id = address.id
         <trim prefix="where" prefixOverrides="and">
             o.shop_id = #{shopId}
