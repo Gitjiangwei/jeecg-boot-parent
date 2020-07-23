@@ -147,10 +147,13 @@ public class OrderController {
     public Result<PageInfo<OrderVo>> selectOrder(@RequestParam(name = "orderId",required = false) String orderId,
                                                  @RequestParam(name = "status",required = false) String status,
                                                  @RequestParam(name = "telphone",required = false) String telphone,
-                                                 @RequestParam(name = "shopId") String shopId,
+                                                 @RequestParam(name = "shopId",required = false) String shopId,
                                                  @RequestParam(name = "pageNo") Integer pageNo,
                                                  @RequestParam(name = "pageSize") Integer pageSize){
         Result<PageInfo<OrderVo>> result = new Result<PageInfo<OrderVo>>();
+        if (shopId.equals("null")){
+            shopId = "";
+        }
         PageInfo<OrderVo> orderVoPageInfo = orderService.selectOrder(shopId,status,telphone,orderId,pageNo,pageSize);
         result.setResult(orderVoPageInfo);
         result.setSuccess(true);

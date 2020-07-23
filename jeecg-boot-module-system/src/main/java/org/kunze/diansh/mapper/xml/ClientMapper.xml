@@ -9,7 +9,8 @@
       version,
       address,
       create_time,
-      update_time
+      update_time,
+      is_flag
       from kz_client
       where
             client=2
@@ -22,7 +23,8 @@
       id,
       client,
       version,
-      address
+      address,
+      is_flag
       from kz_client
       <trim prefix="where" prefixOverrides="and">
          is_update=0
@@ -41,7 +43,8 @@
         address,
         create_time,
         update_time,
-        is_update
+        is_update,
+        is_flag
         )
         values(
         #{client},
@@ -50,6 +53,7 @@
         now(),
         now(),
         0
+        #{isFlag}
         )
     </insert>
 

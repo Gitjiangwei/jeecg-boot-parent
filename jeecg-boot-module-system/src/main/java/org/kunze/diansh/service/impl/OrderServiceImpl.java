@@ -407,9 +407,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     @Override
     public PageInfo<OrderVo> selectOrder(String shopId, String status,String telphone, String orderId,Integer pageNo,Integer pageSize) {
-        if(shopId == null || shopId.equals("")){
-            return null;
-        }else {
             Order order = new Order();
             order.setShopId(shopId);
             if(status!=null && !status.equals("")) {
@@ -442,7 +439,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             PageInfo pageInfo = new PageInfo<OrderVo>(orderVos);
             pageInfo.setTotal(page.getTotal());
             return pageInfo;
-        }
+
     }
 
     /***

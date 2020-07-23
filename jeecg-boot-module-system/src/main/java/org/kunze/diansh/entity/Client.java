@@ -28,5 +28,7 @@ public class Client implements Serializable {
 
     private  int isUpdate;//是否修改
 
+    private int isFlag;//是否强制更新 1：强制 2:不强制
+
 
 }

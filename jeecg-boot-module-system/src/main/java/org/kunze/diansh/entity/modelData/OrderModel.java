@@ -48,4 +48,7 @@ public class OrderModel implements Serializable {
 
     /**取货码*/
     private String pickNo;
+
+    /**超市名*/
+    private String shopName;
 }

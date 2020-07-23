@@ -44,4 +44,7 @@ public class OrderVo implements Serializable {
 
     /**取货码*/
     private String pickNo;
+
+    /**超市*/
+    private String shopName;
 }
