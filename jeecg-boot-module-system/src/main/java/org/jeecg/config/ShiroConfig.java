@@ -87,7 +87,6 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/kunze/user/getRegionInfo","anon"); //获取省市区
 		filterChainDefinitionMap.put("/kunze/mytest/testInsert","anon"); //test
 		filterChainDefinitionMap.put("/kunze/menu/queryOrderRecordTotal","anon"); //消息提醒
-		filterChainDefinitionMap.put("/kunze/menu/queryOrderRecordTotal","anon"); //消息提醒
 		filterChainDefinitionMap.put("/kunze/homeShop/qryHomeMenu","anon"); //首页分类菜单
 		filterChainDefinitionMap.put("/kunze/spu/template/**","anon");//商品图片上传
 

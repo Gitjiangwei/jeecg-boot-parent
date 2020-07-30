@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = "客户端信息")
 @Slf4j
 @RestController
-@RequestMapping(value = "/kunze/client/")
+@RequestMapping(value = "/kunze/client")
 public class ClientController {
 
 
