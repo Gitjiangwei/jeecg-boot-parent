@@ -45,7 +45,7 @@ public class CalculationUtil {
             return "0";
         }else {
             BigDecimal serviceCharge = new BigDecimal(charge).divide(new BigDecimal("100"));
-            return serviceCharge.setScale(2).toString();
+            return serviceCharge.setScale(3).toString();
         }
     }
 }
