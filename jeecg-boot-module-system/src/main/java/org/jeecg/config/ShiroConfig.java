@@ -91,6 +91,8 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/kunze/homeShop/qryHomeMenu","anon"); //首页分类菜单
 		filterChainDefinitionMap.put("/kunze/spu/template/**","anon");//商品图片上传
 
+		filterChainDefinitionMap.put("/kunze/riders/center/**","anon");//骑手个人中心
+		filterChainDefinitionMap.put("/kunze/riders/send/**","anon");//骑手派送
 
 		filterChainDefinitionMap.put("/kunze/client/qryClient","anon"); //查询
 		filterChainDefinitionMap.put("/sys/common/download","anon"); //下载
