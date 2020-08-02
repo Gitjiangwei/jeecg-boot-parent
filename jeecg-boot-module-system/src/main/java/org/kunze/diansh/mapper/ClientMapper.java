@@ -18,19 +18,25 @@ public interface ClientMapper extends BaseMapper<Client> {
 
     List<Client> qryClientList();
 
+    /**
+     * 安卓查询
+     * @return
+     */
+    Client qryClient(@Param("client") String client);
+
 
     /**
      *
      * 添加客户端信息
      * **/
-    int addClient(@Param("client") Client client);
+    int addClient(Client client);
 
 
     /**
      *
      * 修改客户端信息
      * **/
-    int updateClient(@Param("client") Client client);
+    int updateClient(Client client);
 
     /**
      *

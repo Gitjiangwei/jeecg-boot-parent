@@ -45,4 +45,10 @@ public class OrderModel implements Serializable {
 
     /**备注*/
     private String buyerMessage;
+
+    /**取货码*/
+    private String pickNo;
+
+    /**超市名*/
+    private String shopName;
 }

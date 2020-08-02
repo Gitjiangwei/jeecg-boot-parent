@@ -32,4 +32,7 @@ public class BeSimilarSpuVo implements Serializable {
     /**SkuId*/
     private String skuId;
 
+    //sku规格
+    private String skuSpec;
+
 }

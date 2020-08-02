@@ -22,6 +22,7 @@
         from kz_spu_template
         where
         cid3 = #{cid}
+        GROUP BY title
 
     </select>
 

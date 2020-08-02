@@ -87,11 +87,12 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/kunze/user/getRegionInfo","anon"); //获取省市区
 		filterChainDefinitionMap.put("/kunze/mytest/testInsert","anon"); //test
 		filterChainDefinitionMap.put("/kunze/menu/queryOrderRecordTotal","anon"); //消息提醒
-		filterChainDefinitionMap.put("/kunze/menu/queryOrderRecordTotal","anon"); //消息提醒
 		filterChainDefinitionMap.put("/kunze/homeShop/qryHomeMenu","anon"); //首页分类菜单
 		filterChainDefinitionMap.put("/kunze/spu/template/**","anon");//商品图片上传
 
 
+		filterChainDefinitionMap.put("/kunze/client/qryClient","anon"); //查询
+		filterChainDefinitionMap.put("/sys/common/download","anon"); //下载
 		filterChainDefinitionMap.put("/kunze/dist/editRiderStatus","anon"); //骑手确认订单
 		filterChainDefinitionMap.put("/kunze/dist/androidDist","anon"); //骑手查询订单
 		filterChainDefinitionMap.put("/sys/getCheckCode", "anon"); //登录验证码接口排除

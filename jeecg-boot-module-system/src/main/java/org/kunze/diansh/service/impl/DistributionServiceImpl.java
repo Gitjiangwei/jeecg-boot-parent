@@ -64,6 +64,21 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionMapper, Dis
         KzShop shop = new KzShop();
         shop.setId(order.getShopId());
         List<ShopVo> list = shopMapper.queryShopList(shop);
+        if("1".equals(order.getPickUp())){
+            String userName = address.getConsignee();
+            if (address.getConsigneeSex()==0){
+                userName = userName+"女士";
+            }else if(address.getConsigneeSex()==1){
+                userName = userName+"先生";
+            }
+            Boolean a =  SendSms.sendSms(address.getTelphone(),userName+","+list.get(0).getAddressTotal()+list.get(0).getShopName()+","+order.getPickNo(),SendSmsEnum.NOTICE_USER_SELF);
+            if (!a) {
+                System.out.println("短信发送失败！");
+                return false;
+            }else {
+                return true;
+            }
+        }
         //骑手信息
         Rider rider = new Rider();
         rider.setArea(list.get(0).getArea());
@@ -90,7 +105,7 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionMapper, Dis
         distribution.setDeliveryFee(CalculationUtil.MetaconversionScore(deliveryFee)); //配送费
         distribution.setPickNo(order.getPickNo()); //取单号
         //发送短信
-        Boolean a = SendSms.sendSms(riderVo.getTelphone(), orderId+","+shop.getArea()+shop.getShopAddress()+shop.getShopName()+","+distribution.getPickNo(), SendSmsEnum.NOTIC_DISTRIBUTION_RIDER);
+        Boolean a = SendSms.sendSms(riderVo.getTelphone(), orderId+","+list.get(0).getAddressTotal()+list.get(0).getShopName()+","+distribution.getPickNo(), SendSmsEnum.NOTIC_DISTRIBUTION_RIDER);
         if(!a){
             System.out.println("短信发送失败！");
             return false;

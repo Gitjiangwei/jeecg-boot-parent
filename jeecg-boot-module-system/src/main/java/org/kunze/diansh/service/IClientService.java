@@ -27,6 +27,11 @@ public interface IClientService extends IService<Client> {
    int addClient(Client client);
 
 
+    /**
+     * 安卓查询
+     * @return
+     */
+   Client qryClient(String client);
 
     /**
      * 修改客户端信息

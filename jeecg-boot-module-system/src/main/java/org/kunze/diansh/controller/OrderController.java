@@ -147,10 +147,13 @@ public class OrderController {
     public Result<PageInfo<OrderVo>> selectOrder(@RequestParam(name = "orderId",required = false) String orderId,
                                                  @RequestParam(name = "status",required = false) String status,
                                                  @RequestParam(name = "telphone",required = false) String telphone,
-                                                 @RequestParam(name = "shopId") String shopId,
+                                                 @RequestParam(name = "shopId",required = false) String shopId,
                                                  @RequestParam(name = "pageNo") Integer pageNo,
                                                  @RequestParam(name = "pageSize") Integer pageSize){
         Result<PageInfo<OrderVo>> result = new Result<PageInfo<OrderVo>>();
+        if (shopId.equals("null")){
+            shopId = "";
+        }
         PageInfo<OrderVo> orderVoPageInfo = orderService.selectOrder(shopId,status,telphone,orderId,pageNo,pageSize);
         result.setResult(orderVoPageInfo);
         result.setSuccess(true);
@@ -176,13 +179,13 @@ public class OrderController {
         JSONObject jsonObject = JSONObject.parseObject(orderStatus);
         String status = jsonObject.getString("status");
         String orderId = jsonObject.getString("orderId");
-/*        if("4".equals(status)){
+       if("4".equals(status)){
             Boolean resultOK = distributionService.saveDistribution(orderId,this.deliveryFee);
             if (!resultOK){
                 result.error500("error");
                 return result;
             }
-        }*/
+        }
         String resultOk = orderService.updateOrderStatu(status,orderId);
         if(resultOk.equals("ok")){
             result.success("ok");
