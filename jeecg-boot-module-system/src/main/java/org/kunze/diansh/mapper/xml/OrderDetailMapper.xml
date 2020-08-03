@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.OrderDetailMapper">
+
+    <!--根据订单ID查询详情 -->
+
+    <select id="queryOrderDetail" resultType="org.kunze.diansh.entity.OrderDetail">
+        select
+        id,order_id,sku_id,num,title,own_spec,price,image
+        from
+        kz_order_detail
+        <where>
+            <if test="orderId != null and orderId!=''">
+                order_id=#{orderId}
+            </if>
+        </where>
+    </select>
+</mapper>

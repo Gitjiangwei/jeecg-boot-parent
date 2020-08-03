@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.RiderSendMapper">
+
+  <select id="queryHitoryOrderList" resultType="org.kunze.diansh.entity.RiderSend">
+          select
+          id,
+          rider_id,
+          rider_name,
+          business_name,
+          business_address,
+          buyer_name,
+          buyer_address,
+          buyer_phone,
+          order_id,
+          order_time,
+          send_price,
+          income,
+          order_price,
+          rider_state,
+          order_state,
+          send_time,
+          out_time,
+          is_turn,
+          create_time,
+          order_history,
+          distance,
+          pick_no,
+          update_time
+          FROM kz_rider_send
+      <where>
+          <if test="orderHistory != null">
+              order_history=#{orderHistory}
+          </if>
+      </where>
+  </select>
+
+
+    <update id="updateState" parameterType="org.kunze.diansh.entity.RiderSend">
+        UPDATE kz_rider_send
+        <trim prefix="set" suffixOverrides=",">
+
+            <if test ='null != riderState'>
+                rider_state = #{riderState},
+            </if>
+            <if test ='null != orderState'>
+                order_state = #{orderState},
+            </if>
+        </trim>
+        <where>
+            <if test="id != null and id != ''">
+                id=#{id}
+            </if>
+        </where>
+    </update>
+
+
+    <select id="queryShopInfo" resultType="org.kunze.diansh.controller.vo.ShopVo">
+        select shop.id,shop_name,create_time,province,city,area,shop_address,CONCAT(reg.`name`,reg1.`name`,reg2.`name`,shop_address)as 'addressTotal',image,CONCAT(start_business,'-',end_business) as 'businessHours',person_charge,telphone,idenitiy,update_time,post_free,shop.is_flag,after_sale
+        from kz_shop shop
+        LEFT JOIN kz_region reg ON shop.province = reg.id
+        LEFT JOIN kz_region reg1 ON shop.city = reg1.id
+        LEFT JOIN kz_region reg2 ON shop.area = reg2.id
+        <trim prefix="where" prefixOverrides="and">
+            shop.status = '0'
+            <if test="isFlag != null and isFlag != ''">
+                and shop.is_flag = #{isFlag}
+            </if>
+            <if test="shopName != null and shopName != ''">
+                and  shop_name like CONCAT('%',#{shopName},'%')
+            </if>
+            <if test="shopAddress != null and shopAddress != '' ">
+                and shop_address like CONCAT('%',#{shopAddress},'%')
+            </if>
+            <if test="province != null and province != ''">
+                and province = #{province}
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="area != null and area != ''">
+                and area = #{area}
+            </if>
+            <if test="id != null and id != ''">
+                and shop.id = #{id}
+            </if>
+        </trim>
+        order by update_time desc,create_time desc
+    </select>
+
+
+
+    <insert id="saveRiderSend" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="org.kunze.diansh.controller.vo.RiderSendVo">
+        INSERT INTO kz_rider_send
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test ='null != riderId'>
+                rider_id,
+            </if>
+            <if test ='null != riderName'>
+                rider_name,
+            </if>
+            <if test ='null != businessName'>
+                business_name,
+            </if>
+            <if test ='null != businessAddress'>
+                business_address,
+            </if>
+            <if test ='null != buyerName'>
+                buyer_name,
+            </if>
+            <if test ='null != buyerAddress'>
+                buyer_address,
+            </if>
+            <if test ='null != buyerPhone'>
+                buyer_phone,
+            </if>
+            <if test ='null != orderId'>
+                order_id,
+            </if>
+            <if test ='null != orderTime'>
+                order_time,
+            </if>
+            <if test ='null != sendPrice'>
+                send_price,
+            </if>
+            <if test ='null != income'>
+                income,
+            </if>
+            <if test ='null != orderPrice'>
+                order_price,
+            </if>
+            <if test ='null != riderState'>
+                rider_state,
+            </if>
+            <if test ='null != orderState'>
+                order_state,
+            </if>
+            <if test ='null != sendTime'>
+                send_time,
+            </if>
+            <if test ='null != outTime'>
+                out_time,
+            </if>
+            <if test ='null != isTurn'>
+                is_turn,
+            </if>
+            <if test ='null != createTime'>
+                create_time,
+            </if>
+            <if test ='null != orderHistory'>
+                order_history,
+            </if>
+            <if test ='null != distance'>
+                distance,
+            </if>
+            <if test ='null != pickNo'>
+                pick_no,
+            </if>
+            <if test ='null != updateTime'>
+                update_time
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test ='null != riderId'>
+                #{riderId},
+            </if>
+            <if test ='null != riderName'>
+                #{riderName},
+            </if>
+            <if test ='null != businessName'>
+                #{businessName},
+            </if>
+            <if test ='null != businessAddress'>
+                #{businessAddress},
+            </if>
+            <if test ='null != buyerName'>
+                #{buyerName},
+            </if>
+            <if test ='null != buyerAddress'>
+                #{buyerAddress},
+            </if>
+            <if test ='null != buyerPhone'>
+                #{buyerPhone},
+            </if>
+            <if test ='null != orderId'>
+                #{orderId},
+            </if>
+            <if test ='null != orderTime'>
+                #{orderTime},
+            </if>
+            <if test ='null != sendPrice'>
+                #{sendPrice},
+            </if>
+            <if test ='null != income'>
+                #{income},
+            </if>
+            <if test ='null != orderPrice'>
+                #{orderPrice},
+            </if>
+            <if test ='null != riderState'>
+                #{riderState},
+            </if>
+            <if test ='null != orderState'>
+                #{orderState},
+            </if>
+            <if test ='null != sendTime'>
+                #{sendTime},
+            </if>
+            <if test ='null != outTime'>
+                #{outTime},
+            </if>
+            <if test ='null != isTurn'>
+                #{isTurn},
+            </if>
+            <if test ='null != createTime'>
+                #{createTime},
+            </if>
+            <if test ='null != orderHistory'>
+                #{orderHistory},
+            </if>
+            <if test ='null != distance'>
+                #{distance},
+            </if>
+            <if test ='null != pickNo'>
+                #{pickNo},
+            </if>
+            <if test ='null != updateTime'>
+                #{updateTime}
+            </if>
+        </trim>
+    </insert>
+
+
+    <select id="queryRiderOrder" resultType="org.kunze.diansh.entity.RiderSend">
+        select
+        id,
+        rider_id,
+        rider_name,
+        business_name,
+        business_address,
+        buyer_name,
+        buyer_address,
+        buyer_phone,
+        order_id,
+        order_time,
+        send_price,
+        income,
+        order_price,
+        rider_state,
+        order_state,
+        send_time,
+        out_time,
+        is_turn,
+        create_time,
+        order_history,
+        distance,
+        pick_no,
+        update_time
+        FROM kz_rider_send
+        <where>
+            <if test="riderId != null and riderId!=''">
+                rider_id=#{riderId}
+            </if>
+        </where>
+    </select>
+
+
+
+    <update id="updateIsTurn">
+        UPDATE kz_rider_send
+        <trim prefix="set" suffixOverrides=",">
+            <if test ='null != isTurn'>
+                is_turn = #{isTurn},
+            </if>
+            <if test ='null != orderHistory'>
+                order_history = #{orderHistory},
+            </if>
+            <if test ='null != turnName and turnName!=""'>
+                turn_name = #{turnName},
+            </if>
+            <if test ='null != turnPhone and turnPhone!=""'>
+                turn_phone = #{turnPhone},
+            </if>
+        </trim>
+        <where>
+            <if test="id != null and id != ''">
+                id=#{id}
+            </if>
+        </where>
+
+    </update>
+
+    <select id="queryRidersInfo" resultType="org.kunze.diansh.entity.Riders">
+        SELECT
+          rider_name,
+          telphone
+        FROM kz_rider
+           <where>
+               <if test="status != null and status != ''">
+                    status = #{status}
+               </if>
+               <if test="level != null ">
+                   level = #{level}
+               </if>
+           </where>
+    </select>
+
+</mapper>

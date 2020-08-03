@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.RiderCenterMapper">
+
+    <select id="queryRiderFlowList" resultType="org.kunze.diansh.entity.RiderFlow">
+
+        select
+        order_id,
+        remark,
+        single_money
+        from kz_riders_flow
+        <where>
+            <if test="ridersId != null and ridersId != ''">
+                riders_id=#{ridersId}
+            </if>
+        </where>
+          order by create_time
+    </select>
+
+
+    <select id="queryRiderTodayMoneySum" resultType="org.kunze.diansh.entity.RiderFlow">
+        select
+        SUM(single_money) sumMoney,
+        SUM(single_num)   sumSingle
+        from kz_riders_flow
+        <where>
+            <if test="ridersId != null and ridersId != ''">
+                riders_id=#{ridersId}
+            </if>
+            and startTime <![CDATA[ <= ]]> create_time and endTime <![CDATA[ >= ]]> create_time
+        </where>
+    </select>
+
+
+    <select id="queryRiderMonthMoneySum" resultType="org.kunze.diansh.entity.RiderFlow">
+        select
+        SUM(single_money) sumMoney,
+        SUM(single_num)   sumSingle
+        from kz_riders_flow
+        <where>
+            <if test="ridersId != null and ridersId != ''">
+                riders_id=#{ridersId}
+            </if>
+            and startTime <![CDATA[ <= ]]>  DATE_FORMAT(create_time,'%Y-%m-%d') and endTime <![CDATA[ >= ]]> DATE_FORMAT(create_time,'%Y-%m-%d')
+        </where>
+    </select>
+
+
+    <select id="queryRiderHistoryList" resultType="org.kunze.diansh.entity.RiderFlow">
+        select
+        SUM(single_money) sumMoney,
+        SUM(single_num)   sumSingle,
+        DATE_FORMAT(create_time,'%Y-%m') AS createTime
+        from kz_riders_flow
+        <where>
+            <if test="ridersId != null and ridersId != ''">
+                riders_id=#{ridersId}
+            </if>
+        </where>
+        GROUP BY createTime
+    </select>
+
+    <insert id="saveRiderFlow" parameterType="org.kunze.diansh.entity.RiderFlow">
+      insert into kz_riders_flow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test ='null != ridersId and ridersId!=""'>
+                riders_id,
+            </if>
+            <if test ='null != orderId and orderId!=""'>
+                order_id,
+            </if>
+            <if test ='null != remark and remark!=""'>
+                remark,
+            </if>
+            <if test ='null != singleMoney'>
+                single_money,
+            </if>
+            <if test ='null != createTime'>
+                create_time,
+            </if>
+            <if test ='null != riderType'>
+                rider_type,
+            </if>
+            <if test ='null != singleNum'>
+                single_num
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test ='null != ridersId and ridersId!=""'>
+                #{ridersId},
+            </if>
+            <if test ='null != orderId and orderId!=""'>
+                #{orderId},
+            </if>
+            <if test ='null != remark and remark!=""'>
+                #{remark},
+            </if>
+            <if test ='null != singleMoney'>
+                #{singleMoney},
+            </if>
+            <if test ='null != createTime'>
+               now(),
+            </if>
+            <if test ='null != riderType'>
+                #{riderType},
+            </if>
+            <if test ='null != singleNum'>
+                #{singleNum}
+            </if>
+        </trim>
+
+
+
+
+    </insert>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.RiderCenterStateMapper">
+
+
+    <update id="updateRiderState" parameterType="org.kunze.diansh.entity.RiderState">
+        update kz_riders_flow
+        <trim prefix="set" suffixOverrides=",">
+            <if test="isOpen!=null">is_open=#{isOpen},</if>
+            <if test="isRemind!=null">is_remind=#{isRemind},</if>
+            <if test="isVibration!=null">is_vibration=#{isVibration},</if>
+            <if test="version!=null and version!=''">version=#{version},</if>
+            <if test="riderType!=null ">rider_type=#{riderType},</if>
+        </trim>
+       <where>
+           <if test="ridersId != null and ridersId != ''">
+               riders_id=#{ridersId}
+           </if>
+           <if test="riderType != null and riderType != ''">
+              and rider_type=#{riderType}
+           </if>
+       </where>
+    </update>
+
+
+    <select id="queryRiderState" resultType="org.kunze.diansh.entity.RiderState">
+        select
+        is_open,
+        is_remind,
+        is_vibration,
+        version
+        from kz_riders_flow
+        <where>
+            <if test="ridersId != null and ridersId != ''">
+                rider_id=#{ridersId}
+            </if>
+            <if test="riderType != null and riderType != ''">
+                and rider_type=#{riderType}
+            </if>
+        </where>
+    </select>
+
+</mapper>
