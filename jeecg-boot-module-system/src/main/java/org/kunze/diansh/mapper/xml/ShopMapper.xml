@@ -460,7 +460,7 @@
 
     <!-- 查询超市id的集合 -->
     <select id="selectShopIds" resultType="java.lang.String">
-        SELECT ID FROM KZ_SHOP
+        SELECT ID FROM KZ_SHOP where status = '0'
     </select>
 
     <!-- 通过超市id查询超市信息 -->
