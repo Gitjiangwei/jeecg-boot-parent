@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import java.sql.Date;
 
 
@@ -23,8 +24,8 @@ public class HotelSku {
     private String skuInfo; //商品介绍
     private String images; //商品的图片，多个图片以‘,’分割
     @TableField(value = "new_price")
-    private Integer newPrice; //当前价格，单位为分
-    private Integer price; //销售价格，单位为分
+    private BigDecimal newPrice; //当前价格，单位为分
+    private BigDecimal price; //销售价格，单位为分
     @TableField(value = "del_flag")
     private Integer delFlag; //是否有效，0无效，1有效
     @TableField(value = "create_time")

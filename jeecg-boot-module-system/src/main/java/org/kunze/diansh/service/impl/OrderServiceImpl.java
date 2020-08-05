@@ -279,7 +279,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             if (sku.getNewPrice()!= null && !sku.getNewPrice().toString().equals("0")){
                 sku.setPrice(sku.getNewPrice());
             }
-            od.setPrice(sku.getPrice());
+            od.setPrice(sku.getPrice().intValue());
             od.setImage(sku.getImages());
             Integer odRows = orderMapper.insertOrderDetail(od);
             odList.add(od);

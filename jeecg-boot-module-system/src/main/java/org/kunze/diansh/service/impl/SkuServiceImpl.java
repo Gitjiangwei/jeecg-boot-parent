@@ -1,5 +1,6 @@
 package org.kunze.diansh.service.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -137,13 +138,13 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements ISkuS
      */
     @Override
     public Boolean addHotelSku(HotelSku hotelSku){
-        hotelSku.setPrice(hotelSku.getPrice()*100);
+        hotelSku.setPrice(NumberUtil.mul(hotelSku.getPrice(),new BigDecimal(100)));
         if(hotelSku.getNewPrice()==null)
         {
-            hotelSku.setNewPrice(0);
+            hotelSku.setNewPrice(new BigDecimal("0"));
         }else
         {
-            hotelSku.setNewPrice(hotelSku.getNewPrice()*100);
+            hotelSku.setNewPrice(NumberUtil.mul(hotelSku.getNewPrice(),new BigDecimal(100)));
         }
         int row = hotelSkuMapper.addHotelSku(hotelSku);
         if(row > 0){
@@ -160,14 +161,14 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements ISkuS
     @Override
     public Boolean updateHotelSku(HotelSku hotelSku){
         if(EmptyUtils.isNotEmpty(hotelSku.getPrice())){
-            hotelSku.setPrice(hotelSku.getPrice()*100);
+            hotelSku.setPrice(NumberUtil.mul(hotelSku.getPrice(),new BigDecimal(100)));
         }
         if(hotelSku.getNewPrice()==null)
         {
-            hotelSku.setNewPrice(0);
+            hotelSku.setNewPrice(new BigDecimal("0"));
         }else
         {
-            hotelSku.setNewPrice(hotelSku.getNewPrice()*100);
+            hotelSku.setNewPrice(NumberUtil.mul(hotelSku.getNewPrice(),new BigDecimal(100)));
         }
         int row = hotelSkuMapper.updateHotelSku(hotelSku);
         if(row > 0){
