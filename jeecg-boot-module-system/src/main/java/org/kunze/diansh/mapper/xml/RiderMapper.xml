@@ -68,8 +68,8 @@
     <update id="editRiderNum">
         update kz_rider
         <trim prefix="set" suffixOverrides=",">
-            <if test="orderNumber != null and orderNumber != ''">
-                order_number = #{orderNumber},
+            <if test="orderNumber != null">
+                order_number = order_number+#{orderNumber},
             </if>
             <if test="status != null and status != ''">
                 status = #{status},

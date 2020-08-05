@@ -121,7 +121,7 @@
             AND (YEAR(ord.end_time)= YEAR(NOW()) or YEAR(ord.refund_time)= YEAR(NOW()))
         </if>
         <if test="choiceTime == 5">
-            AND (TO_DAYS(NOW( )) - TO_DAYS(ord.end_time) &lt;= 1 or TO_DAYS(NOW( )) - TO_DAYS(ord.refund_time) &lt;= 1)
+            AND (TO_DAYS(NOW( )) - TO_DAYS(ord.end_time) = 1 or TO_DAYS(NOW( )) - TO_DAYS(ord.refund_time) = 1)
         </if>
         LEFT JOIN kz_charge charge ON shop.id = charge.shop_id
         LEFT JOIN (
@@ -139,7 +139,7 @@
                 AND YEAR(o.end_time)= YEAR(NOW())
             </if>
             <if test="choiceTime == 5">
-                AND TO_DAYS(NOW()) - TO_DAYS(o.end_time) &lt;= 1
+                AND TO_DAYS(NOW()) - TO_DAYS(o.end_time) = 1
             </if>
             GROUP BY o.shop_id
         ) ok ON shop.id = ok.shop_id
@@ -159,7 +159,7 @@
                 AND YEAR(o.end_time)= YEAR(NOW())
             </if>
             <if test="choiceTime == 5">
-                AND TO_DAYS(NOW()) - TO_DAYS(o.end_time) &lt;= 1
+                AND TO_DAYS(NOW()) - TO_DAYS(o.end_time) = 1
             </if>
             GROUP BY o.shop_id
         ) refund ON shop.id = refund.shop_id
