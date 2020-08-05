@@ -103,6 +103,7 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionMapper, Dis
             distribution.setShopId(shop.getId()); //超市id
             distribution.setDeliveryFee(CalculationUtil.MetaconversionScore(deliveryFee)); //配送费
             distribution.setPickNo(order.getPickNo()); //取单号
+            riderMapper.editRiderNum("1",null,riderVo.getId());
             //发送短信
             Boolean a = SendSms.sendSms(riderVo.getTelphone(), orderId+","+list.get(0).getAddressTotal()+list.get(0).getShopName()+","+distribution.getPickNo(), SendSmsEnum.NOTIC_DISTRIBUTION_RIDER);
             if(!a){
