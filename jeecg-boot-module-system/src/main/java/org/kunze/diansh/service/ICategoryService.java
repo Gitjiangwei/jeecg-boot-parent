@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.system.entity.SysCategory;
 import org.kunze.diansh.entity.Category;
+import org.kunze.diansh.entity.CategoryHotel;
 
 import java.util.Collection;
 import java.util.List;
@@ -73,4 +74,32 @@ public interface ICategoryService extends IService<Category> {
      * @return
      */
     PageInfo<Map<String,String>> queryCid1(String name, Integer pageNo, Integer pageSize);
+
+    /**
+     * 获取分类 通过店铺id 类型为饭店分类菜单
+     * @param shopId 店铺id
+     * @return
+     */
+    Collection<CategoryHotel> getHotelCategoryByShopId(String shopId,String isShow);
+
+    /**
+     * 添加分类 分类类型为餐饮分类
+     * @param categoryHotel
+     * @return
+     */
+    Boolean addCategoryHotel(CategoryHotel categoryHotel);
+
+    /**
+     * 修改分类 分类类型为餐饮分类
+     * @param categoryHotel
+     * @return
+     */
+    Boolean updateCategoryHotel(CategoryHotel categoryHotel);
+
+    /**
+     * 删除分类 通过id
+     * @param id
+     * @return
+     */
+    Boolean delCategoryHotelById(String id);
 }

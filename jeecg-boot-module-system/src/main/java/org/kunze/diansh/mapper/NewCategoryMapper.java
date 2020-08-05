@@ -3,6 +3,7 @@ package org.kunze.diansh.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.kunze.diansh.entity.Category;
+import org.kunze.diansh.entity.CategoryHotel;
 
 import java.util.List;
 import java.util.Map;
@@ -44,4 +45,10 @@ public interface NewCategoryMapper extends BaseMapper<Category> {
      * @return
      */
     List<Map<String,String>> queryCid1(@Param("name") String name);
+
+    /**
+     * 获取分类 通过店铺id 类型为饭店分类菜单
+     * @return
+     */
+    List<CategoryHotel> getHotelCategoryByShopId(@Param("shopId") String shopId);
 }

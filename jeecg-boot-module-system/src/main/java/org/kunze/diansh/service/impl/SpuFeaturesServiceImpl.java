@@ -86,9 +86,14 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
      * @param more
      */
     @Override
-    public List<SpuFeaturesVo> selectFeatures(String shopId, String more) {
+    public List<SpuFeaturesVo> selectFeatures(String shopId, String more, String shopType) {
         if(shopId != null && !shopId.equals("")){
-            List<SpuFeaturesVo> spuFeaturesVos = spuFeaturesMapper.selectFeatures(shopId,Integer.valueOf(more));
+            List<SpuFeaturesVo> spuFeaturesVos = new ArrayList<SpuFeaturesVo>();
+            if("1".equals(shopType)){
+                spuFeaturesVos = spuFeaturesMapper.selectFeatures(shopId,Integer.valueOf(more));
+            }else if("2".equals(shopType)){
+                spuFeaturesVos = spuFeaturesMapper.getHotelFeatures(shopId,Integer.valueOf(more));
+            }
             return spuFeaturesVos;
         }else {
             return null;
@@ -139,17 +144,31 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
             return null;
         }else {
             Page page = PageHelper.startPage(pageNo, pageSize);
-            List<SpuFeaturesListModel> spuFeaturesVoList = spuFeaturesMapper.queryFeatList(spuFeaturesVo);
             List<SpuFeaturesListModel> spuFeaturesListModelList = new ArrayList<SpuFeaturesListModel>();
-            for(SpuFeaturesListModel item:spuFeaturesVoList){
-                SpuFeaturesListModel spuFeaturesListModel = new SpuFeaturesListModel();
-                BeanUtils.copyProperties(item,spuFeaturesListModel);
-                spuFeaturesListModel.setFeaturesPrice(CalculationUtil.FractionalConversion(item.getFeaturesPrice()));
-                String ownSpec = item.getOwnSpec().substring(1,item.getOwnSpec().length()-1);
-                spuFeaturesListModel.setOwnSpec(ownSpec.replace("\"",""));
-                spuFeaturesListModelList.add(spuFeaturesListModel);
+
+            if(spuFeaturesVo.getShopType() == 1) {
+                List<SpuFeaturesListModel> spuFeaturesVoList = spuFeaturesMapper.queryFeatList(spuFeaturesVo);
+                for(SpuFeaturesListModel item:spuFeaturesVoList){
+                    SpuFeaturesListModel spuFeaturesListModel = new SpuFeaturesListModel();
+                    BeanUtils.copyProperties(item,spuFeaturesListModel);
+                    spuFeaturesListModel.setFeaturesPrice(CalculationUtil.FractionalConversion(item.getFeaturesPrice()));
+                    if(null != item.getOwnSpec()){
+                        String ownSpec = item.getOwnSpec().substring(1,item.getOwnSpec().length()-1);
+                        spuFeaturesListModel.setOwnSpec(ownSpec.replace("\"",""));
+                    }
+                    spuFeaturesListModelList.add(spuFeaturesListModel);
+                }
+            }else if(spuFeaturesVo.getShopType() == 2){
+                List<SpuFeaturesListModel> spuFeaturesVoList = spuFeaturesMapper.queryHotelFeatList(spuFeaturesVo);
+                for(SpuFeaturesListModel item:spuFeaturesVoList){
+                    SpuFeaturesListModel spuFeaturesListModel = new SpuFeaturesListModel();
+                    BeanUtils.copyProperties(item,spuFeaturesListModel);
+                    spuFeaturesListModel.setFeaturesPrice(CalculationUtil.FractionalConversion(item.getFeaturesPrice()));
+                    spuFeaturesListModelList.add(spuFeaturesListModel);
+                }
             }
             PageInfo<SpuFeaturesListModel> pageInfo = new PageInfo<SpuFeaturesListModel>(spuFeaturesListModelList);
+            pageInfo.setTotal(page.getTotal());
             pageInfo.setTotal(page.getTotal());
             return pageInfo;
         }

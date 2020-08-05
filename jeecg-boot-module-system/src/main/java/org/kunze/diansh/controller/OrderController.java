@@ -80,14 +80,30 @@ public class OrderController {
             return orderResult.error500("您有未支付的订单，请勿重复支付！");
         }
 
-        orderResult = orderService.createOrder(params);
-        if(orderResult.isSuccess()){
-            orderResult.success("创建成功！");
-            orderResult.setResult(orderResult.getResult());
-            //创建订单成功后加入队列
-            OrderComsumer.queue.put(orderResult.getResult());
+        if(params.getShopType()==1)
+        {
+            orderResult = orderService.createOrder(params);
+            if(orderResult.isSuccess()){
+                orderResult.success("创建成功！");
+                orderResult.setResult(orderResult.getResult());
+                //创建订单成功后加入队列
+                OrderComsumer.queue.put(orderResult.getResult());
+            }
+            return orderResult;
+        }else
+        {
+            orderResult = orderService.createHotelOrder(params);
+            if(orderResult.isSuccess()){
+                orderResult.success("创建成功！");
+                orderResult.setResult(orderResult.getResult());
+                //创建订单成功后加入队列
+                OrderComsumer.queue.put(orderResult.getResult());
+            }
+            return orderResult;
         }
-        return orderResult;
+
+
+
     }
 
 
@@ -179,11 +195,14 @@ public class OrderController {
         JSONObject jsonObject = JSONObject.parseObject(orderStatus);
         String status = jsonObject.getString("status");
         String orderId = jsonObject.getString("orderId");
-       if("4".equals(status)){
-            Boolean resultOK = distributionService.saveDistribution(orderId,this.deliveryFee);
-            if (!resultOK){
-                result.error500("error");
-                return result;
+        String distModel = jsonObject.getString("distModel");
+        if(!"1".equals(distModel)){
+            if("4".equals(status)){
+                Boolean resultOK = distributionService.saveDistribution(orderId,this.deliveryFee);
+                if (!resultOK){
+                    result.error500("当前无骑手可分配！");
+                    return result;
+                }
             }
         }
         String resultOk = orderService.updateOrderStatu(status,orderId);
@@ -242,7 +261,8 @@ public class OrderController {
     @PostMapping(value = "/againOrder")
     public Result<Map<String,Object>> againOrder(@RequestParam(name = "orderId") String orderId,
                                          @RequestParam(name = "userID")String userID,
-                                         @RequestParam(name = "shopID") String shopID){
+                                         @RequestParam(name = "shopID") String shopID,
+                                         @RequestParam(name = "shopType") String shopType){
         Result<Map<String,Object>> result = new Result<Map<String,Object>>(){};
 
         if(orderId == null || orderId.equals("")){
@@ -251,10 +271,20 @@ public class OrderController {
         if(shopID == null || shopID.equals("")){
             return result.error500("参数丢失");
         }
+        if(shopType == null || shopType.equals("")){
+            return result.error500("参数丢失");
+        }
         try{
-            Map<String,Object> map = orderService.againOrder(orderId,userID,shopID);
-            result.setResult(map);
-            result.setSuccess(true);
+            if("1".equals(shopType)){
+                Map<String,Object> map = orderService.againOrder(orderId,userID,shopID);
+                result.setResult(map);
+                result.setSuccess(true);
+            }else if("2".equals(shopType)){
+                Map<String,Object> map = orderService.againHotelOrder(orderId,userID,shopID);
+                result.setResult(map);
+                result.setSuccess(true);
+            }
+
         }catch (Exception e){
             result.error500("获取数据时出现错误！");
         }

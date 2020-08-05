@@ -12,6 +12,7 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.exception.AddressException;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.EmptyUtils;
+import org.jeecg.common.util.GaodeMapUtil;
 import org.kunze.diansh.entity.Address;
 import org.kunze.diansh.service.IAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,11 @@ public class UserController {
             resultList.setMessage("未登录，请登录后添加地址！");
             return resultList;
         }
+        String addressInfo = addressObject.getProvince()+addressObject.getCity()+addressObject.getCounty()+addressObject.getStreet();
+        String lotAndlat = GaodeMapUtil.getLngLat(addressInfo);
+        String[] lnglat = lotAndlat.split(",");
+        addressObject.setLot(lnglat[0]);
+        addressObject.setLat(lnglat[1]);
         try {
             addressService.insertAddress(addressObject);
         } catch (AddressException e) {

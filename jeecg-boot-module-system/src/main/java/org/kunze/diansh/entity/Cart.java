@@ -45,4 +45,7 @@ public class Cart implements Serializable {
     //店铺id
     private String shopId;
 
+    //超市分類 1.超市 2飯店
+    private Integer shopType;
+
 }

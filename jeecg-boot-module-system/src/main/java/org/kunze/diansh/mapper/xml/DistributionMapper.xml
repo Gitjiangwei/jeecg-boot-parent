@@ -9,6 +9,7 @@
 
     <update id="editDistribution">
         update kz_distribution set settlement = '1',settlement_time = NOW()
+        WHERE ID IN
         <foreach collection="ids" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>

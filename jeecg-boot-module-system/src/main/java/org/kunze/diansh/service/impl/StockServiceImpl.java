@@ -182,7 +182,18 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock> implements
             stock.setSkuId(od.getSkuId());
             stock.setStock(od.getNum().toString());
             this.updateStock(stock);
-            //redisUtil.hincr(StockType.STOCK_PREFIX,od.getSkuId(),od.getNum());
+            redisUtil.hincr(StockType.STOCK_PREFIX,od.getSkuId(),od.getNum());
+        }
+    }
+
+    /**
+     * 回滚redis库存
+     * @param odList
+     */
+    @Override
+    public void rollBackRedisStock(List<OrderDetail> odList){
+        for (OrderDetail od:odList) {
+            redisUtil.hincr(StockType.STOCK_PREFIX,od.getSkuId(),od.getNum());
         }
     }
 }
