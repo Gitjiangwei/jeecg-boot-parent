@@ -8,7 +8,7 @@ import java.net.URLConnection;
 
 public class GaodeMapUtil {
 
-    public String getLngLat(String address) {
+    public static String getLngLat(String address) {
         StringBuffer json = new StringBuffer();
         try {
 
