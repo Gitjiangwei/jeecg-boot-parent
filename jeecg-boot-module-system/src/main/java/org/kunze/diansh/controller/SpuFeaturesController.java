@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.controller.bo.SpuFeaturesBo;
 import org.kunze.diansh.controller.vo.SpuFeaturesDetailVo;
 import org.kunze.diansh.controller.vo.SpuFeaturesListVo;
@@ -57,12 +58,15 @@ public class SpuFeaturesController  {
     @AutoLog("首页查询每日特卖商品")
     @PostMapping(value = "/queryFeats")
     public Result<List<SpuFeaturesVo>> selectFeatures(@RequestParam(name = "shopId") String shopId,
-                                                      @RequestParam(name = "more",defaultValue = "8") String more){
+                                                      @RequestParam(name = "more",defaultValue = "8") String more,
+                                                      @RequestParam(name = "shopType") String shopType){
         Result<List<SpuFeaturesVo>> result = new Result<List<SpuFeaturesVo>>();
         if(shopId==null || shopId.equals("")){
             result.error500("参数丢失！");
+        }else if(EmptyUtils.isEmpty(shopType)){
+            result.error500("参数丢失！");
         }else {
-            List<SpuFeaturesVo> list = spuFeaturesService.selectFeatures(shopId,more);
+            List<SpuFeaturesVo> list = spuFeaturesService.selectFeatures(shopId,more,shopType);
             result.setResult(list);
             result.setSuccess(true);
         }

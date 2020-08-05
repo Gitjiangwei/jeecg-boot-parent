@@ -29,6 +29,23 @@ public interface IOrderService extends IService<Order> {
      */
     Result createOrder(OrderParams params);
 
+
+    /**
+     * 创建订单
+     * @param aid 地址id
+     * @param cids 购物车集合
+     * @param shopId 店铺id
+     * @param userID 用户id
+     * @param pick_up 配送方式 1.自提 2.商家配送
+     * @param postFree 配送费
+     * @param buyerMessage 备注
+     */
+    Result createHotelOrder(OrderParams params);
+
+
+
+
+
     /**
      * 根据订单状态查询订单数据
      * @param status 订单状态
@@ -112,11 +129,20 @@ public interface IOrderService extends IService<Order> {
     Boolean selectOrderByUserId(String userId,String shopId);
 
     /**
-     * 根据订单ID查询订单数据
+     * 再来一单
      * @param orderId 订单id
      * @param userID 用户id
      * @param shopID 店铺id
      * @return 订单数据
      */
     Map<String,Object> againOrder(String orderId, String userID, String shopID);
+
+    /**
+     * 再来一单 类型为餐饮
+     * @param orderId
+     * @param userID
+     * @param shopID
+     * @return
+     */
+    Map<String,Object> againHotelOrder(String orderId, String userID, String shopID);
 }

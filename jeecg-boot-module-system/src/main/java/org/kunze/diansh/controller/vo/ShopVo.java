@@ -30,6 +30,15 @@ public class ShopVo implements Serializable {
     //区
     private String area;
 
+    //省名
+    private String provinceName;
+
+    //省名
+    private String cityName;
+
+    //省名
+    private String areaName;
+
     /**超市地址*/
     private String shopAddress;
 
@@ -64,4 +73,11 @@ public class ShopVo implements Serializable {
 
     /**售后联系方式*/
     private String afterSale;
+
+    /*超市类型：1超市 2饭店*/
+    private Integer shopType;
+
+    /**配送方式*/
+    private String distributionModel;
+
 }

@@ -43,6 +43,29 @@
         LIMIT #{more}
     </select>
 
+    <select id="getHotelFeatures" resultType="org.kunze.diansh.controller.vo.SpuFeaturesVo">
+        SELECT
+            feat.features_id,
+            sku.id AS 'skuId',
+            sku.title,
+            sku.images as 'image',
+            feat.features_price,
+            sku.price
+        FROM
+            kz_spu_features feat
+            LEFT JOIN kz_hotel_sku sku ON feat.sku_id = sku.id
+        WHERE
+            sku.`enable` = '1'
+            AND NOW() &gt; feat.specialstart_time
+            AND NOW() &lt; feat.specialend_time
+            <if test="shopId != null and shopId != '' ">
+                AND feat.shop_id = #{shopId}
+            </if>
+        ORDER BY
+            feat.create_time
+        LIMIT #{more}
+    </select>
+
     <update id="updateSkuFeatures">
         update kz_sku set is_features = #{isFeatures}
         where id in
@@ -127,6 +150,39 @@
         </trim>
         order by feat.create_time desc
     </select>
+
+    <select id="queryHotelFeatList" resultType="org.kunze.diansh.entity.modelData.SpuFeaturesListModel">
+        SELECT
+            feat.features_id,
+            sku.title,
+            feat.features_price,
+            feat.features_stock,
+            feat.features_status,
+            CONCAT(
+            date_format( feat.specialstart_time, '%m-%d %k:%i' ),
+            ' - ',
+            date_format( feat.specialend_time, '%m-%d %k:%i' )) specialTime,
+            feat.create_time,
+            feat.create_name,
+            feat.features_weight,
+            feat.remarks,
+            sku.images as 'image'
+        FROM
+            kz_spu_features feat
+            LEFT JOIN kz_hotel_sku sku ON feat.sku_id = sku.id
+        <trim prefix="where" prefixOverrides="and">
+            feat.shop_id = #{shopId}
+            <if test="title != null and title != '' ">
+                and sku.title like CONCAT('%',#{title},'%')
+            </if>
+            <if test="status != null and status != '' ">
+                and feat.features_status = #{status}
+            </if>
+        </trim>
+        ORDER BY
+            feat.create_time DESC
+    </select>
+
 
     <select id="querySkuIdentical" resultType="int">
         select count(1) from kz_spu_features

@@ -14,12 +14,15 @@ import org.kunze.diansh.entity.modelData.SpuFeaturesListModel;
 import org.kunze.diansh.entity.modelData.SpuFeaturesModel;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SpuFeaturesMapper extends BaseMapper<SpuFeatures> {
 
     int saveSpuFeatures(@Param("list") List<SpuFeatures> spuFeatures);
 
     List<SpuFeaturesVo> selectFeatures(@Param("shopId") String shopId,@Param("more") Integer more);
+
+    List<SpuFeaturesVo> getHotelFeatures(@Param("shopId") String shopId, @Param("more") Integer more);
 
     int updateSkuFeatures(@Param("list") List<String> skuIds,@Param("isFeatures") String isFeatures);
 
@@ -82,6 +85,14 @@ public interface SpuFeaturesMapper extends BaseMapper<SpuFeatures> {
      * @return
      */
     List<SpuFeaturesListModel> queryFeatList(SpuFeaturesListVo spuFeaturesVo);
+
+    /***
+     * 后台查询特卖商品列表
+     * 类型为餐饮
+     * @param spuFeaturesVo
+     * @return
+     */
+    List<SpuFeaturesListModel> queryHotelFeatList(SpuFeaturesListVo spuFeaturesVo);
 
 
     /**

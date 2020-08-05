@@ -9,10 +9,12 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.util.CollectionUtils;
 import org.jeecg.common.system.vo.LoginUser;
 import org.kunze.diansh.entity.Cart;
+import org.kunze.diansh.entity.HotelSku;
 import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.SpuFeatures;
 import org.kunze.diansh.entity.modelData.SpuFeaturesModel;
 import org.kunze.diansh.mapper.CartMapper;
+import org.kunze.diansh.mapper.HotelSkuMapper;
 import org.kunze.diansh.mapper.SkuMapper;
 import org.kunze.diansh.mapper.SpuFeaturesMapper;
 import org.kunze.diansh.service.ICartService;
@@ -22,6 +24,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +48,9 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
 
     @Autowired
     private SpuFeaturesMapper spuFeaturesMapper;
+
+    @Autowired
+    private HotelSkuMapper hotelSkuMapper;
 
 
 
@@ -89,29 +95,76 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
         boolean isExist = hashOps.hasKey(skuId);
         if(isExist){
             //redis中存在
-            String json = hashOps.get(skuId).toString();
-            cart = JSONObject.parseObject(json,Cart.class);
+            if(cart.getShopType()==1){
+                //超市
+                Sku sku = skuMapper.querySkuInfoById(skuId);
+                String json = hashOps.get(skuId).toString();
+                cart = JSONObject.parseObject(json,Cart.class);
+                //如果不是特卖商品并且有优惠价格，则存入优惠价格
+                if(sku.getIsFeatures().equals("1")){
+                    SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(skuId);
+                    sku.setPrice(feat.getFeaturesPrice());
+                }else if (sku.getNewPrice()!= null && !sku.getNewPrice().equals("") && !sku.getNewPrice().equals("0")){
+                    sku.setPrice(sku.getNewPrice());
+                }
+                cart.setCartPrice(sku.getPrice());
+                cart.setImage(StringUtils.isBlank(sku.getImages())?"":sku.getImages().split(",")[0]);
+                cart.setCartPrice(sku.getPrice().toString());//商品价格
+                cart.setTitile(sku.getTitle()); //标题
+                cart.setOwnSpec(sku.getOwnSpec()); //详细规格参数
+            }else{
+                //飯店
+                HotelSku hotelSku=hotelSkuMapper.queryHotelById(skuId);
+                String json = hashOps.get(skuId).toString();
+                cart = JSONObject.parseObject(json,Cart.class);
+                //如果不是特卖商品并且有优惠价格，则存入优惠价格
+                if (hotelSku.getNewPrice()!= null & hotelSku.getNewPrice().intValue() != 0){
+                    hotelSku.setPrice(hotelSku.getNewPrice());
+                }
+                cart.setCartPrice(hotelSku.getPrice().toString());
+                cart.setImage(StringUtils.isBlank(hotelSku.getImages())?"":hotelSku.getImages().split(",")[0]);
+                cart.setCartPrice(hotelSku.getPrice().toString());//商品价格
+                cart.setTitile(hotelSku.getTitle()); //标题
+                cart.setOwnSpec(hotelSku.getOwnSpec()); //详细规格参数
+            }
 
             // 修改购物车数量
             cart.setCartNum(cart.getCartNum() + num);
         }else{
             //不存在
             cart.setUserId(sysUser.getId());
-
-            Sku sku = skuMapper.querySkuInfoById(skuId);
-            //如果是特卖商品，则存入特卖字段
-            //如果不是特卖商品并且有优惠价格，则存入优惠价格
-            if(sku.getIsFeatures().equals("1")){
-                SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(skuId);
-                sku.setPrice(feat.getFeaturesPrice());
-            }else if (sku.getNewPrice()!= null && !sku.getNewPrice().equals("") && !sku.getNewPrice().equals("0")){
-                sku.setPrice(sku.getNewPrice());
+            //根據shopType(1超市 2 飯店)查詢
+            if(cart.getShopType()==1)
+            {
+                //超市
+                Sku sku = skuMapper.querySkuInfoById(skuId);
+                //如果是特卖商品，则存入特卖字段
+                //如果不是特卖商品并且有优惠价格，则存入优惠价格
+                if(sku.getIsFeatures().equals("1")){
+                    SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(skuId);
+                    sku.setPrice(feat.getFeaturesPrice());
+                }else if (sku.getNewPrice()!= null && !sku.getNewPrice().equals("") && !sku.getNewPrice().equals("0")){
+                    sku.setPrice(sku.getNewPrice());
+                }
+                cart.setImage(StringUtils.isBlank(sku.getImages())?"":sku.getImages().split(",")[0]);
+                cart.setCartPrice(sku.getPrice());//商品价格
+                cart.setTitile(sku.getTitle()); //标题
+                cart.setCartNum(num); //商品数量
+                cart.setOwnSpec(sku.getOwnSpec()); //详细规格参数
+            }else {
+                //飯店
+                HotelSku hotelSku=hotelSkuMapper.queryHotelById(skuId);
+                //如果不是特卖商品并且有优惠价格，则存入优惠价格
+                  if (hotelSku.getNewPrice()!= null & hotelSku.getNewPrice().intValue() != 0){
+                    hotelSku.setPrice(hotelSku.getNewPrice());
+                }
+                cart.setImage(StringUtils.isBlank(hotelSku.getImages())?"":hotelSku.getImages().split(",")[0]);
+                cart.setCartPrice(hotelSku.getPrice().toString());//商品价格
+                cart.setTitile(hotelSku.getTitle()); //标题
+                cart.setCartNum(num); //商品数量
+                cart.setOwnSpec(hotelSku.getOwnSpec()); //详细规格参数
             }
-            cart.setImage(StringUtils.isBlank(sku.getImages())?"":sku.getImages().split(",")[0]);
-            cart.setCartPrice(sku.getPrice());//商品价格
-            cart.setTitile(sku.getTitle()); //标题
-            cart.setCartNum(num); //商品数量
-            cart.setOwnSpec(sku.getOwnSpec()); //详细规格参数
+
         }
         //写入Redis
         hashOps.put(cart.getSkuid().toString(),JSONObject.toJSONString(cart));

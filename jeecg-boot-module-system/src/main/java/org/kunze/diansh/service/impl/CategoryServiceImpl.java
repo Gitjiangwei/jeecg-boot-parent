@@ -2,13 +2,16 @@ package org.kunze.diansh.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.jeecg.common.util.TreeUtil;
 import org.kunze.diansh.entity.Category;
+import org.kunze.diansh.entity.CategoryHotel;
 import org.kunze.diansh.entity.Collect;
+import org.kunze.diansh.mapper.CategoryHotelMapper;
 import org.kunze.diansh.mapper.NewCategoryMapper;
 import org.kunze.diansh.service.ICategoryService;
 import org.springframework.beans.BeanUtils;
@@ -23,6 +26,9 @@ public class CategoryServiceImpl extends ServiceImpl<NewCategoryMapper,Category>
 
     @Autowired
     private NewCategoryMapper newCategoryMapper;
+
+    @Autowired
+    private CategoryHotelMapper categoryHotelMapper;
 
     @Override
     public List<Category> qryList(String pid,String id) {
@@ -171,6 +177,67 @@ public class CategoryServiceImpl extends ServiceImpl<NewCategoryMapper,Category>
         PageInfo<Map<String,String>> mapPageInfo = new PageInfo<Map<String,String>>(mapList);
         mapPageInfo.setTotal(page.getTotal());
         return mapPageInfo;
+    }
+
+    /**
+     * 获取分类 通过店铺id 类型为餐饮分类菜单
+     * @param shopId 店铺id
+     * @return
+     */
+    @Override
+    public Collection<CategoryHotel> getHotelCategoryByShopId(String shopId,String isShow){
+        QueryWrapper<CategoryHotel> hotelQueryWrapper = new QueryWrapper<>();
+        hotelQueryWrapper.eq("del_flag",0)
+                .eq("shop_id",shopId);
+        if ("true".equals(isShow)){
+            hotelQueryWrapper.eq("`show`",1);
+        }
+        List<CategoryHotel> hotelList = categoryHotelMapper.selectList(hotelQueryWrapper);
+        Collection collection = TreeUtil.toTree(hotelList,"id","pid","childrenList",CategoryHotel.class,null);
+        return collection;
+    }
+
+
+    /**
+     * 添加分类 分类类型为餐饮分类
+     * @param categoryHotel
+     * @return
+     */
+    @Override
+    public Boolean addCategoryHotel(CategoryHotel categoryHotel){
+        Integer row = categoryHotelMapper.addCategoryHotel(categoryHotel);
+        if(row > 0){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 修改分类 分类类型为餐饮分类
+     * @param categoryHotel
+     * @return
+     */
+    @Override
+    public Boolean updateCategoryHotel(CategoryHotel categoryHotel){
+        Integer row = categoryHotelMapper.updateCategoryHotel(categoryHotel);
+        if(row > 0){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 删除分类 通过id
+     * @param id
+     * @return
+     */
+    @Override
+    public Boolean delCategoryHotelById(String id){
+        Integer row = categoryHotelMapper.delCategoryHotelById(id);
+        if(row > 0){
+            return true;
+        }
+        return false;
     }
 
 }

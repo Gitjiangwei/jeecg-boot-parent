@@ -3,8 +3,8 @@
 <mapper namespace="org.kunze.diansh.mapper.AddressMapper">
 
     <insert id="insertAddress" parameterType="org.kunze.diansh.entity.Address">
-        insert into kz_address(id,user_id,consignee,consignee_sex,province,city,county,street,telphone,postcode,add_type,is_default,status)
-        VALUES(#{id},#{userId},#{consignee},#{consigneeSex},#{province},#{city},#{county},#{street},#{telphone},#{postcode},#{addType},#{isDefault},#{status})
+        insert into kz_address(id,user_id,consignee,consignee_sex,province,city,county,street,telphone,postcode,add_type,is_default,status,lot,lat)
+        VALUES(#{id},#{userId},#{consignee},#{consigneeSex},#{province},#{city},#{county},#{street},#{telphone},#{postcode},#{addType},#{isDefault},#{status},#{lot},#{lat})
     </insert>
 
     <select id="selectAddress" resultType="org.kunze.diansh.entity.Address">

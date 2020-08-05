@@ -130,4 +130,9 @@
         </if>
         order by sort
     </select>
+
+    <!--获取分类 通过店铺id 类型为饭店分类菜单-->
+    <select id="getHotelCategoryByShopId" resultType="org.kunze.diansh.entity.CategoryHotel" parameterType="java.lang.String">
+        SELECT * FROM KZ_CATEGORY_HOTEL KCH WHERE KCH.DEL_FLAG = 0 AND KCH.SHOP_ID = #{shopId}
+    </select>
 </mapper>
