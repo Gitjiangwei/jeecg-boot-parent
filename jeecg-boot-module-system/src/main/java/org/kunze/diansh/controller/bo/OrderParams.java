@@ -36,4 +36,5 @@ public class OrderParams {
     private Long buyerPhone; //买家预留手机号
     private Integer payType; //付款类型 0.微信 1.支付宝
     private String buyerMessage; //备注
+    private Integer shopType;//1超市 2飯店
 }

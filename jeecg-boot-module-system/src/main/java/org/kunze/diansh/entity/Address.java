@@ -49,5 +49,9 @@ public class Address implements Serializable {
     //状态 0:可用 1：删除
     private int status;
 
+    //经度
+    private String lot;
 
+    //纬度
+    private String lat;
 }

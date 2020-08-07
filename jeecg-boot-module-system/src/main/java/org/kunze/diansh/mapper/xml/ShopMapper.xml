@@ -12,13 +12,36 @@
 
 
     <select id="queryShopList" resultType="org.kunze.diansh.controller.vo.ShopVo">
-        select shop.id,shop_name,create_time,province,city,area,shop_address,CONCAT(reg.`name`,reg1.`name`,reg2.`name`,shop_address)as 'addressTotal',image,CONCAT(start_business,'-',end_business) as 'businessHours',person_charge,telphone,idenitiy,update_time,post_free,shop.is_flag,after_sale
-        from kz_shop shop
-        LEFT JOIN kz_region reg ON shop.province = reg.id
-        LEFT JOIN kz_region reg1 ON shop.city = reg1.id
-        LEFT JOIN kz_region reg2 ON shop.area = reg2.id
+        SELECT
+            shop.id,
+            shop_name,
+            create_time,
+            province,
+            reg.`name` as provinceName,
+            city,
+            reg1.`name` as cityName,
+            area,
+            reg2.`name` as areaName,
+            shop_address,
+            CONCAT( reg.`name`, reg1.`name`, reg2.`name`, shop_address ) AS 'addressTotal',
+            image,
+            CONCAT( start_business, '-', end_business ) AS 'businessHours',
+            person_charge,
+            telphone,
+            idenitiy,
+            update_time,
+            post_free,
+            shop.is_flag,
+            after_sale,
+            shop_type,
+            distribution_model
+        FROM
+            kz_shop shop
+            LEFT JOIN kz_region reg ON shop.province = reg.id
+            LEFT JOIN kz_region reg1 ON shop.city = reg1.id
+            LEFT JOIN kz_region reg2 ON shop.area = reg2.id
         <trim prefix="where" prefixOverrides="and">
-            shop.status = '0'
+            shop.`status` = '0'
             <if test="isFlag != null and isFlag != ''">
                 and shop.is_flag = #{isFlag}
             </if>
@@ -40,13 +63,16 @@
             <if test="id != null and id != ''">
                 and shop.id = #{id}
             </if>
+            <if test="shopType != null">
+                and shop.shop_type = #{shopType}
+            </if>
         </trim>
         order by update_time desc,create_time desc
     </select>
 
     <insert id="insertShop">
-        insert into kz_shop(id,shop_name,create_time,province,city,area,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time,is_flag,after_sale)
-        values (#{id},#{shopName},NOW(),#{province},#{city},#{area},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW(),#{isFlag},#{afterSale})
+        insert into kz_shop(id,shop_name,create_time,province,city,area,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time,is_flag,after_sale,shop_type)
+        values (#{id},#{shopName},NOW(),#{province},#{city},#{area},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW(),#{isFlag},#{afterSale},#{shopType})
     </insert>
 
     <update id="updateShop">
@@ -92,11 +118,14 @@
             <if test="isFlag != null and isFlag != ''">
                 is_flag = #{isFlag},
             </if>
-            <if test="minPrice != null and minPrice != ''">
+            <if test="minPrice != null">
                 min_price = #{minPrice},
             </if>
             <if test="afterSale != null and afterSale != ''">
                 after_sale = #{afterSale},
+            </if>
+            <if test="shopType != null and shopType != ''">
+                shop_type = #{shopType},
             </if>
         </trim>
         where id = #{id}
@@ -121,7 +150,7 @@
             AND (YEAR(ord.end_time)= YEAR(NOW()) or YEAR(ord.refund_time)= YEAR(NOW()))
         </if>
         <if test="choiceTime == 5">
-            AND (TO_DAYS(NOW( )) - TO_DAYS(ord.end_time) &lt;= 1 or TO_DAYS(NOW( )) - TO_DAYS(ord.refund_time) &lt;= 1)
+            AND (TO_DAYS(NOW( )) - TO_DAYS(ord.end_time) = 1 or TO_DAYS(NOW( )) - TO_DAYS(ord.refund_time) = 1)
         </if>
         LEFT JOIN kz_charge charge ON shop.id = charge.shop_id
         LEFT JOIN (
@@ -139,7 +168,7 @@
                 AND YEAR(o.end_time)= YEAR(NOW())
             </if>
             <if test="choiceTime == 5">
-                AND TO_DAYS(NOW()) - TO_DAYS(o.end_time) &lt;= 1
+                AND TO_DAYS(NOW()) - TO_DAYS(o.end_time) = 1
             </if>
             GROUP BY o.shop_id
         ) ok ON shop.id = ok.shop_id
@@ -159,7 +188,7 @@
                 AND YEAR(o.end_time)= YEAR(NOW())
             </if>
             <if test="choiceTime == 5">
-                AND TO_DAYS(NOW()) - TO_DAYS(o.end_time) &lt;= 1
+                AND TO_DAYS(NOW()) - TO_DAYS(o.end_time) = 1
             </if>
             GROUP BY o.shop_id
         ) refund ON shop.id = refund.shop_id

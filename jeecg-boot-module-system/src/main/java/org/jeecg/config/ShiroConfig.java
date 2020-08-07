@@ -89,7 +89,15 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/kunze/menu/queryOrderRecordTotal","anon"); //消息提醒
 		filterChainDefinitionMap.put("/kunze/homeShop/qryHomeMenu","anon"); //首页分类菜单
 		filterChainDefinitionMap.put("/kunze/spu/template/**","anon");//商品图片上传
+		filterChainDefinitionMap.put("/kunze/category/getHotelMenu","anon");//饭店类型分类
+		filterChainDefinitionMap.put("/kunze/sku/queryHotelSkuByCid","anon");//首页查询sku 类型为餐饮
+		filterChainDefinitionMap.put("/kunze/sku/queryHotelById","anon");//通过id查询sku 类型为餐饮
+		filterChainDefinitionMap.put("/kunze/shop/selectShopInfoById","anon");//通过超市id查询超市信息
+		filterChainDefinitionMap.put("/kunze/alipay/refundAlipay","anon");//支付宝退款
 
+
+		filterChainDefinitionMap.put("/kunze/riders/center/**","anon");//骑手个人中心
+		filterChainDefinitionMap.put("/kunze/riders/send/**","anon");//骑手派送
 
 		filterChainDefinitionMap.put("/kunze/client/qryClient","anon"); //查询
 		filterChainDefinitionMap.put("/sys/common/download","anon"); //下载

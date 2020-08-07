@@ -73,15 +73,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private RedisUtil redisUtil;
 
+    @Autowired
+    private HotelSkuMapper hotelSkuMapper;
+
     /**
      * 创建订单
-     * @param aid 地址id
-     * @param cids 购物车集合
-     * @param shopId 店铺id
-     * @param userID 用户id
-     * @param pick_up 配送方式 1.自提 2.商家配送
-     * @param postFree 配送费
-     * @param buyerMessage 备注
+     * aid 地址id
+     * cids 购物车集合
+     * shopId 店铺id
+     * userID 用户id
+     * pick_up 配送方式 1.自提 2.商家配送
+     * postFree 配送费
+     * buyerMessage 备注
      */
     @Transactional
     @Override
@@ -101,6 +104,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Date date = new Date();
         //根据aid查找相关的地址信息
         Address address = addressMapper.selectAddressByID(aid);
+
+        //判斷書否是超市還是飯店
+
 
         //根据cids获取购买的物品的信息
         List<Sku> cartList = this.selectSkuList(params.getCids());
@@ -183,6 +189,109 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return result;
     }
 
+    /**
+     * 创建订单
+     * aid 地址id
+     * cids 购物车集合
+     * shopId 店铺id
+     * userID 用户id
+     * pick_up 配送方式 1.自提 2.商家配送
+     * postFree 配送费
+     * buyerMessage 备注
+     */
+    @Transactional
+    @Override
+    public Result createHotelOrder(OrderParams params) {
+        Result result = new Result();
+        String shopId = params.getShopId();
+        String userId = params.getUserID();
+        String pickUp = params.getPick_up();
+        String postFree = params.getPostFree();
+        String buyerMessage = params.getBuyerMessage();
+        String aid = params.getAid();
+        Integer payType = params.getPayType();
+        Long buyerPhone = params.getBuyerPhone();
+        String buyerNick = params.getBuyerNick();
+
+        //当前时间
+        Date date = new Date();
+        //根据aid查找相关的地址信息
+        Address address = addressMapper.selectAddressByID(aid);
+
+        //判斷書否是超市還是飯店
+
+
+        //根据cids获取购买的物品的信息
+        List<HotelSku> cartList = this.selectHotelSkuList(params.getCids());
+
+        //总价格todo
+        Integer totalPrice = this.getHotelTotalPrice(cartList);
+
+        //店铺当天的订单数
+        Integer orderNum = orderMapper.selectShopOrderNum(shopId);
+
+        //订单
+        Order order = new Order();
+        KzShop shop = shopMapper.selectByKey(shopId);
+        if(shop == null){
+            return result.error500("店铺为空！");
+        }
+        //生成订单号
+        order.setOrderId(OrderCodeUtils.orderCode(shop.getShopName(),orderNum.toString()));
+        order.setShopId(shopId); //店铺id
+        order.setUserID(userId); //用户id
+        order.setPickUp(pickUp); //配送方式
+        order.setAddressId(EmptyUtils.isEmpty(aid)?"":aid); //地址
+        order.setCreateTime(date);//创建时间
+        order.setCancelTime(OrderCodeUtils.createCancelTime(date)); //取消时间 订单的生命周期
+        order.setUpdateTime(date);//更新时间
+        order.setAmountPayment(totalPrice.toString()); //应付金额
+        if(Integer.parseInt(pickUp) == 1){
+            //自提不计配送费
+            order.setPostFree("0");
+            order.setBuyerPhone(buyerPhone);
+            order.setBuyerNick(buyerNick);
+        }else {
+            order.setPostFree(postFree);//配送费
+        }
+        order.setPayment("0"); //实付金额
+        order.setStatus(1); //订单状态 未付款
+        order.setPayType(payType); //付款类型
+        order.setBuyerMessage(buyerMessage);//备注
+        order.setPickNo(RandomUtil.randomNumbers(4)); //取货码
+
+        //插入订单数据
+        Integer rows = orderMapper.insertOrder(order);
+        if (rows != 1){
+            new Exception("创建订单失败！插入订单时出现未知错误");
+            return result.error500("创建订单失败！插入订单时出现未知错误!");
+        }
+
+        List<OrderDetail> odList = new ArrayList<OrderDetail>();
+        for (HotelSku sku:cartList) {
+            OrderDetail od = new OrderDetail();
+            od.setId(UUID.randomUUID().toString().replace("-",""));
+            od.setOrderId(order.getOrderId());
+            od.setSkuId(sku.getId().toString());
+            od.setNum(sku.getNum());
+            od.setTitle(sku.getTitle());
+            od.setOwnSpec(sku.getOwnSpec());
+            if (sku.getNewPrice()!= null && !sku.getNewPrice().toString().equals("0")){
+                sku.setPrice(sku.getNewPrice());
+            }
+            od.setPrice(sku.getPrice().intValue());
+            od.setImage(sku.getImages());
+            Integer odRows = orderMapper.insertOrderDetail(od);
+            odList.add(od);
+            if (odRows != 1){
+                new Exception("创建订单失败！插入订单时出现未知错误");
+                return result.error500("创建订单失败！插入订单时出现未知错误!");
+            }
+        }
+        result.setResult(order);
+        return result;
+    }
+
 
     /**
      * 预占库存
@@ -244,6 +353,41 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
         return skuList;
     }
+
+
+    /**
+     * 查询选中飯店商品的详细数据
+     * @return
+     */
+    private List<HotelSku> selectHotelSkuList(List<Map<String,Object>> cids){
+        List<HotelSku> skuList = new ArrayList<>();
+        for (Map map:cids) {
+            HotelSku sku = hotelSkuMapper.queryHotelById(map.get("skuId").toString());
+            sku.setNum(Integer.parseInt(map.get("num").toString()));
+            skuList.add(sku);
+        }
+        return skuList;
+    }
+
+    /**
+     * 计算飯店订单总价
+     * @param cartList
+     * @return
+     */
+    private Integer getHotelTotalPrice(List<HotelSku> cartList){
+        Integer totalPrice = Integer.parseInt("0");
+        for (HotelSku s:cartList) {
+            if (s.getNewPrice()!= null && !s.getNewPrice().toString().equals("0")){
+                //最新价格
+                s.setPrice(s.getNewPrice());
+            }
+            BigDecimal price = NumberUtil.mul(s.getPrice().toString(),s.getNum().toString());
+            totalPrice = totalPrice+price.intValue();
+        }
+        return totalPrice;
+    }
+
+
 
     /**
      * 根据订单状态查询订单数据
@@ -361,7 +505,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"异常订单，订单关闭","1",shopId));
             //回滚redis库存
             List<OrderDetail> odList= orderMapper.selectOrderDetailById(orderId);
-            stockService.rollBackStock(odList);
+            stockService.rollBackRedisStock(odList);
 
         }
         if(isSuccess>0){
@@ -574,7 +718,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     /**
-     * 根据订单ID查询订单数据
+     * 再来一单
      * @param orderId 订单id
      * @param userID 用户id
      * @param shopID 店铺id
@@ -597,6 +741,41 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                         SpuFeatures feat = spuFeaturesMapper.selectFeatBySkuId(sku.getId());
                         sku.setPrice(feat.getFeaturesPrice());
                     }else if (sku.getNewPrice()!= null && !sku.getNewPrice().equals("") && !sku.getNewPrice().equals("0")){
+                        sku.setPrice(sku.getNewPrice());
+                    }
+                    sku.setNum(od.getNum());
+                    result.add(sku);
+                }
+            }
+        }
+        //根据aid查找相关的地址信息
+        Address address = addressMapper.selectAddressByID(order.getAddressId());
+        map.put("skuList",result);
+        map.put("address",address);
+        return map;
+    }
+
+    /**
+     * 再来一单 类型为餐饮
+     * @param orderId
+     * @param userID
+     * @param shopID
+     * @return
+     */
+    @Override
+    public Map<String, Object> againHotelOrder(String orderId, String userID, String shopID) {
+        Map<String,Object> map = new HashMap<>();
+        Order order = orderMapper.selectOrderById(orderId,userID,shopID);
+        //商品详细信息集合
+        List<OrderDetail> odlist = orderMapper.selectOrderDetailById(order.getOrderId());
+
+        List<HotelSku> skuList = hotelSkuMapper.getHotelSkusByOrder(odlist);
+
+        List<HotelSku> result = new ArrayList<>();
+        for (OrderDetail od:odlist) {
+            for (HotelSku sku:skuList) {
+                if(od.getSkuId().equals(sku.getId().toString())){
+                    if (sku.getNewPrice()!= null & sku.getNewPrice().intValue() != 0){
                         sku.setPrice(sku.getNewPrice());
                     }
                     sku.setNum(od.getNum());

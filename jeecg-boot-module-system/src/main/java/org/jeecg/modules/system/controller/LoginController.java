@@ -33,6 +33,7 @@ import org.jeecg.modules.system.service.ISysDepartService;
 import org.jeecg.modules.system.service.ISysLogService;
 import org.jeecg.modules.system.service.ISysUserService;
 import org.jeecg.modules.system.util.RandImageUtil;
+import org.kunze.diansh.service.IShopService;
 import org.kunze.diansh.service.IWXPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,6 +70,8 @@ public class LoginController {
     private ISysUserShopService sysUserShopService;
     @Autowired
     private IWXPayService iwxPayService;
+    @Autowired
+    private IShopService shopService;
 
     @Value(value = "${check.yanzheng}")
     private Boolean isCheck;
@@ -411,9 +414,15 @@ public class LoginController {
         }
         //获取超市信息
         String shopId = sysUserShopService.selectByUserId(sysUser.getId());
+        List<Map<String,Object>> shopMap = shopService.selectShopInfoById(shopId);
         obj.put("shopId",shopId);
         obj.put("token", token);
         obj.put("userInfo", sysUser);
+        if(EmptyUtils.isNotEmpty(shopMap)){
+            obj.put("shopType",shopMap.get(0).get("shopType").toString());
+            obj.put("area",shopMap.get(0).get("area").toString());
+            obj.put("distributionModel",shopMap.get(0).get("distributionModel").toString());
+        }
         result.setResult(obj);
         result.success("登录成功");
         return result;

@@ -1,16 +1,21 @@
 package org.kunze.diansh.service.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.CalculationUtil;
 import org.jeecg.common.util.CommonUtil;
+import org.jeecg.common.util.EmptyUtils;
 import org.kunze.diansh.controller.vo.SkuVo;
+import org.kunze.diansh.entity.HotelSku;
 import org.kunze.diansh.entity.Sku;
 import org.kunze.diansh.entity.Stock;
+import org.kunze.diansh.mapper.HotelSkuMapper;
 import org.kunze.diansh.mapper.SkuMapper;
 import org.kunze.diansh.mapper.StockMapper;
 import org.kunze.diansh.service.ISkuService;
@@ -30,6 +35,9 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements ISkuS
 
     @Autowired
     private StockMapper stockMapper;
+
+    @Autowired
+    private HotelSkuMapper hotelSkuMapper;
 
     @Override
     public List<Sku> querySkuBySpuId(String spuId) {
@@ -123,4 +131,117 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements ISkuS
     }
 
 
+    /**
+     * 添加sku 类型为餐饮
+     * @param hotelSku
+     * @return
+     */
+    @Override
+    public Boolean addHotelSku(HotelSku hotelSku){
+        hotelSku.setPrice(NumberUtil.mul(hotelSku.getPrice(),new BigDecimal(100)));
+        if(hotelSku.getNewPrice()==null)
+        {
+            hotelSku.setNewPrice(new BigDecimal("0"));
+        }else
+        {
+            hotelSku.setNewPrice(NumberUtil.mul(hotelSku.getNewPrice(),new BigDecimal(100)));
+        }
+        int row = hotelSkuMapper.addHotelSku(hotelSku);
+        if(row > 0){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 修改sku 类型为餐饮
+     * @param hotelSku
+     * @return
+     */
+    @Override
+    public Boolean updateHotelSku(HotelSku hotelSku){
+        if(EmptyUtils.isNotEmpty(hotelSku.getPrice())){
+            hotelSku.setPrice(NumberUtil.mul(hotelSku.getPrice(),new BigDecimal(100)));
+        }
+        if(hotelSku.getNewPrice()==null)
+        {
+            hotelSku.setNewPrice(new BigDecimal("0"));
+        }else
+        {
+            hotelSku.setNewPrice(NumberUtil.mul(hotelSku.getNewPrice(),new BigDecimal(100)));
+        }
+        int row = hotelSkuMapper.updateHotelSku(hotelSku);
+        if(row > 0){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 删除sku 通过id 类型为餐饮
+     * @param id
+     * @return
+     */
+    @Override
+    public Boolean delHotelSkuById(String id){
+        int row = hotelSkuMapper.delHotelSkuById(id);
+        if(row > 0){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 查询sku 通过店铺id 类型为餐饮
+     * @param shopId
+     * @return
+     */
+    @Override
+    public PageInfo<Map<String,Object>> queryHotelSku(String shopId,Integer pageNo,Integer pageSize){
+        Page page = PageHelper.startPage(pageNo,pageSize);
+        List<Map<String,Object>> hotelSkus = hotelSkuMapper.queryHotelSku(shopId,null,null);
+        List<Map<String,Object>> resultSKus=CommonUtil.toCamel(hotelSkus);
+        PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(resultSKus);
+        pageInfo.setTotal(page.getTotal());
+        return pageInfo;
+    }
+
+    /**
+     * 查询sku 通过分类id 类型为餐饮
+     * @param shopId
+     * @param cid
+     * @param saleable
+     * @return
+     */
+    @Override
+    public List<Map<String,Object>> queryHotelSkuByCid(String shopId,String cid,String saleable){
+        List<Map<String,Object>> hotelSkus = hotelSkuMapper.queryHotelSku(shopId,cid,saleable);
+        List<Map<String,Object>> resultSKus=CommonUtil.toCamel(hotelSkus);
+        return resultSKus;
+    }
+
+    /**
+     * 检索hotelSku 类型为餐饮
+     * @param shopId
+     * @param title
+     * @return
+     */
+    @Override
+    public PageInfo<Map<String,Object>> searchHotelSku(String shopId,String title,Integer pageNo,Integer pageSize){
+        Page page = PageHelper.startPage(pageNo,pageSize);
+        List<Map<String,Object>> hotelSkus = hotelSkuMapper.searchHotelSku(shopId,title);
+        List<Map<String,Object>> resultSKus=CommonUtil.toCamel(hotelSkus);
+        PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(resultSKus);
+        pageInfo.setTotal(page.getTotal());
+        return pageInfo;
+    }
+
+    /**
+     * 通过id查询hotelSku 类型为餐饮
+     * @param id
+     * @return
+     */
+    public HotelSku queryHotelById(String id){
+        return hotelSkuMapper.queryHotelById(id);
+    }
 }

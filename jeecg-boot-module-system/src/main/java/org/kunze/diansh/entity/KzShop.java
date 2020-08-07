@@ -75,4 +75,7 @@ public class KzShop implements Serializable {
     /**配送方式*/
     private String distributionModel;
 
+    /*超市类型：1超市 2饭店*/
+    private Integer shopType;
+
 }

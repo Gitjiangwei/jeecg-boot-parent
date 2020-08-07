@@ -3,12 +3,13 @@
 <mapper namespace="org.kunze.diansh.mapper.DistributionMapper">
 
     <insert id="saveDistribution">
-        insert into kz_distribution(id,order_id,address,delivery_fee,rider_id,shop_id,create_time)
-        values (#{id},#{orderId},#{address},#{deliveryFee},#{riderId},#{shopId},NOW())
+        insert into kz_distribution(id,order_id,address,delivery_fee,rider_id,shop_id,create_time,pick_no)
+        values (#{id},#{orderId},#{address},#{deliveryFee},#{riderId},#{shopId},NOW(),#{pickNo})
     </insert>
 
     <update id="editDistribution">
         update kz_distribution set settlement = '1',settlement_time = NOW()
+        WHERE ID IN
         <foreach collection="ids" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>

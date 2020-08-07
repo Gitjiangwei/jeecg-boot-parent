@@ -27,7 +27,7 @@ public interface ISpuFeaturesService extends IService<SpuFeatures> {
     /**
      * 首页查询热卖商品
      */
-    List<SpuFeaturesVo> selectFeatures(String shopId,String more);
+    List<SpuFeaturesVo> selectFeatures(String shopId,String more, String shopType);
 
 
     /***

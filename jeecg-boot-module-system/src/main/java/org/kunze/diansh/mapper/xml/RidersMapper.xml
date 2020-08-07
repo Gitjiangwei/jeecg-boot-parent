@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.RidersMapper">
+
+<select id="queryRiderInfo" resultType="org.kunze.diansh.entity.Riders">
+
+    SELECT
+    rid.id,
+    rid.rider_name,
+    rid.telphone,
+    rid.idenitiy,
+    rid.bank_name,
+    rid.bank_account,
+    rid.vx_number,
+    CONCAT(reg.name,reg1.name,reg2.name) as 'address'
+    FROM kz_rider rid
+    LEFT JOIN kz_region reg ON rid.province = reg.id
+    LEFT JOIN kz_region reg1 ON rid.city = reg1.id
+    LEFT JOIN kz_region reg2 ON rid.area = reg2.id
+     <where>
+         <if test="id != null and id != ''">
+             id=#{id}
+         </if>
+     </where>
+    order by update_time desc,create_time desc
+</select>
+
+</mapper>

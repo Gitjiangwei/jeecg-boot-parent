@@ -24,6 +24,6 @@
                 and date_flag = #{dateFlag}
             </if>
         </trim>
-
+        ORDER BY  occurrence_time DESC
     </select>
 </mapper>

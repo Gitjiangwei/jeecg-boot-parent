@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.HotelSkuMapper">
+
+    <!--添加sku 类型为餐饮-->
+    <insert id="addHotelSku" parameterType="org.kunze.diansh.entity.HotelSku">
+        INSERT INTO `kunze`.
+        `kz_hotel_sku` (`title`, `sku_info`, `images`, `new_price`,
+        `price`, `del_flag`, `create_time`, `last_update_time`, `shop_id`, `update_name`, `cid`, `saleable`)
+        VALUES(#{title}, #{skuInfo}, #{images}, #{newPrice}, #{price}, 1, NOW(), NOW(), #{shopId}, #{updateName}, #{cid}, 0);
+    </insert>
+
+    <!--修改sku 类型为餐饮-->
+    <update id="updateHotelSku" parameterType="org.kunze.diansh.entity.HotelSku">
+        UPDATE `kunze`.
+        `kz_hotel_sku`
+        <trim prefix="set" suffixOverrides=",">
+            <if test="hotelSku.title != null and hotelSku.title != ''">
+                `title` = #{hotelSku.title},
+            </if>
+            <if test="hotelSku.skuInfo != null and hotelSku.skuInfo != ''">
+                `sku_info` = #{hotelSku.skuInfo},
+            </if>
+            <if test="hotelSku.images != null and hotelSku.images != ''">
+                `images` = #{hotelSku.images},
+            </if>
+            <if test="hotelSku.newPrice != null">
+                `new_price` = #{hotelSku.newPrice},
+            </if>
+            <if test="hotelSku.price != null">
+                `price` = #{hotelSku.price},
+            </if>
+            <if test="hotelSku.shopId != null and hotelSku.shopId != ''">
+                `shop_id` = #{hotelSku.shopId},
+            </if>
+            <if test="hotelSku.cid != null and hotelSku.cid != ''">
+                `cid` = #{hotelSku.cid},
+            </if>
+            <if test="hotelSku.saleable != null">
+                `saleable` = #{hotelSku.saleable},
+            </if>
+        </trim>
+        WHERE `id` = #{hotelSku.id}
+    </update>
+
+    <!--删除sku 通过id 类型为餐饮-->
+    <delete id="delHotelSkuById" parameterType="java.lang.String">
+        DELETE FROM KZ_HOTEL_SKU  WHERE ID = #{id}
+    </delete>
+
+    <!--查询sku 通过店铺id 类型为餐饮-->
+    <select id="queryHotelSku" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT KHS.*,KCH.`NAME` AS 'cidName' FROM KZ_HOTEL_SKU KHS INNER JOIN KZ_CATEGORY_HOTEL KCH ON KHS.CID = KCH.ID
+        <trim prefix="where" suffixOverrides=",">
+            KHS.SHOP_ID = #{shopId}
+            <if test="cid != null and cid != ''">
+                AND KHS.CID = #{cid}
+            </if>
+            <if test="sale != null and sale != ''">
+                AND KHS.`saleable` = 1
+            </if>
+        </trim>
+        ORDER BY KHS.CREATE_TIME DESC
+    </select>
+
+    <!-- 检索hotelSku -->
+    <select id="searchHotelSku" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT * FROM KZ_HOTEL_SKU SKU WHERE SKU.SHOP_ID = #{shopId} AND SKU.TITLE LIKE CONCAT('%',#{title},'%')
+    </select>
+
+
+    <!--查询商品基本信息 通过skuid-->
+    <select id="queryHotelById"  resultType="org.kunze.diansh.entity.HotelSku">
+        select *
+        from kz_hotel_sku where `enable`='1' and id = #{id}
+    </select>
+
+    <!-- 批量获取商品信息 通过orderDetail中的skuId -->
+    <select id="getHotelSkusByOrder" resultType="org.kunze.diansh.entity.HotelSku">
+        SELECT * FROM KZ_HOTEL_SKU  WHERE `saleable` = '1'
+        AND ID IN
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item.skuId}
+        </foreach>
+    </select>
+</mapper>

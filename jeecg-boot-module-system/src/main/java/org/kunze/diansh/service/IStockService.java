@@ -51,4 +51,10 @@ public interface IStockService extends IService<Stock> {
      * @param odList
      */
     void rollBackStock(List<OrderDetail> odList);
+
+    /**
+     * 回滚redis库存
+     * @param odList
+     */
+    void rollBackRedisStock(List<OrderDetail> odList);
 }

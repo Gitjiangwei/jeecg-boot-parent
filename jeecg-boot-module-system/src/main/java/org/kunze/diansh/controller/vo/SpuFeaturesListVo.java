@@ -14,4 +14,6 @@ public class SpuFeaturesListVo implements Serializable {
     private String status;
 
     private String shopId;
+
+    private Integer shopType;
 }

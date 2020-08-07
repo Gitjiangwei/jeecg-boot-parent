@@ -27,6 +27,7 @@ import org.kunze.diansh.service.IStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Map;
@@ -153,8 +154,9 @@ public class AlipayServiceImpl implements IAlipayService {
 
                     //订单状态为未支付才开始业务处理
                     if("1".equals(order.getStatus().toString())){
+                        BigDecimal buyerAmount = NumberUtil.mul(buyerPayAmount,"100");
                         //更新订单状态为【已支付】
-                        orderService.updateOrderStatus(outTradeNo,buyerPayAmount);
+                        orderService.updateOrderStatus(outTradeNo,buyerAmount.toString());
                         //从队列中删除订单
                         OrderComsumer.removeToOrderDelayQueue(outTradeNo);
                         //更新商品库存

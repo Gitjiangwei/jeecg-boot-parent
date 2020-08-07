@@ -18,7 +18,7 @@ public interface IDistributionService extends IService<Distribution> {
      * @param orderId
      * @return
      */
-    Boolean saveDistribution(String orderId,String deliveryFee);
+    Boolean saveDistribution(String orderId,String deliveryFee,String disModel);
 
 
     /**

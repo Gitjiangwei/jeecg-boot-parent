@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kunze.diansh.mapper.CategoryHotelMapper">
+
+    <!--添加分类 分类类型为餐饮分类-->
+    <insert id="addCategoryHotel" parameterType="org.kunze.diansh.entity.CategoryHotel">
+        INSERT INTO `kunze`.
+        `kz_category_hotel` (`name`, `image`, `pid`, `create_time`,`shop_id`, `del_flag`, `is_parent`)
+        VALUES(#{name}, #{image}, #{pid}, NOW(), #{shopId}, 0, #{isParent});
+    </insert>
+    <!--修改分类 分类类型为餐饮分类-->
+    <update id="updateCategoryHotel" parameterType="org.kunze.diansh.entity.CategoryHotel">
+        UPDATE `kunze`.`kz_category_hotel`
+        <trim prefix="set" suffixOverrides=",">
+            <if test="hotel.name != null and hotel.name != ''">
+                `name` = #{hotel.name},
+            </if>
+            <if test="hotel.image != null and hotel.image != ''">
+                `image` = #{hotel.image},
+            </if>
+            <if test="hotel.pid != null and hotel.pid != ''">
+                `pid` = #{hotel.pid},
+            </if>
+            <if test="hotel.shopId != null and hotel.shopId != ''">
+                `shop_id` = #{hotel.shopId},
+            </if>
+            <if test="hotel.delFlag != null and hotel.delFlag != ''">
+                `del_flag` = #{hotel.delFlag},
+            </if>
+            <if test="hotel.isParent != null and hotel.isParent != ''">
+                `is_parent` = #{hotel.isParent},
+            </if>
+            <if test="hotel.show != null">
+                `show` = #{hotel.show},
+            </if>
+        </trim>
+        WHERE `id` = #{hotel.id}
+    </update>
+    <!--删除分类 通过id-->
+    <delete id="delCategoryHotelById" parameterType="java.lang.String">
+        DELETE FROM KZ_CATEGORY_HOTEL WHERE ID = #{id}
+    </delete>
+
+</mapper>
