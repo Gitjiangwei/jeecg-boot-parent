@@ -53,7 +53,7 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionMapper, Dis
      * @return
      */
     @Override
-    public Boolean saveDistribution(String orderId,String deliveryFee) {
+    public Boolean saveDistribution(String orderId,String deliveryFee,String distModel) {
         Boolean isFlag = false;
         //查询订单信息
         Order order = orderMapper.selectById(orderId);
@@ -77,6 +77,9 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionMapper, Dis
             }else {
                 return true;
             }
+        }
+        if (distModel.equals("1")){
+            return true;
         }
         //骑手信息
         Rider rider = new Rider();

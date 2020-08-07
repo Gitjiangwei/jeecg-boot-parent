@@ -196,15 +196,15 @@ public class OrderController {
         String status = jsonObject.getString("status");
         String orderId = jsonObject.getString("orderId");
         String distModel = jsonObject.getString("distModel");
-        if(!"1".equals(distModel)){
+       // if(!"1".equals(distModel)){
             if("4".equals(status)){
-                Boolean resultOK = distributionService.saveDistribution(orderId,this.deliveryFee);
+                Boolean resultOK = distributionService.saveDistribution(orderId,this.deliveryFee,distModel);
                 if (!resultOK){
                     result.error500("当前无骑手可分配！");
                     return result;
                 }
             }
-        }
+       // }
         String resultOk = orderService.updateOrderStatu(status,orderId);
         if(resultOk.equals("ok")){
             result.success("ok");
