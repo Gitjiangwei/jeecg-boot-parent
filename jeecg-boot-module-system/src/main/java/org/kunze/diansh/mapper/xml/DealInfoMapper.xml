@@ -23,6 +23,12 @@
             <if test="dateFlag != null and dateFlag != ''">
                 and date_flag = #{dateFlag}
             </if>
+            <if test="startTime != null and startTime != ''">
+                and occurrence_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND occurrence_time &lt;= #{endTime}
+            </if>
         </trim>
         ORDER BY  occurrence_time DESC
     </select>
