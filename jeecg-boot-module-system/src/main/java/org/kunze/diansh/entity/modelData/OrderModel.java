@@ -49,6 +49,9 @@ public class OrderModel implements Serializable {
     /**取货码*/
     private String pickNo;
 
+    /**付款类型。0、微信，1、支付宝*/
+    private String payType;
+
     /**超市名*/
     private String shopName;
 }
