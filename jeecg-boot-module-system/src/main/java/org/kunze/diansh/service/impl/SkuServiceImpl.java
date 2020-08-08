@@ -193,13 +193,12 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements ISkuS
 
     /**
      * 查询sku 通过店铺id 类型为餐饮
-     * @param shopId
      * @return
      */
     @Override
-    public PageInfo<Map<String,Object>> queryHotelSku(String shopId,Integer pageNo,Integer pageSize){
+    public PageInfo<Map<String,Object>> queryHotelSku(HotelSku hotelSku,Integer pageNo,Integer pageSize){
         Page page = PageHelper.startPage(pageNo,pageSize);
-        List<Map<String,Object>> hotelSkus = hotelSkuMapper.queryHotelSku(shopId,null,null);
+        List<Map<String,Object>> hotelSkus = hotelSkuMapper.queryHotelSku(hotelSku);
         List<Map<String,Object>> resultSKus=CommonUtil.toCamel(hotelSkus);
         PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(resultSKus);
         pageInfo.setTotal(page.getTotal());
@@ -215,7 +214,15 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements ISkuS
      */
     @Override
     public List<Map<String,Object>> queryHotelSkuByCid(String shopId,String cid,String saleable){
-        List<Map<String,Object>> hotelSkus = hotelSkuMapper.queryHotelSku(shopId,cid,saleable);
+        HotelSku sku = new HotelSku();
+        sku.setShopId(shopId);
+        sku.setCid(Integer.parseInt(cid));
+        if("true".equals(saleable)){
+            sku.setSaleable(1);
+        }else {
+            sku.setSaleable(0);
+        }
+        List<Map<String,Object>> hotelSkus = hotelSkuMapper.queryHotelSku(sku);
         List<Map<String,Object>> resultSKus=CommonUtil.toCamel(hotelSkus);
         return resultSKus;
     }

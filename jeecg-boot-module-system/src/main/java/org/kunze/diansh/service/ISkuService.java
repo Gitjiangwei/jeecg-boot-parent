@@ -63,10 +63,9 @@ public interface ISkuService extends IService<Sku> {
 
     /**
      * 查询sku 通过店铺id 类型为餐饮
-     * @param shopId
      * @return
      */
-    PageInfo<Map<String,Object>> queryHotelSku(String shopId,Integer pageNo,Integer pageSize);
+    PageInfo<Map<String,Object>> queryHotelSku(HotelSku hotelSku,Integer pageNo,Integer pageSize);
 
     /**
      * 查询sku 通过分类id 类型为餐饮

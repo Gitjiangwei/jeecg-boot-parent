@@ -143,14 +143,14 @@ public class SkuController {
     @ApiOperation("查询sku 通过店铺id 类型为餐饮")
     @AutoLog("查询sku 通过店铺id 类型为餐饮")
     @PostMapping(value = "/queryHotelSku")
-    public Result queryHotelSku(@RequestParam String shopId,
+    public Result queryHotelSku(HotelSku hotelSku,
                                 @RequestParam Integer pageNo,
                                 @RequestParam Integer pageSize){
         Result result = new Result();
-        if(EmptyUtils.isEmpty(shopId)){
+        if(EmptyUtils.isEmpty(hotelSku.getShopId())){
             return result.error500("shopId is not null!");
         }
-        PageInfo<Map<String,Object>> resultList = skuService.queryHotelSku(shopId,pageNo,pageSize);
+        PageInfo<Map<String,Object>> resultList = skuService.queryHotelSku(hotelSku,pageNo,pageSize);
         if(EmptyUtils.isNotEmpty(resultList)){
             result.setResult(resultList);
         }else {
