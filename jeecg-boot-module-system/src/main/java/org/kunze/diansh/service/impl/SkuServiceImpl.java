@@ -130,6 +130,19 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements ISkuS
         return isFlag;
     }
 
+    /**
+     * 通过id删除sku
+     * @return
+     */
+    @Override
+    public boolean delSkuById(String id){
+        int resultNum = skuMapper.delSkuById(id);
+        if(resultNum>0){
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * 添加sku 类型为餐饮

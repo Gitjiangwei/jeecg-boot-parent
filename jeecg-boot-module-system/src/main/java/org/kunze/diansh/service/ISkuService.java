@@ -41,6 +41,13 @@ public interface ISkuService extends IService<Sku> {
     Boolean saveSku(SkuVo skuVo);
 
     /**
+     * 通过id删除sku
+     * @param id
+     * @return
+     */
+     boolean delSkuById(String id);
+
+    /**
      * 添加sku 类型为餐饮
      * @param hotelSku
      * @return

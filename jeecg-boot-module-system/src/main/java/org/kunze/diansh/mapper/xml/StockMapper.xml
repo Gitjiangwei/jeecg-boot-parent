@@ -29,7 +29,7 @@
 
     <!-- 减库存 -->
     <update id="updateStockNum">
-        UPDATE KZ_STOCK SET STOCK = STOCK-#{skuNum} WHERE SKU_ID = #{skuId}
+        UPDATE KZ_STOCK SET STOCK = STOCK-#{skuNum} WHERE SKU_ID = #{skuId} and stock >= #{skuNum}
     </update>
 
     <select id="selectStock" resultType="Map">
@@ -50,7 +50,7 @@
     <update id="updateStockJia">
         update kz_stock
         <trim prefix="set" suffixOverrides=",">
-            <if test="stock.stock!=null and stock.stock!=''">
+            <if test="stockNum!=null">
                 stock = stock+#{stockNum},
             </if>
             <if test="stock.seckillStock!=null and stock.seckillStock!=''">

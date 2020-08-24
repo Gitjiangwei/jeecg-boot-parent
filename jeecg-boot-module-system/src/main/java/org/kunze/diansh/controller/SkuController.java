@@ -83,6 +83,23 @@ public class SkuController {
         return result;
     }
 
+    @ApiOperation("通过id删除sku")
+    @AutoLog("通过id删除sku")
+    @PostMapping(value = "/delSkuById")
+    public Result delSkuById(@RequestParam(name = "id")String id){
+        Result result = new Result();
+        if(EmptyUtils.isEmpty(id)){
+            return result.error500("id is not null");
+        }
+        Boolean isSuccess = skuService.delSkuById(id);
+        if(isSuccess){
+            result.success("删除成功！");
+        }else{
+            result.error500("删除失败！");
+        }
+        return result;
+    }
+
     @ApiOperation("添加sku 类型为餐饮")
     @AutoLog("添加sku 类型为餐饮")
     @PostMapping(value = "/addHotelSku")

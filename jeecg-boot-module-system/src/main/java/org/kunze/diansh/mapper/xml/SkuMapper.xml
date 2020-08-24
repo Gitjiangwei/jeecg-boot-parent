@@ -143,10 +143,15 @@ AND sku.spu_id = #{id}
         </foreach>
     </update>
 
+    <!-- 通过id删除sku -->
+    <delete id="delSkuById">
+        DELETE FROM KZ_SKU WHERE ID = #{id}
+    </delete>
+
     <!-- 批量获取商品信息 通过orderDetail中的skuId -->
     <select id="getSkusByOrder" resultType="org.kunze.diansh.entity.Sku">
-        SELECT * FROM KZ_SKU SKU WHERE SKU.`ENABLE` = '1'
-        AND ID IN
+        SELECT *,SPU.SALEABLE AS 'SALEABLE' FROM KZ_SKU SKU INNER JOIN KZ_SPU SPU ON SKU.SPU_ID = SPU.ID
+        AND SKU.ID IN
         <foreach collection="list" item="item" open="(" close=")" separator=",">
             #{item.skuId}
         </foreach>

@@ -78,7 +78,7 @@ public class OrderComsumer extends Thread implements ApplicationRunner {
         //启动线程
         oc.start();
         //初始化库存信息
-        stockService.initStockInfo();
+        //stockService.initStockInfo();
     }
 
     /**加入延迟消息队列**/

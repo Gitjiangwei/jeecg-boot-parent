@@ -20,7 +20,6 @@ public interface StockMapper extends BaseMapper<Stock> {
     //减库存
     int updateStockNum(@Param("skuNum")Integer skuNum,@Param("skuId")String skuId);
 
-
     /***
      * 查询库存商品
      * @param shopId

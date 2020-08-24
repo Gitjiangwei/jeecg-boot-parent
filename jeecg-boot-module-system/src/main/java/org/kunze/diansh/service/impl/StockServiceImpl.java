@@ -117,7 +117,7 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock> implements
             if(result>0){
                 isflag = true;
             }
-            redisUtil.hdecr(StockType.STOCK_PREFIX,stock.getSkuId(),stockNum);
+            //redisUtil.hdecr(StockType.STOCK_PREFIX,stock.getSkuId(),stockNum);
         }
         return isflag;
     }
@@ -160,13 +160,36 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock> implements
         Stock stock = stockMapper.selectById(skuId);
         if(redisUtil.hHasKey(StockType.STOCK_PREFIX,skuId)){
             Object num = redisUtil.hget(StockType.STOCK_PREFIX,stock.getSkuId());
-            Boolean isGreater = NumberUtil.isGreater(new BigDecimal(stockNum),new BigDecimal(num.toString()));
+            Boolean isGreater = NumberUtil.isGreater(new BigDecimal(num.toString()),new BigDecimal(stockNum));
             if(isGreater){
                 flag = true;
             }
         }else{
             flag = true;
             System.out.println("库存不存在！");
+        }
+        return flag;
+    }
+
+
+    /**
+     * 从数据库中对比库存
+     * @param skuId
+     * @param stockNum
+     * @return
+     */
+    @Override
+    public Boolean costStock(String skuId,Integer stockNum){
+        Boolean flag = false;
+        Stock stock = stockMapper.selectById(skuId);
+        if(EmptyUtils.isNotEmpty(stock)){
+            String num = stock.getStock();
+            //库中的库存大于等于购买的库存 代表可以购买
+            if(Integer.parseInt(num) >= stockNum){
+                flag = true;
+            }
+        }else{
+            System.out.println("查询库存时出现错误！");
         }
         return flag;
     }
@@ -182,7 +205,7 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock> implements
             stock.setSkuId(od.getSkuId());
             stock.setStock(od.getNum().toString());
             this.updateStock(stock);
-            redisUtil.hincr(StockType.STOCK_PREFIX,od.getSkuId(),od.getNum());
+            //redisUtil.hincr(StockType.STOCK_PREFIX,od.getSkuId(),od.getNum());
         }
     }
 

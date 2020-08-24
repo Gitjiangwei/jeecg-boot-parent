@@ -61,4 +61,7 @@ public class Sku implements Serializable {
     private String shopId;
 
     private String stock;
+
+    //是否上架 0下架/1上架
+    private String saleable;
 }
