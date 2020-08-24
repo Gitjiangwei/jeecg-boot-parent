@@ -71,8 +71,8 @@
     </select>
 
     <insert id="insertShop">
-        insert into kz_shop(id,shop_name,create_time,province,city,area,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time,is_flag,after_sale,shop_type)
-        values (#{id},#{shopName},NOW(),#{province},#{city},#{area},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW(),#{isFlag},#{afterSale},#{shopType})
+        insert into kz_shop(id,shop_name,create_time,province,city,area,shop_address,image,start_business,end_business,person_charge,telphone,idenitiy,update_time,is_flag,after_sale,shop_type,distribution_model)
+        values (#{id},#{shopName},NOW(),#{province},#{city},#{area},#{shopAddress},#{image},#{startBusiness},#{endBusiness},#{personCharge},#{telphone},#{idenitiy},NOW(),#{isFlag},#{afterSale},#{shopType},#{distributionModel})
     </insert>
 
     <update id="updateShop">
@@ -126,6 +126,9 @@
             </if>
             <if test="shopType != null and shopType != ''">
                 shop_type = #{shopType},
+            </if>
+            <if test="distributionModel != null and distributionModel != ''">
+                distribution_model = #{distributionModel},
             </if>
         </trim>
         where id = #{id}
