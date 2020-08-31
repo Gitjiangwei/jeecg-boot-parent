@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -46,4 +47,6 @@ public class Spu implements Serializable {
     private String updateName; //修改/创建人
 
     private String shopId; //超市Id
+
+    private Long barCode; //条形码
 }

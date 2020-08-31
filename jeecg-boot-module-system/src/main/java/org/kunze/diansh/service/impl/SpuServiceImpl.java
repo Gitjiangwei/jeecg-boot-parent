@@ -368,7 +368,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
 
 
     private List<String> querySpuId(String cid3,String spuId,String shopId){
-            int num = 8; //相似商品查4个 首页分类查8个
+            int num = 16; //相似商品查4个 首页分类查8个
             if(!StringUtils.isEmpty(spuId)){
                 num = 4;
             }

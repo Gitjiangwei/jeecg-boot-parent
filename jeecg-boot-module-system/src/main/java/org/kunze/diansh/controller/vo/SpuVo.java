@@ -29,4 +29,6 @@ public class SpuVo implements Serializable {
 
     private String shopId; //超市id
 
+    private Long barCode; //条形码
+
 }

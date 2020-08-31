@@ -4,7 +4,7 @@
     <select id="qrySpuList" resultType="org.kunze.diansh.entity.modelData.SpuModel">
 
         select spu.id,spu.title,sub_title,spu.saleable,CONCAT(cate1.`name`,'/',cate2.`name`,'/',cate3.`name`) as 'cName',br.`name` AS 'bName',
-        spu.create_time,spu.last_update_time,spu.update_name,spu.images,spu.image
+        spu.create_time,spu.last_update_time,spu.update_name,spu.images,spu.image,spu.bar_code
          from kz_spu spu
         LEFT JOIN kz_category cate1 ON spu.cid1 = cate1.id  and cate1.is_flag='0'
         LEFT JOIN kz_category cate2 ON spu.cid2 = cate2.id   and cate2.is_flag='0'
@@ -27,6 +27,9 @@
             </if>
             <if test="brandId != null and brandId != '' ">
                 and brand_id = #{brandId}
+            </if>
+            <if test="barCode != null">
+                and bar_code = #{barCode}
             </if>
         </trim>
         GROUP BY spu.id
@@ -79,8 +82,8 @@
     </select>
 
     <insert id="saveSpu">
-        insert into kz_spu(id,title,sub_title,cid1,cid2,cid3,brand_id,create_time,last_update_time,update_name,images,image,shop_id)
-        values (#{id},#{title},#{subTitle},#{cid1},#{cid2},#{cid3},#{brandId},NOW(),NOW(),#{updateName},#{images},#{image},#{shopId})
+        insert into kz_spu(id,title,sub_title,cid1,cid2,cid3,brand_id,create_time,last_update_time,update_name,images,image,shop_id,bar_code)
+        values (#{id},#{title},#{subTitle},#{cid1},#{cid2},#{cid3},#{brandId},NOW(),NOW(),#{updateName},#{images},#{image},#{shopId},#{barCode})
     </insert>
 
     <update id="updateSpu" parameterType="org.kunze.diansh.entity.Spu">
@@ -98,6 +101,7 @@
             <if test="images != null and images != ''">images=#{images},</if>
             <if test="image != null and images != ''">image=#{image},</if>
             <if test="shopId != null and shopId != ''">shop_id=#{shopId},</if>
+            <if test="barCode != null">bar_code=#{barCode},</if>
         </trim>
         where id=#{id}
     </update>
