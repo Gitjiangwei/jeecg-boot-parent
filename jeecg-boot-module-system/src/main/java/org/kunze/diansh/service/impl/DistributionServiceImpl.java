@@ -117,6 +117,30 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionMapper, Dis
                     isFlag = true;
                 }
             }
+        }else {
+            //直接添加配送信息
+            Distribution distribution = new Distribution();
+            distribution.setId(UUID.randomUUID().toString().replace("-", "")); //主键ID
+            distribution.setAddress(address.getProvince() + address.getCity() + address.getCounty() + address.getStreet()); //配送地址
+            distribution.setOrderId(orderId); //订单号
+            String riderId=riderList.get(0).getId();
+            String phone=riderList.get(0).getTelphone();
+            distribution.setRiderId(riderId); //骑手id
+            distribution.setShopId(shop.getId()); //超市id
+            distribution.setDeliveryFee(CalculationUtil.MetaconversionScore(deliveryFee)); //配送费
+            distribution.setPickNo(order.getPickNo()); //取单号
+            riderMapper.editRiderNum("1", null,riderId);
+            //发送短信
+            Boolean a = SendSms.sendSms(phone, orderId + "," + list.get(0).getAddressTotal() + list.get(0).getShopName() + "," + distribution.getPickNo(), SendSmsEnum.NOTIC_DISTRIBUTION_RIDER);
+            if (!a) {
+                System.out.println("短信发送失败！");
+                return false;
+            } else {
+                int result = distributionMapper.saveDistribution(distribution);
+                if (result > 0) {
+                    isFlag = true;
+                }
+            }
         }
         return isFlag;
     }
