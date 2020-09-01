@@ -28,8 +28,14 @@
             <if test="brandId != null and brandId != '' ">
                 and brand_id = #{brandId}
             </if>
-            <if test="barCode != null">
+            <if test="barCode != null and barCode != 'null'">
                 and bar_code = #{barCode}
+            </if>
+            <if test="barCodeParam == 0 and barCodeParam != ''">
+                and bar_code is not null
+            </if>
+            <if test="barCodeParam == 1 and barCodeParam != ''">
+                and (bar_code is null) or (bar_code = '')
             </if>
         </trim>
         GROUP BY spu.id
@@ -160,7 +166,7 @@
         select sku.id as 'skuId',spu.id as 'spuId',spu.title as 'spuTitle',spu.image as 'image',
         sku.new_price as 'spuNewPrice',sku.price as 'spuPrice',sku.own_spec as 'skuSpec' from kz_spu spu
         LEFT JOIN kz_sku sku ON spu.id = sku.spu_id
-        where spu.id in
+        where SKU.`ENABLE` = 1  AND spu.id in
         <foreach collection="spuList" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>
@@ -190,6 +196,17 @@
               #{item}
         </foreach>
     </update>
+
+    <!-- 通过条形码检索sku -->
+    <select id="getSkusByBarCode" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT
+            SKU.*
+        FROM
+            KZ_SPU SPU
+            INNER JOIN KZ_SKU SKU ON SPU.ID = SKU.SPU_ID
+        WHERE
+            SPU.BAR_CODE = #{barCode}
+    </select>
 </mapper>
 
 

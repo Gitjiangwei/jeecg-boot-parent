@@ -30,10 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -301,6 +298,24 @@ public class SpuController {
         PageInfo<Sku> skuList = skuService.queryNotFeatSku(spuId,Integer.valueOf(pageNo),Integer.valueOf(pageSize));
         result.setResult(skuList);
         result.setSuccess(true);
+        return result;
+    }
+
+    @ApiOperation("通过条形码检索sku")
+    @AutoLog("通过条形码检索sku")
+    @PostMapping(value = "/getSkusByBarCode")
+    public Result getSkusByBarCode(@RequestParam(name = "barCode")String barCode){
+        Result result = new Result();
+        if(EmptyUtils.isEmpty(barCode)){
+            return result.error500("barCode is not null!");
+        }
+        List<Map<String,Object>> skuList = spuService.getSkusByBarCode(barCode);
+        if(EmptyUtils.isNotEmpty(skuList)){
+            result.setResult(skuList);
+            result.setSuccess(true);
+        }else{
+            result.error500("出现错误！");
+        }
         return result;
     }
 }

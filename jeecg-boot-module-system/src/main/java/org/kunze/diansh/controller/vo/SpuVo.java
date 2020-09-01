@@ -31,4 +31,7 @@ public class SpuVo implements Serializable {
 
     private Long barCode; //条形码
 
+    //条形码逻辑判断 null查询所有 0查询有条形码的数据 1查询没有条形码的数据 该字段只用于逻辑判断
+    private String barCodeParam;
+
 }

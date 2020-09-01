@@ -11,6 +11,7 @@ import org.kunze.diansh.entity.modelData.SpuDetailModel;
 import org.kunze.diansh.entity.modelData.SpuModel;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SpuMapper extends BaseMapper<Spu> {
 
@@ -80,4 +81,10 @@ public interface SpuMapper extends BaseMapper<Spu> {
      */
     Integer updateSpuSaleable(@Param("saleable")String saleable,@Param("spuList")List spuList,@Param("shopId")String shopId);
 
+    /**
+     * 通过条形码检索sku
+     * @param barCode
+     * @return
+     */
+    List<Map<String,Object>> getSkusByBarCode(@Param("barCode")String barCode);
 }
