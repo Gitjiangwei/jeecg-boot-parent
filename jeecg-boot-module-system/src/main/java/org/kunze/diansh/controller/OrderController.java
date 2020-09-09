@@ -20,6 +20,8 @@ import org.kunze.diansh.service.IDistributionService;
 import org.kunze.diansh.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -101,9 +103,6 @@ public class OrderController {
             }
             return orderResult;
         }
-
-
-
     }
 
 

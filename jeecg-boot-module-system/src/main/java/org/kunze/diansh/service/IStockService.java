@@ -47,6 +47,14 @@ public interface IStockService extends IService<Stock> {
     Boolean contrastStockBySkuId(String skuId,String stockNum);
 
     /**
+     * 从数据库中对比库存
+     * @param skuId
+     * @param stockNum
+     * @return
+     */
+    Boolean costStock(String skuId,Integer stockNum);
+
+    /**
      * 回滚库存
      * @param odList
      */

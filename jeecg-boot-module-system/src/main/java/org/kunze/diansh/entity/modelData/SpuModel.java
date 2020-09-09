@@ -44,4 +44,6 @@ public class SpuModel implements Serializable {
     private String price; //价格
 
     private String stock; //库存
+
+    private Long barCode; //条形码
 }

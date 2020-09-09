@@ -78,11 +78,11 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, KzShop> implements 
     @Override
     public Boolean updateShop(KzShop shop) {
         Boolean flag = false;
-        if (shop.getPostFree() != null){
-            BigDecimal postFree = new BigDecimal(shop.getPostFree());
-            BigDecimal newPostFree = postFree.multiply(new BigDecimal(100));
-            shop.setPostFree(newPostFree.intValue());
-        }
+//        if (shop.getPostFree() != null){
+//            BigDecimal postFree = new BigDecimal(shop.getPostFree());
+//            BigDecimal newPostFree = postFree.multiply(new BigDecimal(100));
+//            shop.setPostFree(newPostFree.intValue());
+//        }
         if(EmptyUtils.isNotEmpty(shop.getMinPrice())){
             BigDecimal newMinPrice = NumberUtil.mul(shop.getMinPrice().toString(),"100");
             shop.setMinPrice(newMinPrice.intValue());

@@ -9,6 +9,7 @@ import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.modelData.SpuModel;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ISpuService extends IService<Spu> {
 
@@ -98,4 +99,11 @@ public interface ISpuService extends IService<Spu> {
      * @return 修改是否成功
      */
     Boolean updateSpuSaleable(String saleable,List spuList,String shopId);
+
+    /**
+     * 通过条形码检索sku
+     * @param barCode
+     * @return
+     */
+    List<Map<String,Object>> getSkusByBarCode(String barCode);
 }

@@ -1,5 +1,6 @@
 package org.kunze.diansh.service.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -44,7 +45,10 @@ public class SpuFeaturesServiceImpl extends ServiceImpl<SpuFeaturesMapper, SpuFe
     @Override
     public Boolean saveSpuFeatures(SpuFeaturesBo spuFeaturesBo) {
         Boolean isFlag = false;
-        spuFeaturesBo.setFeaturesPrice(new BigDecimal(spuFeaturesBo.getFeaturesPrice()).multiply(new BigDecimal("100")).toString());
+        //spuFeaturesBo.setFeaturesPrice(new BigDecimal(spuFeaturesBo.getFeaturesPrice()).multiply(new BigDecimal("100")).toString());
+        String fPrice =NumberUtil.mul(spuFeaturesBo.getFeaturesPrice(),"100").toString();
+        String price = NumberUtil.roundStr(fPrice,0);
+        spuFeaturesBo.setFeaturesPrice(price);
         SpuFeatures spuFeatures = new SpuFeatures();
         BeanUtils.copyProperties(spuFeaturesBo,spuFeatures);
         spuFeatures.setFeaturesId(UUID.randomUUID().toString().replace("-",""));

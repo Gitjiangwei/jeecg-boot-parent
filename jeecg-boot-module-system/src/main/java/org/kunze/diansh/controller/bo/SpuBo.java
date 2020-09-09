@@ -7,6 +7,7 @@ import org.kunze.diansh.entity.Spu;
 import org.kunze.diansh.entity.SpuDetail;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -40,4 +41,6 @@ public class SpuBo implements Serializable {
     private SpuDetail spuDetail;
 
     private List<SkuVo> skuVos;
+
+    private Long barCode; //条形码
 }

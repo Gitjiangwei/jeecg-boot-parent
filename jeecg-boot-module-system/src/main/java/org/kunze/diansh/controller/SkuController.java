@@ -83,6 +83,23 @@ public class SkuController {
         return result;
     }
 
+    @ApiOperation("通过id删除sku")
+    @AutoLog("通过id删除sku")
+    @PostMapping(value = "/delSkuById")
+    public Result delSkuById(@RequestParam(name = "id")String id){
+        Result result = new Result();
+        if(EmptyUtils.isEmpty(id)){
+            return result.error500("id is not null");
+        }
+        Boolean isSuccess = skuService.delSkuById(id);
+        if(isSuccess){
+            result.success("删除成功！");
+        }else{
+            result.error500("删除失败！");
+        }
+        return result;
+    }
+
     @ApiOperation("添加sku 类型为餐饮")
     @AutoLog("添加sku 类型为餐饮")
     @PostMapping(value = "/addHotelSku")
@@ -143,14 +160,14 @@ public class SkuController {
     @ApiOperation("查询sku 通过店铺id 类型为餐饮")
     @AutoLog("查询sku 通过店铺id 类型为餐饮")
     @PostMapping(value = "/queryHotelSku")
-    public Result queryHotelSku(@RequestParam String shopId,
+    public Result queryHotelSku(HotelSku hotelSku,
                                 @RequestParam Integer pageNo,
                                 @RequestParam Integer pageSize){
         Result result = new Result();
-        if(EmptyUtils.isEmpty(shopId)){
+        if(EmptyUtils.isEmpty(hotelSku.getShopId())){
             return result.error500("shopId is not null!");
         }
-        PageInfo<Map<String,Object>> resultList = skuService.queryHotelSku(shopId,pageNo,pageSize);
+        PageInfo<Map<String,Object>> resultList = skuService.queryHotelSku(hotelSku,pageNo,pageSize);
         if(EmptyUtils.isNotEmpty(resultList)){
             result.setResult(resultList);
         }else {

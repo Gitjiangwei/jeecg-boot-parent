@@ -21,7 +21,7 @@ public interface HotelSkuMapper extends BaseMapper<HotelSku> {
     Integer delHotelSkuById(@Param("id") String id);
 
     //查询sku 通过店铺id 类型为餐饮
-    List<Map<String,Object>> queryHotelSku(@Param("shopId") String shopId,@Param("cid") String cid,@Param("sale") String saleable);
+    List<Map<String,Object>> queryHotelSku(@Param("hotelSku") HotelSku hotelSku);
 
     //查询商品的基本信息 通过skuid
     HotelSku queryHotelById(@Param("id") String skuId);

@@ -29,6 +29,8 @@ import org.kunze.diansh.service.IOrderService;
 import org.kunze.diansh.service.IStockService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,10 +73,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private IStockService stockService;
 
     @Autowired
+    private StockMapper stockMapper;
+
+    @Autowired
     private RedisUtil redisUtil;
 
     @Autowired
     private HotelSkuMapper hotelSkuMapper;
+
+    private static String stockLock = "LOCK";
 
     /**
      * 创建订单
@@ -88,6 +95,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     @Transactional
     @Override
+    @Async
     public Result createOrder(OrderParams params) {
         Result result = new Result();
         String shopId = params.getShopId();
@@ -105,15 +113,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         //根据aid查找相关的地址信息
         Address address = addressMapper.selectAddressByID(aid);
 
-        //判斷書否是超市還是飯店
-
-
         //根据cids获取购买的物品的信息
         List<Sku> cartList = this.selectSkuList(params.getCids());
 
-        Boolean stockFlag = this.costStockInfo(cartList);
-        if(stockFlag){
-            return result.error500("库存不足！");
+        synchronized (OrderServiceImpl.class){
+            Boolean stockFlag = this.costStockInfo(cartList);
+            if(stockFlag){
+                return result.error500("库存不足！");
+            }
         }
         //总价格
         Integer totalPrice = this.getTotalPrice(cartList);
@@ -127,8 +134,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         if(shop == null){
             return result.error500("店铺为空！");
         }
-        if(totalPrice < shop.getMinPrice()){
-            return result.error500("订单价格不足最低起送价！");
+        if(pickUp.equals("2")){
+            if(totalPrice < shop.getMinPrice()){
+                return result.error500("订单价格不足最低起送价！");
+            }
         }
         //生成订单号
         order.setOrderId(OrderCodeUtils.orderCode(shop.getShopName(),orderNum.toString()));
@@ -300,20 +309,35 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     public Boolean costStockInfo(List<Sku> skuList){
         Boolean flag = false;
-        for(Sku sku:skuList){
-            if(stockService.contrastStockBySkuId(sku.getId(),sku.getNum().toString())){
+        for (Sku sku:skuList) {
+            if((stockService.costStock(sku.getId(),sku.getNum())) == false){
+                //库存不足
                 flag = true;
                 return flag;
             }
         }
-        //预占库存
-        for (Sku s:skuList) {
-            Double decrValue= redisUtil.hdecr(IStockService.StockType.STOCK_PREFIX,s.getId(),s.getNum());
-            if(decrValue < 0){
-                flag = true;
-                redisUtil.hincr(IStockService.StockType.STOCK_PREFIX,s.getId(),s.getNum());
-            }
+
+        for (Sku sku:skuList) {
+            //预占库存
+            stockMapper.updateStockNum(sku.getNum(),sku.getId());
         }
+
+
+
+//        for(Sku sku:skuList){
+//            if(stockService.contrastStockBySkuId(sku.getId(),sku.getNum().toString())){
+//                flag = true;
+//                return flag;
+//            }
+//        }
+//        //预占库存
+//        for (Sku s:skuList) {
+//            Double decrValue= redisUtil.hdecr(IStockService.StockType.STOCK_PREFIX,s.getId(),s.getNum());
+//            if(decrValue < 0){
+//                flag = true;
+//                redisUtil.hincr(IStockService.StockType.STOCK_PREFIX,s.getId(),s.getNum());
+//            }
+//        }
         return flag;
     }
 
@@ -498,15 +522,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"订单已退款！","1",shopId));
         }else if(status.equals("8")){
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"拒绝接单！","1",shopId));
-            //回滚redis库存
+            //回滚库存
             List<OrderDetail> odList= orderMapper.selectOrderDetailById(orderId);
             stockService.rollBackStock(odList);
         }else {
             orderRecordMapper.addOrderRecord(new OrderRecord(UUID.randomUUID().toString().replace("-",""),orderId,"异常订单，订单关闭","1",shopId));
-            //回滚redis库存
+            //回滚库存
             List<OrderDetail> odList= orderMapper.selectOrderDetailById(orderId);
-            stockService.rollBackRedisStock(odList);
-
+            stockService.rollBackStock(odList);
         }
         if(isSuccess>0){
             flag = "ok";

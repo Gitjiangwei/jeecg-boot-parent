@@ -6,7 +6,7 @@
     <!-- 插入订单数据   -->
     <insert id="insertOrder" parameterType="org.kunze.diansh.entity.Order">
         INSERT INTO kz_order ( order_id,shop_id,address_id,amount_payment, payment, pick_up, post_free, status, create_time, update_time, payment_time,
-          consign_time, end_time, close_time, shipping_name, shipping_code, user_id, buyer_message, buyer_nick, buyer_rete,pick_no,buyer_phone )
+          consign_time, end_time, close_time, shipping_name, shipping_code, user_id, buyer_message, buyer_nick, buyer_rete,pick_no,buyer_phone,pay_type )
         VALUES
         (#{orderId},
         #{shopId},
@@ -29,7 +29,8 @@
         #{buyerNick},
         #{buyerRate},
         #{pickNo},
-        #{buyerPhone});
+        #{buyerPhone},
+        #{payType});
     </insert>
 
     <!-- 插入订单详情数据   -->
@@ -108,7 +109,8 @@
     </select>
 
     <select id="selectOrder" resultType="org.kunze.diansh.entity.modelData.OrderModel">
-        SELECT o.order_id,o.payment,shop.shop_name,address.consignee,address.consignee_sex,address.telphone,o.create_time,o.`status`,o.pick_up,o.buyer_message,o.end_time,o.pick_no FROM kz_order o
+        SELECT o.order_id,o.payment,shop.shop_name,address.consignee,address.consignee_sex,address.telphone,o.create_time,o.`status`,o.pick_up,o.buyer_message,o.end_time,o.pick_no,o.pay_type
+         FROM kz_order o
         LEFT JOIN kz_address  address ON o.address_id = address.id
         LEFT JOIN kz_shop shop ON o.shop_id = shop.id
         <trim prefix="where" prefixOverrides="and">

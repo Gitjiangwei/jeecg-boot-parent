@@ -48,6 +48,12 @@ public interface SkuMapper extends BaseMapper<Sku> {
     int delSku(@Param("spuList") List<String> spuList);
 
     /**
+     * 通过id删除sku
+     * @param id
+     */
+    int delSkuById(@Param("id") String id);
+
+    /**
      * 批量获取商品信息 通过orderDetail中的skuId
      * @return
      */

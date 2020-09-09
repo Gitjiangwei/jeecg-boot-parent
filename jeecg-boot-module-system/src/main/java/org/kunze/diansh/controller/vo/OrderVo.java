@@ -47,4 +47,7 @@ public class OrderVo implements Serializable {
 
     /**超市*/
     private String shopName;
+
+    //付款类型 0.微信 1.支付宝
+    private String payType;
 }

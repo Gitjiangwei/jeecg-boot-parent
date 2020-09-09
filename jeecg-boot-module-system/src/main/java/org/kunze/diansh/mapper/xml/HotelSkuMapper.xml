@@ -49,15 +49,24 @@
     </delete>
 
     <!--查询sku 通过店铺id 类型为餐饮-->
-    <select id="queryHotelSku" parameterType="java.lang.String" resultType="java.util.Map">
+    <select id="queryHotelSku" parameterType="org.kunze.diansh.entity.HotelSku" resultType="java.util.Map">
         SELECT KHS.*,KCH.`NAME` AS 'cidName' FROM KZ_HOTEL_SKU KHS INNER JOIN KZ_CATEGORY_HOTEL KCH ON KHS.CID = KCH.ID
-        <trim prefix="where" suffixOverrides=",">
-            KHS.SHOP_ID = #{shopId}
-            <if test="cid != null and cid != ''">
-                AND KHS.CID = #{cid}
+        <trim prefix="where" suffixOverrides="and">
+            KHS.SHOP_ID = #{hotelSku.shopId}
+            <if test="hotelSku.cid != null">
+                AND KHS.CID = #{hotelSku.cid}
             </if>
-            <if test="sale != null and sale != ''">
-                AND KHS.`saleable` = 1
+            <if test="hotelSku.saleable != null">
+                AND KHS.`saleable` = #{hotelSku.saleable}
+            </if>
+            <if test="hotelSku.id != null">
+                AND KHS.`id` = {hotelSku.id}
+            </if>
+            <if test="hotelSku.title != null and hotelSku.title != ''">
+                AND KHS.title LIKE CONCAT('%',${hotelSku.title},'%')
+            </if>
+            <if test="hotelSku.skuInfo != null and hotelSku.skuInfo != ''">
+                AND KHS.sku_info LIKE CONCAT('%',${hotelSku.skuInfo},'%')
             </if>
         </trim>
         ORDER BY KHS.CREATE_TIME DESC

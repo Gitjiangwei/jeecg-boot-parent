@@ -12,6 +12,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.system.vo.LoginUser;
+import org.jeecg.common.util.CommonUtil;
+import org.jeecg.common.util.EmptyUtils;
 import org.jeecg.modules.system.entity.SysUser;
 import org.kunze.diansh.controller.bo.SpuBo;
 import org.kunze.diansh.controller.vo.*;
@@ -189,7 +191,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             }
             int resultSku = skuMapper.saveSku(skuList);
             int resultStock = stockMapper.saveStock(stockList);
-            stockService.addStock(stockList); //同步添加redis中的库存
+            //stockService.addStock(stockList); //同步添加redis中的库存
             if(resultSpuDetail > 0 && resultSku > 0 && resultStock > 0){
                 flag = true;
             }
@@ -218,12 +220,18 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         if(updateSupResult>0){
             isFlag = true;
         }
-        updateSupResult = 1;
         if(updateSupResult > 0 && (spuBo.getSkuVos()!=null || spuBo.getSpuDetail() != null)){
             if(null != spuBo.getSpuDetail()){
+                SpuDetail sdObj = spuDetailMapper.qreySpuDetail(spu.getId());
                 SpuDetail spuDetail = spuBo.getSpuDetail();
-                spuDetail.setSpuId(spu.getId());
-                spuDetailMapper.updateSpuDetail(spuDetail); //更新
+                spuDetail.setSpuId(UUID.randomUUID().toString().replace("-",""));
+                if(EmptyUtils.isEmpty(sdObj)){
+                    spuDetail.setSpecTemplate("");
+                    spuDetail.setIsFlag("0");
+                    spuDetailMapper.saveSpuDetail(spuDetail);
+                }else {
+                    spuDetailMapper.updateSpuDetail(spuDetail); //更新
+                }
             }
             if(null != spuBo.getSkuVos()){
                 List<Sku> skuList = new ArrayList<Sku>();
@@ -266,7 +274,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
                 }else {
                     resultStock = stockMapper.saveStock(stockList);
                 }
-                stockService.addStock(stockList); //同步修改redis中的库存
+                //stockService.addStock(stockList); //同步修改redis中的库存
                 if(resultSku > 0 && resultStock > 0){
                     isFlag = true;
                 }
@@ -360,7 +368,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
 
 
     private List<String> querySpuId(String cid3,String spuId,String shopId){
-            int num = 8; //相似商品查4个 首页分类查8个
+            int num = 16; //相似商品查4个 首页分类查8个
             if(!StringUtils.isEmpty(spuId)){
                 num = 4;
             }
@@ -422,5 +430,16 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         }
         return false;
     }
+
+    /**
+     * 通过条形码检索sku
+     * @param barCode
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> getSkusByBarCode(String barCode) {
+        return CommonUtil.toCamel(spuMapper.getSkusByBarCode(barCode));
+    }
+
 
 }
