@@ -257,4 +257,6 @@ public interface CommonConstant {
     public static final String MASS_DELETE_SUCCESSFULLY = "批量删除成功";
 
     public static final String MASS_DELETE_FAILED = "批量删除失败";
+
+    public static final String NULL_PARAMETER = "参数丢失！";
 }
