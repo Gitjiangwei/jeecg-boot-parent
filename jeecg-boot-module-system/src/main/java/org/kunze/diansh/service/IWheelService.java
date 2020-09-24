@@ -4,70 +4,103 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.poi.ss.formula.functions.T;
-import org.kunze.diansh.controller.bo.WheelBo;
-import org.kunze.diansh.controller.vo.WheelVo;
+import org.jeecg.common.api.vo.Result;
 import org.kunze.diansh.entity.Wheel;
+import org.kunze.diansh.pojo.request.wheel.DeleteWheelRequest;
+import org.kunze.diansh.pojo.request.wheel.HomeWheelRequest;
+import org.kunze.diansh.pojo.request.wheel.QueryWheelRequest;
+import org.kunze.diansh.pojo.request.wheel.SaveWheelRequest;
+import org.kunze.diansh.pojo.request.wheel.UpdateWheelRequest;
+import org.kunze.diansh.pojo.request.wheel.UpdateWheelStatusRequest;
+import org.kunze.diansh.pojo.vo.wheel.HomeWheelVO;
+import org.kunze.diansh.pojo.vo.wheel.WheelVO;
 
 import java.util.List;
 
-public interface IWheelService extends IService<Wheel> {
-
-    /***
-     * 添加轮播图片
-     * @param wheelBo
-     * @return
+/**
+ * 轮播图管理业务接口
+ *
+ * @author 姜伟
+ * @date 2020/9/17
+ */
+public interface IWheelService extends IService< Wheel > {
+    /**
+     * 添加轮播图
+     *
+     * @param saveWheelRequest 添加参数
+     * @return 添加成功失败标记
+     * @author 姜伟
+     * @date 2020/9/18 20:01
      */
-    Boolean saveWheel(WheelBo wheelBo);
-
-
-    /***
-     * 查询轮播图片
-     * @param wheelVo
-     * @return
-     */
-    PageInfo<Wheel> queryWheel(WheelVo wheelVo,Integer pageNo,Integer pageSize);
-
-    /***
-     * 修改轮播图片
-     * @param wheelBo
-     * @return
-     */
-    Boolean updateWheel(WheelBo wheelBo);
-
-
-    /***
-     * 单个删除
-     * @param wheelId
-     * @return
-     */
-    Boolean delWheel(String wheelId);
+    Result< T > saveWheel(SaveWheelRequest saveWheelRequest);
 
     /**
-     * 批量删除
-     * @param wheelIds
-     * @return
+     * 首页获取轮播图展示数据
+     *
+     * @param homeWheelRequest 查询条件
+     * @return 轮播图展示数据
+     * @author 姜伟
+     * @date 2020/9/17 19:56
      */
-    Boolean delWheels(String wheelIds);
+    Result< PageInfo< HomeWheelVO > > listWheelHome(HomeWheelRequest homeWheelRequest);
 
     /**
-     * 批量修改启用还是不启用1
-     * @param
-     * @return
+     * 修改轮播图信息
+     *
+     * @param updateWheelRequest 修改参数
+     * @return 修改成功失败标记
+     * @author 姜伟
+     * @date 2020/9/18 20:16
      */
-    Boolean updateIsFlag(String isFlag,String wheelIds);
-
-
-    /***
-     * 后台查询轮播图
-     * @param wheelBo
-     * @return
-     */
-    PageInfo<Wheel> qeryWheelbackstage(WheelBo wheelBo, Integer pageNo, Integer pageSize);
+    Result< T > updateWheel(UpdateWheelRequest updateWheelRequest);
 
     /**
-     * 根据轮播图id查询超市id
-     * @param id
-     * @return
+     * 单个删除轮播图
+     *
+     * @param wheelId 轮播图id
+     * @return 返回删除是否成功状态
+     * @author 姜伟
+     * @date 2020/9/20 18:19
      */
-    List<String> selectByShopId(@Param("id") String id);
+    Result< T > delWheel(String wheelId);
+
+    /**
+     * 批量删除轮播图
+     *
+     * @param deleteWheelRequest
+     * @return 删除成功或者失败标记
+     * @author 姜伟
+     * @date 2020/9/18 20:38
+     */
+    Result< T > delWheels(DeleteWheelRequest deleteWheelRequest);
+
+    /**
+     * 批量修改首页轮播图是否启用
+     *
+     * @param updateWheelStatusRequest 修改参数
+     * @return 返回修改结果
+     * @author 姜伟
+     * @date 2020/9/20 16:51
+     */
+    Result< T > updateWheelIsFlag(UpdateWheelStatusRequest updateWheelStatusRequest);
+
+    /**
+     * 后台获取轮播图展示数据
+     *
+     * @param queryWheelRequest 查询条件
+     * @return 轮播图展示数据列
+     * @author 姜伟
+     * @date 2020/9/17 17:43
+     */
+    Result< PageInfo< WheelVO > > listPageWheelBackstage(QueryWheelRequest queryWheelRequest);
+
+    /**
+     * 获取超市数据列表
+     *
+     * @param id 轮播图id
+     * @return 超市数据列表
+     * @author 姜伟
+     * @date 2020/9/20 18:25
+     */
+    Result< List< String > > listShopByShopId(@Param("id") String id);
 }

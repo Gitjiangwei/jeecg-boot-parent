@@ -1,20 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.kunze.diansh.mapper.WheelMapper">
+    <!--添加轮播图-->
     <insert id="saveWheel">
-        insert INTO kz_wheel(wheel_id,wheel_images,create_time,update_time,update_name,is_flag,wheel_no,wheel_port,wheel_url,wheel_name,wheel_isflag,shop_id)
-        values (#{wheelId},#{wheelImages},NOW(),NOW(),#{updateName},#{isFlag},#{wheelNo},#{wheelPort},#{wheelUrl},#{wheelName},#{wheelIsflag},#{shopId})
+        INSERT INTO kz_wheel (
+            wheel_id,
+            wheel_images,
+            create_time,
+            update_time,
+            update_name,
+            is_flag,
+            wheel_no,
+            wheel_port,
+            wheel_url,
+            wheel_name,
+            wheel_isflag,
+            shop_id
+        )
+        VALUES (
+            #{wheelId},
+            #{wheelImages},
+            NOW(),
+            NOW(),
+            #{updateName},
+            #{isFlag},
+            #{wheelNo},
+            #{wheelPort},
+            #{wheelUrl},
+            #{wheelName},
+            #{wheelIsflag},
+            #{shopId}
+        )
     </insert>
 
-    <select id="qeryWheel" resultType="org.kunze.diansh.entity.Wheel">
-        select wheel_id,wheel_images,wheel_no,wheel_url,wheel_name,wheel_isflag,shop.shop_name from kz_wheel wheel
-        LEFT JOIN kz_shop shop ON wheel.shop_id = shop.id
+    <!--首页查询轮播图-->
+    <select id="listWheel" resultType="org.kunze.diansh.pojo.domain.wheel.WheelDO">
+        SELECT
+            wheel_id,
+            wheel_images,
+            wheel_no,
+            wheel_url,
+            wheel_name,
+            wheel_isflag,
+            t2.shop_name
+        FROM
+        kz_wheel t1
+        LEFT JOIN kz_shop t2 ON t1.shop_id = t2.id
         <trim prefix="where" prefixOverrides="and">
             <if test="shopId != null and shopId !='' ">
                 and shop_id = #{shopId}
             </if>
             <if test="isFlag != null and isFlag != ''">
-                and wheel.is_flag = #{isFlag}
+                and t1.is_flag = #{isFlag}
             </if>
             <if test="wheelPort != null and wheelPort != ''">
                 and wheel_port = #{wheelPort}
@@ -23,9 +60,10 @@
                 and wheel_name like CONCAT('%',#{wheelName},'%')
             </if>
         </trim>
-        order by wheel_no,wheel.update_time desc,wheel.create_time desc
+        order by wheel_no,t1.update_time desc,t1.create_time desc
     </select>
 
+    <!--修改轮播图-->
     <update id="updateWheel">
         update kz_wheel
         <trim prefix="SET" suffixOverrides=",">
@@ -58,18 +96,24 @@
         where wheel_id = #{wheelId}
     </update>
 
-    <delete id="delWheels">
-        delete from kz_wheel where wheel_id in
+    <!--删除轮播图-->
+    <delete id="batchDeleteWheel">
+        DELETE
+        FROM
+            kz_wheel
+        WHERE
+            wheel_id IN
         <foreach collection="list" item="item" open="(" close=")" separator=",">
             #{item}
         </foreach>
     </delete>
 
+    <!--轮播图是否启动-->
     <update id="updateIsFlag">
         update kz_wheel
         <trim prefix="set" suffixOverrides=",">
-            <if test="isFlag != null and isFlag != ''">
-                is_flag = #{isFlag},
+            <if test="status != null and status != ''">
+                is_flag = #{status},
             </if>
             <if test="updateName != null and updateName != '' ">
                 update_name = #{updateName},
@@ -77,21 +121,35 @@
             update_time = NOW()
         </trim>
         where wheel_id in
-        <foreach collection="list" item="item" open="(" close=")" separator=",">
-            #{item}
+        <foreach collection="wheelIdList" item="wheelId" open="(" close=")" separator=",">
+            #{wheelId}
         </foreach>
     </update>
 
-
-    <select id="qeryWheelbackstage" resultType="org.kunze.diansh.entity.Wheel">
-        select wheel_id,wheel_images,wheel_no,wheel_url,wheel_name,wheel_port,wheel_isflag,shop.shop_name,wheel.create_time,wheel.update_time,wheel.update_name,wheel.is_flag from kz_wheel wheel
-        LEFT JOIN kz_shop shop ON wheel.shop_id = shop.id
+    <!--后台管理系统查询轮播图列表-->
+    <select id="listWheelBackstage" resultType="org.kunze.diansh.pojo.domain.wheel.WheelDO">
+        SELECT
+            wheel_id,
+            wheel_images,
+            wheel_no,
+            wheel_url,
+            wheel_name,
+            wheel_port,
+            wheel_isflag,
+            t2.shop_name,
+            t1.create_time,
+            t1.update_time,
+            t1.update_name,
+            t1.is_flag
+        FROM
+        kz_wheel t1
+        LEFT JOIN kz_shop t2 ON t1.wheel_id = t2.id
         <trim prefix="where" prefixOverrides="and">
             <if test="shopId != null and shopId !='' ">
                 and shop_id = #{shopId}
             </if>
             <if test="isFlag != null and isFlag != ''">
-                and wheel.is_flag = #{isFlag}
+                and t1.is_flag = #{isFlag}
             </if>
             <if test="wheelPort != null and wheelPort != ''">
                 and wheel_port = #{wheelPort}
@@ -106,16 +164,26 @@
                 and shop_name LIKE  CONCAT('%',#{shopName},'%')
             </if>
         </trim>
-        order by wheel_no,wheel.update_time desc,wheel.create_time desc
+        order by wheel_no,t1.update_time desc,t1.create_time desc
     </select>
 
-
-    <select id="selectByShopId" resultType="String">
-        select shop_id as 'shopId' from kz_wheel where wheel_id = #{id};
-    </select>
-
-
+    <!--获取轮播图数据列表-->
     <select id="queryImages" resultType="String">
-        select wheel_images from kz_wheel where wheel_id = #{id};
+        SELECT
+            wheel_images
+        FROM
+            kz_wheel
+        WHERE
+	wheel_id = #{id};
+    </select>
+
+    <!--获取超市id数据列表-->
+    <select id="listShopId" resultType="java.lang.String">
+        SELECT
+            shop_id AS 'shopId'
+        FROM
+            kz_wheel
+        WHERE
+            wheel_id = #{id};
     </select>
 </mapper>

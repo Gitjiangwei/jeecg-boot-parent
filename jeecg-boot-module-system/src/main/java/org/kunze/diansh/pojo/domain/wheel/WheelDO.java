@@ -1,21 +1,18 @@
-package org.kunze.diansh.entity;
+package org.kunze.diansh.pojo.domain.wheel;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 轮播图表
+ * 轮播图列表展示实体
  *
  * @author 姜伟
- * @date 2020/5/17
+ * @date 2020/9/17
  */
 @Data
-public class Wheel implements Serializable {
-
+public class WheelDO implements Serializable {
     /** 轮播图ID */
     private String wheelId;
 
@@ -23,13 +20,9 @@ public class Wheel implements Serializable {
     private String wheelImages;
 
     /** 创建时间 */
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     /** 创建时间 */
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     /** 创建人 */

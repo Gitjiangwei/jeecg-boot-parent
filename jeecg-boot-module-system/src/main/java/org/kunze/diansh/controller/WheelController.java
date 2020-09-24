@@ -1,6 +1,5 @@
 package org.kunze.diansh.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -8,183 +7,149 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
-import org.kunze.diansh.controller.bo.WheelBo;
-import org.kunze.diansh.controller.vo.WheelVo;
-import org.kunze.diansh.entity.Wheel;
+import org.kunze.diansh.pojo.request.wheel.*;
+import org.kunze.diansh.pojo.vo.wheel.HomeWheelVO;
+import org.kunze.diansh.pojo.vo.wheel.WheelVO;
 import org.kunze.diansh.service.IWheelService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * 轮播图管理控制类
+ *
+ * @author 姜伟
+ * @date 2020/9/17
+ */
 @RestController
 @Slf4j
 @Api(tags = "轮播图")
 @RequestMapping(value = "/kunze/wheel")
 public class WheelController {
 
+    /**
+     * 轮播图控制类
+     */
     @Autowired
     private IWheelService wheelService;
 
-
+    /**
+     * 添加轮播图
+     *
+     * @param saveWheelRequest 插入参数
+     * @return 添加成功或失败提示内容
+     * @author 姜伟
+     * @date 2020/9/18 19:46
+     */
     @ApiOperation("添加轮播图片")
     @AutoLog("添加轮播图片")
     @PostMapping(value = "/saveWheel")
-    public Result<T> saveWheel(@RequestBody WheelBo wheelBo){
-        Result<T> result = new Result<T>();
-        if(wheelBo.getWheelPort()== null || wheelBo.getWheelPort().equals("")){
-            result.error500("参数丢失！");
-        }else if(Integer.parseInt(wheelBo.getWheelPort())>3 || Integer.parseInt(wheelBo.getWheelPort()) < 0){
-            result.error500("参数被篡改！");
-        }else {
-            Boolean resultOk = wheelService.saveWheel(wheelBo);
-            if(resultOk){
-                result.success("添加成功！");
-            }else{
-                result.error500("添加失败！");
-            }
-        }
-        return result;
+    public Result< T > saveWheel(@RequestBody @Valid SaveWheelRequest saveWheelRequest) {
+        return wheelService.saveWheel(saveWheelRequest);
     }
 
-/*    @ApiOperation("管理图片查询轮播图")
-    @AutoLog("管理界面查询轮播图")
-    @GetMapping(value = "/pageWheelList")
-    public Result<PageInfo<Wheel>> queryWheelPage(WheelVo wheelVo,
-                                              @RequestParam(name = "pageNo") Integer pageNo,
-                                              @RequestParam(name = "pageSize") Integer pageSize){
-        Result<PageInfo<Wheel>> result = new Result<PageInfo<Wheel>>();
-        PageInfo<Wheel> wheelPageInfo = wheelService.queryWheel(wheelVo,pageNo,pageSize);
-        result.setSuccess(true);
-        result.setResult(wheelPageInfo);
-        return result;
-    }*/
-
+    /**
+     * 获取首页轮播图展示数据
+     *
+     * @param homeWheelRequest 查询条件
+     * @return 首页轮播图数据列表
+     * @author 姜伟
+     * @date 2020/9/17 19:50
+     */
     @ApiOperation("首页查询轮播图")
     @AutoLog("首页查询轮播图")
     @GetMapping(value = "/homeWheelList")
-    public  Result<PageInfo<Wheel>> queryWheelHome(WheelVo wheelVo,
-                                              @RequestParam(name = "pageSize",defaultValue = "5") Integer pageSize){
-        Result<PageInfo<Wheel>> result = new Result<PageInfo<Wheel>>();
-        if(wheelVo.getWheelPort()== null || wheelVo.getWheelPort().equals("")){
-            result.error500("参数丢失！");
-        }else if(Integer.parseInt(wheelVo.getWheelPort())>3 || Integer.parseInt(wheelVo.getWheelPort()) < 0) {
-            result.error500("参数被篡改！");
-        }else {
-            wheelVo.setIsFlag("0");
-            PageInfo<Wheel> wheelPageInfo = wheelService.queryWheel(wheelVo, 1, pageSize);
-            result.setSuccess(true);
-            result.setResult(wheelPageInfo);
-        }
-        return result;
+    public Result< PageInfo< HomeWheelVO > > queryWheelHome(@Valid HomeWheelRequest homeWheelRequest) {
+        return wheelService.listWheelHome(homeWheelRequest);
     }
 
+    /**
+     * 修改轮播图信息
+     *
+     * @param updateWheelRequest 修改参数
+     * @return 修改成功或者失败标记
+     * @author 姜伟
+     * @date 2020/9/18 20:10
+     */
     @ApiOperation("修改轮播图片")
     @AutoLog("修改轮播图")
     @PostMapping(value = "/updateWheel")
-    public Result<T> updateWheel(@RequestBody WheelBo wheelBo){
-        Result<T> result = new Result<T>();
-        if(wheelBo.getWheelId()==null || wheelBo.getWheelId().equals("")){
-            result.error500("参数丢失！");
-        }else {
-            Boolean resultOk = wheelService.updateWheel(wheelBo);
-            if(resultOk){
-                result.success("修改成功！");
-            }else{
-                result.error500("修改失败！");
-            }
-        }
-        return result;
+    public Result< T > updateWheel(@RequestBody @Valid UpdateWheelRequest updateWheelRequest) {
+        return wheelService.updateWheel(updateWheelRequest);
     }
 
-
+    /**
+     * 删除轮播图
+     *
+     * @param id 轮播图id
+     * @return 删除成功或者失败状态
+     * @author 姜伟
+     * @date 2020/9/18 20:36
+     */
     @ApiOperation("删除轮播图片")
     @AutoLog("删除轮播图片")
     @DeleteMapping(value = "/delWheel")
-    public Result<T> delWheel(@RequestParam(name = "id") String id){
-        Result<T> result = new Result<T>();
-        if(id == null || id.equals("")){
-            result.error500("参数丢失！");
-        }else {
-            Boolean resultOk = wheelService.delWheel(id);
-            if(resultOk){
-                result.success("删除成功");
-            }else{
-                result.error500("删除失败");
-            }
-        }
-        return result;
+    public Result< T > delWheel(@RequestParam(name = "id") String id) {
+        return wheelService.delWheel(id);
     }
 
+    /**
+     * 批量删除轮播图
+     *
+     * @param deleteWheelRequest 传入参数
+     * @return 批量删除成功或者失败标记
+     * @author 姜伟
+     * @date 2020/9/18 20:36
+     */
     @ApiOperation("批量删除轮播图片")
     @AutoLog("批量删除轮播图片")
     @DeleteMapping(value = "/delWheels")
-    public Result<T> delWheels(@RequestParam(name = "ids") String ids){
-        Result<T> result = new Result<T>();
-        if(ids == null || ids.equals("")){
-            result.error500("参数丢失！");
-        }else {
-            Boolean resultOk = wheelService.delWheels(ids);
-            if(resultOk){
-                result.success("批量删除成功");
-            }else{
-                result.error500("批量删除失败");
-            }
-        }
-        return result;
+    public Result< T > delWheels(@Valid DeleteWheelRequest deleteWheelRequest) {
+        return wheelService.delWheels(deleteWheelRequest);
     }
 
-
+    /**
+     * 首页轮播图展示开店或者关闭
+     *
+     * @param updateWheelStatusRequest 传入修改参数
+     * @return 返回修改成功标记
+     * @author 姜伟
+     * @date 2020/9/20 15:56
+     */
     @ApiOperation("首页轮播图展示打开或关闭")
     @AutoLog("首页轮播图展示打开或关闭")
     @PostMapping(value = "/updateIsFlag")
-    public Result<T> updateIsFlag(@RequestBody String enable){
-        Result<T> result = new Result<T>();
-        JSONObject jsonObject = JSONObject.parseObject(enable);
-        String isFlag = jsonObject.get("isFlag").toString();
-        String ids = jsonObject.get("ids").toString();
-        if (isFlag==null || isFlag.equals("")){
-            result.error500("参数丢失！");
-        }else if(ids == null || ids.equals("")){
-            result.error500("参数丢失！");
-        }else{
-            if(!isFlag.equals("0") && !isFlag.equals("1")){
-                result.error500("非法参数");
-            }else {
-                Boolean resultOk = wheelService.updateIsFlag(isFlag, ids);
-                if (resultOk) {
-                    if (isFlag.equals("1")) {
-                        result.success("图片已关闭，将不在首页展示");
-                    } else {
-                        result.success("图片将展示在首页");
-                    }
-                }
-            }
-        }
-        return  result;
+    public Result< T > updateWheelIsFlag(@RequestBody @Valid UpdateWheelStatusRequest updateWheelStatusRequest) {
+        return wheelService.updateWheelIsFlag(updateWheelStatusRequest);
     }
 
-
+    /**
+     * 后台获取轮播图数据列表
+     *
+     * @param queryWheelRequest 查询条件
+     * @return 获取轮播图展示数据
+     * @author 姜伟
+     * @date 2020/9/17 17:49
+     */
     @AutoLog("查询轮播图列表")
     @ApiOperation("后台查询轮播图列表")
     @GetMapping(value = "/pageWheelList")
-    public Result<PageInfo<Wheel>> qeryWheelbackstage(WheelBo wheelBo,
-                                                      @RequestParam(name = "pageNo") Integer pageNo,
-                                                      @RequestParam(name = "pageSize") Integer pageSize){
-        Result<PageInfo<Wheel>> result = new Result<PageInfo<Wheel>>();
-        PageInfo<Wheel> pageInfo = wheelService.qeryWheelbackstage(wheelBo,pageNo,pageSize);
-        result.setResult(pageInfo);
-        result.setSuccess(true);
-        return result;
+    public Result< PageInfo< WheelVO > > queryPageWheelBackstageList(@Valid QueryWheelRequest queryWheelRequest) {
+        return wheelService.listPageWheelBackstage(queryWheelRequest);
     }
 
+    /**
+     * 获取超市数据列表
+     *
+     * @param id 轮播图Id
+     * @return 超市时间列表
+     * @author 姜伟
+     * @date 2020/9/20 18:21
+     */
     @GetMapping(value = "/selectByShopId")
-    public Result<List<String>> selectByShopId(@RequestParam(name = "id") String id){
-        Result<List<String>> result = new Result<List<String>>();
-        List<String> stringList = wheelService.selectByShopId(id);
-        result.setSuccess(true);
-        result.setResult(stringList);
-        return result;
-     }
+    public Result< List< String > > queryShopList(@RequestParam(name = "id") String id) {
+        return wheelService.listShopByShopId(id);
+    }
 }
