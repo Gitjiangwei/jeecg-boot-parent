@@ -2,6 +2,10 @@ package org.jeecg.common.util;
 
 import io.netty.util.internal.StringUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * 流水号生成规则(按默认规则递增，数字从1-99开始递增，数字到99，递增字母;位数不够增加位数)
  * A001
@@ -166,8 +170,14 @@ public class YouBianCodeUtil {
 		
 	}
 	public static void main(String[] args) {
-		// org.jeecgframework.core.util.LogUtil.info(getNextZiMu('C'));
-		// org.jeecgframework.core.util.LogUtil.info(getNextNum(8));
-	    // org.jeecgframework.core.util.LogUtil.info(cutYouBianCode("C99A01B01")[2]);
+		List<Integer> list  = new ArrayList<Integer>();
+		Collections.addAll(list,1,2,3,4,5,6);
+		//list.forEach(System.out::println);
+
+		list.forEach(element ->{
+			if (element % 2 == 0){
+				System.out.println(element);
+			}
+		});
 	}
 }

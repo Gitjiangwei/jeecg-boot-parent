@@ -6,7 +6,12 @@ import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.vo.LoginUser;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * 公告工具类
@@ -66,7 +71,7 @@ public class CommonUtil {
         if (comma == CHAR_COMMA) {
             str = str.substring(0, str.length() - 1);
         }
-        if (StringUtils.isNotBlank(str)) {
+        if (StringUtils.isBlank(str)) {
             throw new NullPointerException(CommonConstant.NULL_PARAMETER);
         }
         List< String > stringList = new ArrayList<>();
