@@ -50,7 +50,7 @@ public class OrderParams {
      */
     @ApiModelProperty(value = "配送方式", required = true, example = "1")
     @NotBlank(message = "配送方式不能为空！")
-    @Pattern(regexp = "^[1-2]]", message = "配送参数错误")
+    @Pattern(regexp = "^[1-2]", message = "配送参数错误")
     private String pick_up;
 
     /**
@@ -95,7 +95,7 @@ public class OrderParams {
      * 1超市 2飯店
      */
     @ApiModelProperty(value = "店铺类型 1.超市 2.饭店", required = true, example = "1")
-    @NotBlank(message = "店铺类型不能为空")
+    @NotNull(message = "店铺类型不能为空")
     @Pattern(regexp = "^[1-2]", message = "店铺类型参数错误")
     private Integer shopType;
 }
