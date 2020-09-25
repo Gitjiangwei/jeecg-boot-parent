@@ -1,5 +1,7 @@
 package org.kunze.diansh.service.impl;
+import com.alipay.api.domain.Shop;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.jeecg.common.util.CalculationUtil;
 import org.jeecg.common.util.tencentSms.SendSms;
 import org.jeecg.common.util.tencentSms.SendSmsEnum;
 import org.kunze.diansh.controller.vo.RiderSendVo;
@@ -66,14 +68,14 @@ public class RiderSendServiceImpl extends ServiceImpl<RiderSendMapper, RiderSend
             rider.setStatus("0");
             List<RiderVo> riderList = riderMapper.queryRiderList(rider);
             //如果是没有空闲的配送员执行
+            int ran1 = 0;
             if(riderList.size() == 0) {
                 rider.setStatus("1");
                 riderList = riderMapper.queryRiderList(rider);
-            }
-            int ran1 = 0;
-            if(riderList.size()>1){
-                Random r = new Random();
-                ran1 = r.nextInt(riderList.size());
+                if (riderList.size() > 1) {
+                    Random r = new Random();
+                    ran1 = r.nextInt(riderList.size());
+                }
             }
             RiderVo riderVo = riderList.get(ran1);
             //根据骑手ID 查询骑手名字
@@ -145,8 +147,6 @@ public class RiderSendServiceImpl extends ServiceImpl<RiderSendMapper, RiderSend
                 }
             }
         }
-
-
         return isFlag;
     }
 
@@ -220,6 +220,78 @@ public class RiderSendServiceImpl extends ServiceImpl<RiderSendMapper, RiderSend
                  return riderSendMapper.queryRidersInfo(riders);
              }
 
+    }
+
+    @Override
+    public List<SupOrder> queryShopOrderList(String area) {
+        List<SupOrder> supOrderList=riderSendMapper.queryShopOrderList(area);
+        return supOrderList;
+    }
+
+    @Override
+    public Boolean sendOrders(RiderOrder riderOrder) {
+        Boolean isFlag = false;
+        //查看订单
+        Order order = orderMapper.selectById(riderOrder.getOrderId());
+        //收货地址信息
+        Address address = addressMapper.selectAddressByID(order.getAddressId());
+        //商家信息
+        ShopVo shopVo = riderSendMapper.queryShopInfo(order.getShopId());
+        //超市信息
+        KzShop shop = new KzShop();
+        shop.setId(order.getShopId());
+        List<ShopVo> list = shopMapper.queryShopList(shop);
+        //骑手信息
+        Rider rider = new Rider();
+        rider.setArea(shopVo.getArea());
+        rider.setStatus("0");
+        List<RiderVo> riderList = riderMapper.queryRiderList(rider);
+        //如果是没有空闲的配送员执行
+        if (riderList.size() == 0) {
+            rider.setStatus("1");
+            riderList = riderMapper.queryRiderList(rider);
+            int ran1 = 0;
+            if (riderList.size() > 1) {
+                Random r = new Random();
+                ran1 = r.nextInt(riderList.size());
+            }
+            RiderVo riderVo = riderList.get(ran1);
+            //添加配送信息
+            riderOrder.setId(UUID.randomUUID().toString().replace("-",""));
+            riderOrder.setDistance("5");
+            riderOrder.setRiderState(1);
+            riderOrder.setOrderState(2);
+            //发送短信
+            Boolean a = SendSms.sendSms(riderVo.getTelphone(), riderOrder.getOrderId() + "," + list.get(0).getAddressTotal() + list.get(0).getShopName() + "," + riderOrder.getPickNo(), SendSmsEnum.NOTIC_DISTRIBUTION_RIDER);
+            if (!a) {
+                System.out.println("短信发送失败！");
+                return false;
+            } else {
+                int result = riderSendMapper.saveRiderSendOrder(riderOrder);
+                if (result > 0) {
+                    isFlag = true;
+                }
+            }
+        }else {
+            //直接添加配送信息
+            riderOrder.setId(UUID.randomUUID().toString().replace("-",""));
+            riderOrder.setDistance("5");
+            riderOrder.setRiderState(1);
+            riderOrder.setOrderState(2);
+            String phone=riderList.get(0).getTelphone();
+            //发送短信
+            Boolean a = SendSms.sendSms(phone, riderOrder.getOrderId() + "," + list.get(0).getAddressTotal() + list.get(0).getShopName() + "," + riderOrder.getPickNo(), SendSmsEnum.NOTIC_DISTRIBUTION_RIDER);
+            if (!a) {
+                System.out.println("短信发送失败！");
+                return false;
+            } else {
+                int result = riderSendMapper.saveRiderSendOrder(riderOrder);
+                if (result > 0) {
+                    isFlag = true;
+                }
+            }
+        }
+        return isFlag;
     }
 
 

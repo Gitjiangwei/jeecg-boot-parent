@@ -6,8 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
+import org.kunze.diansh.entity.RiderOrder;
 import org.kunze.diansh.entity.RiderSend;
 import org.kunze.diansh.entity.Riders;
+import org.kunze.diansh.entity.SupOrder;
+import org.kunze.diansh.service.IOrderService;
 import org.kunze.diansh.service.IRiderSendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +27,9 @@ public class RiderSendController {
 
     @Autowired
     private IRiderSendService riderSendService;
+
+    @Autowired
+    private IOrderService orderService;
 
     @ApiOperation("商店选择派送添加")
     @AutoLog("商店选择派送添加")
@@ -111,6 +117,39 @@ public class RiderSendController {
         return result;
     }
 
+    @ApiOperation("产看所有超市订单")
+    @AutoLog("产看所有超市订单")
+    @PostMapping(value = "/queryShopOrderList")
+    public  Result  queryShopOrderList(@RequestParam(value = "area") String area)
+    {
+
+        Result<List<SupOrder>> result = new Result<List<SupOrder>>();
+        List<SupOrder> supOrders=riderSendService.queryShopOrderList(area);
+        result.setResult(supOrders);
+        result.setSuccess(true);
+        return result;
+    }
+
+    @ApiOperation("骑手派单")
+    @AutoLog("骑手派单")
+    @PostMapping(value = "/sendOrders")
+    public  Result<T>  sendOrders(@RequestBody RiderOrder riderOrder)
+    {
+
+        Result<T> result = new Result<>();
+        Boolean supOrders=riderSendService.sendOrders(riderOrder);
+        if (!supOrders){
+            result.error500("当前无骑手可分配！");
+            return result;
+        }
+        String resultOk = orderService.updateOrderStatu(riderOrder.getStatus(),riderOrder.getOrderId());
+        if(resultOk.equals("ok")){
+            result.success("ok");
+        }else {
+            result.error500("error");
+        }
+        return result;
+    }
 
 }
 

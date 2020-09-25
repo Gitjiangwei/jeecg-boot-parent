@@ -1,8 +1,10 @@
 package org.kunze.diansh.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.kunze.diansh.entity.RiderOrder;
 import org.kunze.diansh.entity.RiderSend;
 import org.kunze.diansh.entity.Riders;
+import org.kunze.diansh.entity.SupOrder;
 
 import java.util.List;
 
@@ -46,4 +48,14 @@ public interface IRiderSendService extends IService<RiderSend> {
     List<Riders>  queryRiderState(Riders riders);
 
 
+    /**
+     * 查看超市所有订单
+     * **/
+
+    List<SupOrder> queryShopOrderList(String area);
+
+    /**
+     * 骑手派单
+     * **/
+    Boolean sendOrders(RiderOrder riderOrder);
 }

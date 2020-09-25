@@ -305,4 +305,100 @@
            </where>
     </select>
 
+    <select id="queryShopOrderList" resultType="org.kunze.diansh.entity.SupOrder">
+        SELECT
+        s.shop_name AS shopName,
+        s.shop_address AS shopAddress,
+        s.telphone AS shopTelphone,
+        o.order_id AS orderId,
+        o.buyer_message AS buyerMessage,
+        o.pick_no AS pickNo,
+        CONCAT(u.consignee,(case when u.consignee_sex=0 then '女士' else '先生' end)) AS buyerName,
+        u.telphone AS buyerTelphone,
+        CONCAT(u.province,u.city,u.county,u.street) AS buyerAddress
+        FROM kz_shop s
+        left JOIN kz_order o ON s.id=o.shop_id
+        LEFT JOIN kz_address u ON o.user_id=u.user_id
+        <where>
+            <if test="area != null and area != ''">
+                area = #{area}
+            </if>
+        </where>
+        GROUP BY o.order_id,u.consignee_sex
+    </select>
+
+
+
+    <insert id="saveRiderSendOrder"  parameterType="org.kunze.diansh.entity.RiderOrder">
+        INSERT INTO kz_rider_send
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test ='null != id'>
+                id,
+            </if>
+            <if test ='null != riderId'>
+                rider_id,
+            </if>
+            <if test ='null != riderName'>
+                rider_name,
+            </if>
+
+            <if test ='null != orderId'>
+                order_id,
+            </if>
+            <if test ='null != distance'>
+                distance,
+            </if>
+            <if test ='null != pickNo'>
+                pick_no,
+            </if>
+            <if test ='null != riderState'>
+                rider_state,
+            </if>
+            <if test ='null != orderState'>
+                order_state,
+            </if>
+            <if test ='null != createTime'>
+                create_time,
+            </if>
+            <if test ='null != updateTime'>
+                update_time
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test ='null != id'>
+                #{id},
+            </if>
+            <if test ='null != riderId'>
+                #{riderId},
+            </if>
+            <if test ='null != riderName'>
+                #{riderName},
+            </if>
+            <if test ='null != orderId'>
+                #{orderId},
+            </if>
+            <if test ='null != distance'>
+                #{distance},
+            </if>
+            <if test ='null != pickNo'>
+                #{pickNo},
+            </if>
+            <if test ='null != riderState'>
+                #{riderState},
+            </if>
+            <if test ='null != orderState'>
+                #{orderState},
+            </if>
+            <if test ='null != updateTime'>
+                 NOW();
+            </if>
+            <if test ='null != createTime'>
+                NOW();
+            </if>
+        </trim>
+    </insert>
+
+
+
+
 </mapper>

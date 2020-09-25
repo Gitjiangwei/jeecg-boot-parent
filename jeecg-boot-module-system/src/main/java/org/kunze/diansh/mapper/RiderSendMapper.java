@@ -60,4 +60,15 @@ public interface RiderSendMapper extends BaseMapper<RiderSend> {
     * **/
    List<Riders> queryRidersInfo(@Param(value = "riders")Riders riders);
 
+   /**
+    * 查看超市所有订单
+    * **/
+
+   List<SupOrder> queryShopOrderList(@Param(value = "area")String area);
+
+   /**
+    * 添加骑手订单派送信息
+    * **/
+
+   int saveRiderSendOrder(@Param(value = "riderSendVo") RiderOrder riderOrder);
 }
