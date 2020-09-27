@@ -25,7 +25,7 @@ public class HomeWheelVO implements Serializable {
      * 轮播图片
      */
     @ApiModelProperty("轮播图URL")
-    private String wheelImage;
+    private String wheelImages;
 
     /**
      * 播放顺序
