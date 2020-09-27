@@ -3,7 +3,7 @@ package org.jeecg.common.constant;
  * 业务常量类
  *
  * @author 姜伟
- * @date 2020/9/18
+ * @date 2020/7/18
  */
 public interface CommonConstant {
 

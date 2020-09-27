@@ -4,7 +4,7 @@ package org.jeecg.common.exception.exceptionenum;
  * 异常常量
  *
  * @author 姜伟
- * @date 2020/9/24
+ * @date 2020/7/24
  */
 public enum  SysExceptionEnum{
     /**

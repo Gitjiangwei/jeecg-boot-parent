@@ -11,7 +11,7 @@ import java.io.Serializable;
  * 删除轮播图实体
  *
  * @author 姜伟
- * @date 2020/9/18
+ * @date 2020/7/18
  */
 @Data
 @ApiModel("删除轮播图传入实体")

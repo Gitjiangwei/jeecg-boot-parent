@@ -21,7 +21,7 @@ import java.util.List;
  * 轮播图管理控制类
  *
  * @author 姜伟
- * @date 2020/9/17
+ * @date 2020/7/17
  */
 @RestController
 @Slf4j
@@ -41,7 +41,7 @@ public class WheelController {
      * @param saveWheelRequest 插入参数
      * @return 添加成功或失败提示内容
      * @author 姜伟
-     * @date 2020/9/18 19:46
+     * @date 2020/7/18 19:46
      */
     @ApiOperation("添加轮播图片")
     @AutoLog("添加轮播图片")
@@ -56,7 +56,7 @@ public class WheelController {
      * @param homeWheelRequest 查询条件
      * @return 首页轮播图数据列表
      * @author 姜伟
-     * @date 2020/9/17 19:50
+     * @date 2020/7/17 19:50
      */
     @ApiOperation("首页查询轮播图")
     @AutoLog("首页查询轮播图")
@@ -71,7 +71,7 @@ public class WheelController {
      * @param updateWheelRequest 修改参数
      * @return 修改成功或者失败标记
      * @author 姜伟
-     * @date 2020/9/18 20:10
+     * @date 2020/7/18 20:10
      */
     @ApiOperation("修改轮播图片")
     @AutoLog("修改轮播图")
@@ -86,7 +86,7 @@ public class WheelController {
      * @param id 轮播图id
      * @return 删除成功或者失败状态
      * @author 姜伟
-     * @date 2020/9/18 20:36
+     * @date 2020/7/18 20:36
      */
     @ApiOperation("删除轮播图片")
     @AutoLog("删除轮播图片")
@@ -101,7 +101,7 @@ public class WheelController {
      * @param deleteWheelRequest 传入参数
      * @return 批量删除成功或者失败标记
      * @author 姜伟
-     * @date 2020/9/18 20:36
+     * @date 2020/7/18 20:36
      */
     @ApiOperation("批量删除轮播图片")
     @AutoLog("批量删除轮播图片")
@@ -116,7 +116,7 @@ public class WheelController {
      * @param updateWheelStatusRequest 传入修改参数
      * @return 返回修改成功标记
      * @author 姜伟
-     * @date 2020/9/20 15:56
+     * @date 2020/7/20 15:56
      */
     @ApiOperation("首页轮播图展示打开或关闭")
     @AutoLog("首页轮播图展示打开或关闭")
@@ -131,7 +131,7 @@ public class WheelController {
      * @param queryWheelRequest 查询条件
      * @return 获取轮播图展示数据
      * @author 姜伟
-     * @date 2020/9/17 17:49
+     * @date 2020/7/17 17:49
      */
     @AutoLog("查询轮播图列表")
     @ApiOperation("后台查询轮播图列表")
@@ -146,7 +146,7 @@ public class WheelController {
      * @param id 轮播图Id
      * @return 超市时间列表
      * @author 姜伟
-     * @date 2020/9/20 18:21
+     * @date 2020/7/20 18:21
      */
     @GetMapping(value = "/selectByShopId")
     public Result< List< String > > queryShopList(@RequestParam(name = "id") String id) {

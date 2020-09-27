@@ -12,7 +12,7 @@ import java.io.Serializable;
  * 修改首页轮播图展示打开或关闭传入参数
  *
  * @author 姜伟
- * @date 2020/9/18
+ * @date 2020/7/18
  */
 @Data
 @ApiModel("修改首页轮播图展示打开或关闭传入参数")

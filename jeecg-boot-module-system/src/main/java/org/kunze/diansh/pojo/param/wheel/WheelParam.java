@@ -9,7 +9,7 @@ import java.util.Date;
  * 轮播图管理实体
  *
  * @author 姜伟
- * @date 2020/9/17
+ * @date 2020/7/17
  */
 @Data
 public class WheelParam implements Serializable {

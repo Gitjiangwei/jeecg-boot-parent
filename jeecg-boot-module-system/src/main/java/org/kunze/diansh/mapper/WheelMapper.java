@@ -13,7 +13,7 @@ import java.util.List;
  * 轮播图持久层接口
  *
  * @author 姜伟
- * @date 2020/9/17
+ * @date 2020/7/17
  */
 public interface WheelMapper extends BaseMapper< Wheel > {
     /**
@@ -22,7 +22,7 @@ public interface WheelMapper extends BaseMapper< Wheel > {
      * @param wheelParam 添加参数
      * @return 添加成功行数
      * @author 姜伟
-     * @date 2020/9/18 20:04
+     * @date 2020/7/18 20:04
      */
     Integer saveWheel(WheelParam wheelParam);
 
@@ -32,7 +32,7 @@ public interface WheelMapper extends BaseMapper< Wheel > {
      * @param wheelParam 查询条件
      * @return 轮播图数据列表
      * @author 姜伟
-     * @date 2020/9/17 20:32
+     * @date 2020/7/17 20:32
      */
     List< WheelDO > listWheel(WheelParam wheelParam);
 
@@ -42,7 +42,7 @@ public interface WheelMapper extends BaseMapper< Wheel > {
      * @param wheelParam 修改参数
      * @return 修改成功返回行数
      * @author 姜伟
-     * @date 2020/9/18 20:19
+     * @date 2020/7/18 20:19
      */
     Integer updateWheel(WheelParam wheelParam);
 
@@ -52,7 +52,7 @@ public interface WheelMapper extends BaseMapper< Wheel > {
      * @param delWheels 轮播图id
      * @return 删除后返回行数
      * @author 姜伟
-     * @date 2020/9/20 18:31
+     * @date 2020/7/20 18:31
      */
     Integer batchDeleteWheel(@Param("list") List< String > delWheels);
 
@@ -62,7 +62,7 @@ public interface WheelMapper extends BaseMapper< Wheel > {
      * @param updateWheelStatusParam 修改参数
      * @return 修改成功后返回行数
      * @author 姜伟
-     * @date 2020/9/20 18:31
+     * @date 2020/7/20 18:31
      */
     Integer updateIsFlag(UpdateWheelStatusParam updateWheelStatusParam);
 
@@ -72,7 +72,7 @@ public interface WheelMapper extends BaseMapper< Wheel > {
      * @param wheelParam 查询条件
      * @return 轮播图列表数据
      * @author 姜伟
-     * @date 2020/9/17 19:01
+     * @date 2020/7/17 19:01
      */
     List< WheelDO > listWheelBackstage(WheelParam wheelParam);
 
@@ -82,7 +82,7 @@ public interface WheelMapper extends BaseMapper< Wheel > {
      * @param id 轮播图id
      * @return 超市Id数据列表
      * @author 姜伟
-     * @date 2020/9/20 18:29
+     * @date 2020/7/20 18:29
      */
     List< String > listShopId(@Param("id") String id);
 
@@ -92,7 +92,7 @@ public interface WheelMapper extends BaseMapper< Wheel > {
      * @param id 轮播图Id
      * @return 轮播图信息
      * @author 姜伟
-     * @date 2020/9/20 20:04
+     * @date 2020/7/20 20:04
      */
     String queryImages(@Param("id") String id);
 

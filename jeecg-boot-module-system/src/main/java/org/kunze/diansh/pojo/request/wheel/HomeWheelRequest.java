@@ -12,7 +12,7 @@ import java.io.Serializable;
  * 首页轮播图展示数据
  *
  * @author 姜伟
- * @date 2020/9/17
+ * @date 2020/7/17
  */
 @Data
 @ApiModel("首页查询轮播图")

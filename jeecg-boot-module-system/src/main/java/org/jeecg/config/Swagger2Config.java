@@ -36,7 +36,7 @@ import springfox.documentation.RequestHandler;
  * swagger 可视化界面配置
  *
  * @author 姜伟
- * @date 2020/9/20
+ * @date 2020/7/20
  */
 @Slf4j
 @Configuration

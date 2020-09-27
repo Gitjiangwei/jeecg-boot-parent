@@ -78,7 +78,7 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/kunze/alipayNotify/notify_url","anon");//支付宝异步回调
 		filterChainDefinitionMap.put("/kunze/wechatpay/xcxNotify","anon");//小程序支付回调
 		filterChainDefinitionMap.put("/kunze/wechatpay/refundResult","anon");//小程序支付回调
-		filterChainDefinitionMap.put("/kunze/wheel/homeWheelList","anon");//首页轮播图查询
+		filterChainDefinitionMap.put("/kunze/wheel/*","anon");//首页轮播图查询  homeWheelList
 		filterChainDefinitionMap.put("/kunze/category/qryList","anon");//商品分类查询
 		filterChainDefinitionMap.put("/sys/wxAppAppLogin","anon");//微信小程序登录
 		filterChainDefinitionMap.put("/sys/androidLogin","anon");//安卓登录

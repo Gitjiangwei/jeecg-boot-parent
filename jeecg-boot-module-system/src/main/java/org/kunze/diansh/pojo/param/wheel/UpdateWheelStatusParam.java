@@ -8,7 +8,7 @@ import java.util.List;
  * 修改轮播图状态参数实体
  *
  * @author 姜伟
- * @date 2020/9/24
+ * @date 2020/7/24
  */
 @Data
 public class UpdateWheelStatusParam {

@@ -21,7 +21,7 @@ import java.util.List;
  * 轮播图管理业务接口
  *
  * @author 姜伟
- * @date 2020/9/17
+ * @date 2020/7/17
  */
 public interface IWheelService extends IService< Wheel > {
     /**
@@ -30,7 +30,7 @@ public interface IWheelService extends IService< Wheel > {
      * @param saveWheelRequest 添加参数
      * @return 添加成功失败标记
      * @author 姜伟
-     * @date 2020/9/18 20:01
+     * @date 2020/7/18 20:01
      */
     Result< T > saveWheel(SaveWheelRequest saveWheelRequest);
 
@@ -40,7 +40,7 @@ public interface IWheelService extends IService< Wheel > {
      * @param homeWheelRequest 查询条件
      * @return 轮播图展示数据
      * @author 姜伟
-     * @date 2020/9/17 19:56
+     * @date 2020/7/17 19:56
      */
     Result< PageInfo< HomeWheelVO > > listWheelHome(HomeWheelRequest homeWheelRequest);
 
@@ -50,7 +50,7 @@ public interface IWheelService extends IService< Wheel > {
      * @param updateWheelRequest 修改参数
      * @return 修改成功失败标记
      * @author 姜伟
-     * @date 2020/9/18 20:16
+     * @date 2020/7/18 20:16
      */
     Result< T > updateWheel(UpdateWheelRequest updateWheelRequest);
 
@@ -60,7 +60,7 @@ public interface IWheelService extends IService< Wheel > {
      * @param wheelId 轮播图id
      * @return 返回删除是否成功状态
      * @author 姜伟
-     * @date 2020/9/20 18:19
+     * @date 2020/7/20 18:19
      */
     Result< T > delWheel(String wheelId);
 
@@ -70,7 +70,7 @@ public interface IWheelService extends IService< Wheel > {
      * @param deleteWheelRequest
      * @return 删除成功或者失败标记
      * @author 姜伟
-     * @date 2020/9/18 20:38
+     * @date 2020/7/18 20:38
      */
     Result< T > delWheels(DeleteWheelRequest deleteWheelRequest);
 
@@ -80,7 +80,7 @@ public interface IWheelService extends IService< Wheel > {
      * @param updateWheelStatusRequest 修改参数
      * @return 返回修改结果
      * @author 姜伟
-     * @date 2020/9/20 16:51
+     * @date 2020/7/20 16:51
      */
     Result< T > updateWheelIsFlag(UpdateWheelStatusRequest updateWheelStatusRequest);
 
@@ -90,7 +90,7 @@ public interface IWheelService extends IService< Wheel > {
      * @param queryWheelRequest 查询条件
      * @return 轮播图展示数据列
      * @author 姜伟
-     * @date 2020/9/17 17:43
+     * @date 2020/7/17 17:43
      */
     Result< PageInfo< WheelVO > > listPageWheelBackstage(QueryWheelRequest queryWheelRequest);
 
@@ -100,7 +100,7 @@ public interface IWheelService extends IService< Wheel > {
      * @param id 轮播图id
      * @return 超市数据列表
      * @author 姜伟
-     * @date 2020/9/20 18:25
+     * @date 2020/7/20 18:25
      */
     Result< List< String > > listShopByShopId(@Param("id") String id);
 }

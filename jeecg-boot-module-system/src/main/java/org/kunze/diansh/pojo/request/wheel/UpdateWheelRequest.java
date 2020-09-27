@@ -12,7 +12,7 @@ import java.io.Serializable;
  * 修改轮播图信息传入参数
  *
  * @author 姜伟
- * @date 2020/9/18
+ * @date 2020/7/18
  */
 @Data
 @ApiModel("修改轮播图信息传入参数实体")

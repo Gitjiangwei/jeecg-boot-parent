@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * 集合复制工具类
  *
  * @author 姜伟
- * @date 2020/9/24
+ * @date 2020/7/24
  */
 public class BeansUtil {
     private BeansUtil() {

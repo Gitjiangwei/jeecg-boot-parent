@@ -11,7 +11,7 @@ import java.util.Date;
  * 轮播图展示数据
  *
  * @author 姜伟
- * @date 2020/9/17
+ * @date 2020/7/17
  */
 @ApiModel("轮播图管理传输实体")
 @Data
